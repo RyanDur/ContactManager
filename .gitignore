@@ -1,0 +1,14 @@
+*.class
+*[#]*
+hanoi.org
+*.idea
+*.iml
+*gradle
+gen
+out
+build
+*.ipr
+*.iml
+*.iws
+gradlew*
+settings.gradle
