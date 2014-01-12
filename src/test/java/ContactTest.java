@@ -18,7 +18,7 @@ public class ContactTest {
 
     @Test
     public void shouldNotHaveNotesIfNoneHaveBeenAdded() {
-        assertThat(contact.getNotes(), is(equalTo(null)));
+        assertThat(contact.getNotes(), is(equalTo("")));
     }
 
     @Test
