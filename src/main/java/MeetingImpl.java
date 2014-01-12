@@ -13,14 +13,17 @@ public class MeetingImpl implements Meeting {
 	this.date = date;
     }
 
+    @Override
     public int getId() {
 	return id;
     }
 
+    @Override
     public Calendar getDate() {
 	return date;
     }
 
+    @Override
     public Set<Contact> getContacts() {
 	return contacts;
     }
