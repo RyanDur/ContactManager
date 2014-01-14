@@ -10,15 +10,15 @@ import java.util.LinkedHashMap;
 public class ContactManagerImpl implements ContactManager {
     private MeetingFactory meetingFactory;
     private ContactFactory contactFactory;
+    private IdGenerator idGenerator;
     private Map<Integer, Meeting> meetings;
     private Map<Integer, FutureMeeting> futureMeetings;
     private Map<Integer, PastMeeting> pastMeetings;
     private Map<String, Contact> contactsByName;
     private Map<Integer, Contact> contactsById;
-    private int meetingId;
-    private int contactId;
 
-    public ContactManagerImpl(MeetingFactory meetingFactory, ContactFactory contactFactory) {
+    public ContactManagerImpl(MeetingFactory meetingFactory, ContactFactory contactFactory, IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
         this.contactFactory = contactFactory;
         this.meetingFactory = meetingFactory;
         meetings = new LinkedHashMap<Integer, Meeting>();
@@ -26,13 +26,12 @@ public class ContactManagerImpl implements ContactManager {
         pastMeetings = new LinkedHashMap<Integer, PastMeeting>();
         contactsByName = new LinkedHashMap<String, Contact>();
         contactsById = new LinkedHashMap<Integer, Contact>();
-        meetingId = 0;
-        contactId = 0;
     }
 
     @Override
     public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
         if(date.compareTo(new GregorianCalendar()) < 0) throw new IllegalArgumentException();
+        int meetingId = idGenerator.getMeetingId();
         try {
             FutureMeeting futureMeeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
             futureMeetings.put(meetingId, futureMeeting);
@@ -41,7 +40,7 @@ public class ContactManagerImpl implements ContactManager {
             System.out.println("Error " + e.getMessage());
             e.printStackTrace();
         }
-        return meetingId++;
+        return meetingId;
     }
 
     @Override
@@ -88,9 +87,9 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public void addNewContact(String name, String notes) throws NullPointerException {
-	if(name == null || notes == null) throw new NullPointerException();
-        Contact contact = contactFactory.createContact(contactId++, name);
-	contact.addNotes(notes);
+        if(name == null || notes == null) throw new NullPointerException();
+        Contact contact = contactFactory.createContact(idGenerator.getContactId(), name);
+        contact.addNotes(notes);
 
         contactsByName.put(contact.getName(), contact);
         contactsById.put(contact.getId(), contact);
@@ -98,12 +97,16 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public Set<Contact> getContacts(int... ids) throws IllegalArgumentException {
-        return null;
+        Set<Contact> set = new HashSet();
+        for(int id : ids) {
+            set.add(contactsById.get(id));
+        }
+        return set;
     }
 
     @Override
     public Set<Contact> getContacts(String name) throws NullPointerException {
-	if(name == null) throw new NullPointerException();
+        if(name == null) throw new NullPointerException();
         Set<Contact> set = new HashSet();
         set.add(contactsByName.get(name));
         return set;

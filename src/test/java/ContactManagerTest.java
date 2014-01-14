@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ContactManagerTest {
+    private IdGenerator mockIdGenerator;
     private ContactManager cm;
     private Set<Contact> mockContacts;
     private Contact mockContact;
@@ -40,8 +41,8 @@ public class ContactManagerTest {
         mockMeeting = mock(Meeting.class);
         mockFutureMeeting = mock(FutureMeeting.class);
         mockPastMeeting = mock(PastMeeting.class);
-
-        cm = new ContactManagerImpl(mockMeetingFactory(), mockContactFactory());
+        mockIdGenerator = mock(IdGenerator.class);
+        cm = new ContactManagerImpl(mockMeetingFactory(), mockContactFactory(), mockIdGenerator);
     }
 
     @Test
@@ -74,7 +75,7 @@ public class ContactManagerTest {
     public void shouldBeAbleToAddANewContact() {
         String name = "Ryan";
         String note = "note";
-        when(mockContact.getNotes()).thenReturn(note);
+
         when(mockContact.getName()).thenReturn(name);
 
         cm.addNewContact(name, note);
@@ -108,6 +109,21 @@ public class ContactManagerTest {
         String name = null;
 
         cm.getContacts(name);
+    }
+
+    @Test
+    public void shouldBeAbleToGetGetContactsById() {
+        String name = "Ryan";
+        String note = "note";
+	int id = 4;
+
+        when(mockContact.getId()).thenReturn(id);
+
+        cm.addNewContact(name, note);
+        Contact contact = cm.getContacts(id).toArray(new Contact[0])[0];
+
+        assertThat(contact, is(instanceOf(Contact.class)));
+        assertThat(mockContact, is(equalTo(contact)));
     }
 
     private Calendar mockDate(int days) {
