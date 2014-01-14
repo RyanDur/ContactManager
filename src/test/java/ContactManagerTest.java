@@ -27,20 +27,13 @@ public class ContactManagerTest {
 
     @Before
     public void setup() throws InvalidMeetingException {
-        mockContacts = new HashSet<Contact>();
-        mockContact = mock(Contact.class);
-        mockContacts.add(mockContact);
-        mockDate = mockDate(1);
-
-        mockMeeting = mock(Meeting.class);
-        mockFutureMeeting = mock(FutureMeeting.class);
-        mockPastMeeting = mock(PastMeeting.class);
-        mockIdGenerator = mock(IdGenerator.class);
-        cm = new ContactManagerImpl(mockMeetingFactory(), mockContactFactory(), mockIdGenerator);
         knownId = 4;
         knownName = "Ryan";
-	knownNote = "note";
-        addContact();
+        knownNote = "note";
+
+        setupMocks();
+        cm = new ContactManagerImpl(mockMeetingFactory(), mockContactFactory(), mockIdGenerator);
+        addMockContact();
     }
 
     @Test
@@ -128,7 +121,7 @@ public class ContactManagerTest {
         cm.getContacts(knownId, unknownId);
     }
 
-    private void addContact() {
+    private void addMockContact() {
         when(mockContact.getName()).thenReturn(knownName);
         when(mockContact.getId()).thenReturn(knownId);
         cm.addNewContact(knownName, knownNote);
@@ -153,4 +146,17 @@ public class ContactManagerTest {
         when(mockContactFactory.createContact(anyInt(), anyString())).thenReturn(mockContact);
         return mockContactFactory;
     }
+
+    private void setupMocks() {
+        mockContacts = new HashSet<Contact>();
+        mockContact = mock(Contact.class);
+        mockContacts.add(mockContact);
+        mockDate = mockDate(1);
+
+        mockMeeting = mock(Meeting.class);
+        mockFutureMeeting = mock(FutureMeeting.class);
+        mockPastMeeting = mock(PastMeeting.class);
+        mockIdGenerator = mock(IdGenerator.class);
+    }
+
 }
