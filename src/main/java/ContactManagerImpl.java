@@ -103,6 +103,7 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public Set<Contact> getContacts(String name) throws NullPointerException {
+	if(name == null) throw new NullPointerException();
         Set<Contact> set = new HashSet();
         set.add(contactsByName.get(name));
         return set;

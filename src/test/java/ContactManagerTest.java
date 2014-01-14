@@ -85,7 +85,7 @@ public class ContactManagerTest {
     }
 
     @Test
-    public void shouldThrowNullPointerExceptionIfNoNameIsGiven() {
+    public void shouldThrowNullPointerExceptionIfNoNameIsGivenToAdd() {
         thrown.expect(NullPointerException.class);
         String name = null;
         String note = "note";
@@ -94,7 +94,7 @@ public class ContactManagerTest {
     }
 
     @Test
-    public void shouldThrowNullPointerExceptionIfNoNotesAreGiven() {
+    public void shouldThrowNullPointerExceptionIfNoNotesAreGivenToAdd() {
         thrown.expect(NullPointerException.class);
         String name = "Ryan";
         String note = null;
@@ -102,6 +102,13 @@ public class ContactManagerTest {
         cm.addNewContact(name, note);
     }
 
+    @Test
+    public void shouldThrowNullPointerExceptionIfNoNameIsGivenToGet() {
+        thrown.expect(NullPointerException.class);
+        String name = null;
+
+        cm.getContacts(name);
+    }
 
     private Calendar mockDate(int days) {
         Calendar date = new GregorianCalendar();
