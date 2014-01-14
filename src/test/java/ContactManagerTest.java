@@ -20,6 +20,7 @@ public class ContactManagerTest {
     private Calendar mockDate = mockDate(1);
     private int knownId;
     private String knownName;
+    private String knownNote;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -36,14 +37,15 @@ public class ContactManagerTest {
         mockPastMeeting = mock(PastMeeting.class);
         mockIdGenerator = mock(IdGenerator.class);
         cm = new ContactManagerImpl(mockMeetingFactory(), mockContactFactory(), mockIdGenerator);
-	knownId = 4;
-	knownName = "Ryan";
-	addContact();
+        knownId = 4;
+        knownName = "Ryan";
+	knownNote = "note";
+        addContact();
     }
 
     @Test
     public void shouldBeAbleToAddaMeetingForTheFuture() {
-	when(mockFutureMeeting.getDate()).thenReturn(mockDate);
+        when(mockFutureMeeting.getDate()).thenReturn(mockDate);
         int id = cm.addFutureMeeting(mockContacts, mockDate);
         Meeting meeting = cm.getFutureMeeting(id);
 
@@ -91,17 +93,15 @@ public class ContactManagerTest {
         thrown.expect(NullPointerException.class);
 
         String name = null;
-        String note = "note";
-        cm.addNewContact(name, note);
+        cm.addNewContact(name, knownNote);
     }
 
     @Test
     public void shouldThrowNullPointerExceptionIfNoNotesAreGivenToAdd() {
         thrown.expect(NullPointerException.class);
 
-        String name = "Ryan";
         String note = null;
-        cm.addNewContact(name, note);
+        cm.addNewContact(knownName, note);
     }
 
     @Test
@@ -129,10 +129,9 @@ public class ContactManagerTest {
     }
 
     private void addContact() {
-        String note = "note";
-	when(mockContact.getName()).thenReturn(knownName);
+        when(mockContact.getName()).thenReturn(knownName);
         when(mockContact.getId()).thenReturn(knownId);
-        cm.addNewContact(knownName, note);
+        cm.addNewContact(knownName, knownNote);
     }
 
     private Calendar mockDate(int days) {
