@@ -31,6 +31,12 @@ public class ContactManagerImpl implements ContactManager {
     @Override
     public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
         if(date.compareTo(new GregorianCalendar()) < 0) throw new IllegalArgumentException();
+	for(Contact contact : contacts) {
+	    if(contactsById.get(contact.getId()) == null) {
+		throw new IllegalArgumentException();
+	    }
+	}
+
         int meetingId = idGenerator.getMeetingId();
         try {
             FutureMeeting futureMeeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
