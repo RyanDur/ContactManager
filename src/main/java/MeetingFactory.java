@@ -1,6 +1,20 @@
+import java.util.Calendar;
+import java.util.Set;
+
 public interface  MeetingFactory {
 
-    Meeting create(int id, Set<Contact> contacts, Calendar date);
+    /**
+     * @throws InvalidMeetingException
+     */
+    Meeting createMeeting(int id, Set<Contact> contacts, Calendar date) throws InvalidMeetingException;
 
-    PastMeeting create(Meeting meeting, String notes);
+    /**
+     * @throws InvalidMeetingException
+     */
+    FutureMeeting createFutureMeeting(int id, Set<Contact> contacts, Calendar date) throws InvalidMeetingException;
+
+    /**
+     * @throws InvalidMeetingException
+     */
+    PastMeeting createPastMeeting(Meeting meeting, String notes) throws InvalidMeetingException;
 }
