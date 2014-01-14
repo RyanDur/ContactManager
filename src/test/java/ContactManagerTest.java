@@ -121,6 +121,25 @@ public class ContactManagerTest {
         cm.getContacts(knownId, unknownId);
     }
 
+    @Test
+    public void shouldBeAbleToGetAnyMeeting() {
+        int id = cm.addFutureMeeting(mockContacts, mockDate);
+        Meeting meeting = cm.getMeeting(id);
+        assertThat(meeting, is(instanceOf(Meeting.class)));
+        assertThat(meeting, is(equalTo((Meeting) mockFutureMeeting)));
+    }
+
+    @Test
+    public void shouldGetNullIfMeetingDoesNotExist() {
+        Meeting meeting = cm.getMeeting(8);
+        assertThat(meeting, is(equalTo(null)));
+    }
+
+    @Test
+    public void shouldBeAbleToCreateAPastMeeting() {
+	when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
+    }
+
     private void addMockContact() {
         when(mockContact.getName()).thenReturn(knownName);
         when(mockContact.getId()).thenReturn(knownId);
@@ -137,7 +156,7 @@ public class ContactManagerTest {
         MeetingFactory mockMeetingFactory = mock(MeetingFactory.class);
         when(mockMeetingFactory.createMeeting(anyInt(), eq(mockContacts), eq(mockDate))).thenReturn(mockMeeting);
         when(mockMeetingFactory.createFutureMeeting(anyInt(), eq(mockContacts), eq(mockDate))).thenReturn(mockFutureMeeting);
-        when(mockMeetingFactory.createPastMeeting(eq(mockMeeting), anyString())).thenReturn(mockPastMeeting);
+        when(mockMeetingFactory.createPastMeeting(anyInt(), eq(mockContacts), eq(mockDate), anyString())).thenReturn(mockPastMeeting);
         return mockMeetingFactory;
     }
 

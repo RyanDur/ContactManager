@@ -78,7 +78,15 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) throws IllegalArgumentException, NullPointerException {
-
+        int meetingId = idGenerator.getMeetingId();
+        try {
+            PastMeeting pastMeeting = meetingFactory.createPastMeeting(meetingId, contacts, date, text);
+            pastMeetings.put(meetingId, pastMeeting);
+        }
+        catch (InvalidMeetingException e) {
+            System.out.println("Error " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -100,7 +108,7 @@ public class ContactManagerImpl implements ContactManager {
     public Set<Contact> getContacts(int... ids) throws IllegalArgumentException {
         Set<Contact> set = new HashSet();
         for(int id : ids) {
-	    if(contactsById.get(id) == null) throw new IllegalArgumentException();
+            if(contactsById.get(id) == null) throw new IllegalArgumentException();
             set.add(contactsById.get(id));
         }
         return set;
@@ -118,14 +126,14 @@ public class ContactManagerImpl implements ContactManager {
     public void flush() {}
 
     private boolean notValidFutureMeeting(Set<Contact> contacts, Calendar date) {
-	if(date.compareTo(new GregorianCalendar()) < 0) {
-	    return true;
-	}
-	for(Contact contact : contacts) {
-	    if(contactsById.get(contact.getId()) == null) {
-		return true;
-	    }
-	}
-	return false;
+        if(date.compareTo(new GregorianCalendar()) < 0) {
+            return true;
+        }
+        for(Contact contact : contacts) {
+            if(contactsById.get(contact.getId()) == null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

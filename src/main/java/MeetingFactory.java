@@ -16,5 +16,5 @@ public interface  MeetingFactory {
     /**
      * @throws InvalidMeetingException
      */
-    PastMeeting createPastMeeting(Meeting meeting, String notes) throws InvalidMeetingException;
+    PastMeeting createPastMeeting(int id, Set<Contact> contacts, Calendar date, String notes) throws InvalidMeetingException;
 }

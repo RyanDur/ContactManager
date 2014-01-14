@@ -24,7 +24,7 @@ public class MeetingFactoryImpl implements MeetingFactory {
     }
 
     @Override
-    public PastMeeting createPastMeeting(Meeting meeting, String notes) throws InvalidMeetingException {
-        return new PastMeetingImpl(meeting, notes);
+    public PastMeeting createPastMeeting(int id, Set<Contact> contacts, Calendar date, String notes) throws InvalidMeetingException {
+        return new PastMeetingImpl(id, contacts, date, notes);
     }
 }

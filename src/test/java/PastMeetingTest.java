@@ -12,24 +12,22 @@ import static org.mockito.Mockito.*;
 public class PastMeetingTest {
     private Meeting mockMeeting;
     private Calendar date;
+    private int id;
+    private Set<Contact> mockContacts;
 
     @Before
     public void setup() {
+	id = 3;
         date = new GregorianCalendar();
 
-        Set<Contact> mockContacts = new HashSet<Contact>();
+        mockContacts = new HashSet<Contact>();
         mockContacts.add(mock(Contact.class));
-
-        mockMeeting = mock(Meeting.class);
-        when(mockMeeting.getId()).thenReturn(3);
-        when(mockMeeting.getContacts()).thenReturn(mockContacts);
-        when(mockMeeting.getDate()).thenReturn(date);
     }
 
     @Test
     public void shouldHaveNotesOfTheMeeting() throws InvalidMeetingException {
         String notes = "note";
-        PastMeeting pastMeeting = new PastMeetingImpl(mockMeeting, notes);
+        PastMeeting pastMeeting = new PastMeetingImpl(id, mockContacts, date, notes);
 
         assertThat(pastMeeting.getNotes(), is(equalTo(notes)));
     }
@@ -37,7 +35,7 @@ public class PastMeetingTest {
     @Test
     public void shouldHaveAnEmptyStringIfNoNotes() throws InvalidMeetingException {
 	String notes = null;
-        PastMeeting pastMeeting = new PastMeetingImpl(mockMeeting, notes);
+        PastMeeting pastMeeting = new PastMeetingImpl(id, mockContacts, date, notes);
 
         assertThat(pastMeeting.getNotes(), is(equalTo("")));
     }
