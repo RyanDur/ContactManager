@@ -19,13 +19,13 @@ public class ContactManagerImpl implements ContactManager {
     private int contactId;
 
     public ContactManagerImpl(MeetingFactory meetingFactory, ContactFactory contactFactory) {
-	this.contactFactory = contactFactory;
+        this.contactFactory = contactFactory;
         this.meetingFactory = meetingFactory;
         meetings = new LinkedHashMap<Integer, Meeting>();
         futureMeetings = new LinkedHashMap<Integer, FutureMeeting>();
         pastMeetings = new LinkedHashMap<Integer, PastMeeting>();
         contactsByName = new LinkedHashMap<String, Contact>();
-	contactsById = new LinkedHashMap<Integer, Contact>();
+        contactsById = new LinkedHashMap<Integer, Contact>();
         meetingId = 0;
         contactId = 0;
     }
@@ -88,7 +88,12 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public void addNewContact(String name, String notes) throws NullPointerException {
+	if(name == null || notes == null) throw new NullPointerException();
+        Contact contact = contactFactory.createContact(contactId++, name);
+	contact.addNotes(notes);
 
+        contactsByName.put(contact.getName(), contact);
+        contactsById.put(contact.getId(), contact);
     }
 
     @Override
@@ -98,7 +103,9 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public Set<Contact> getContacts(String name) throws NullPointerException {
-        return null;
+        Set<Contact> set = new HashSet();
+        set.add(contactsByName.get(name));
+        return set;
     }
 
     @Override

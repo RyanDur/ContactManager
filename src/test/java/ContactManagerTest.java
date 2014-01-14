@@ -3,7 +3,6 @@ import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.HashSet;
 
-import java.util.*;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import static org.hamcrest.CoreMatchers.*;
@@ -53,11 +52,10 @@ public class ContactManagerTest {
 
         assertThat(meeting, is(instanceOf(FutureMeeting.class)));
         assertThat(mockFutureMeeting, is(equalTo(meeting)));
-        assertThat(meeting.getDate(), is(equalTo(mockDate)));
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionIfUserTyToAddPastMeetingToFutureDate() {
+    public void shouldThrowIllegalArgumentExceptionIfUserTryToAddPastMeetingToFutureDate() {
         thrown.expect(IllegalArgumentException.class);
 
         cm.addFutureMeeting(mockContacts, mockDate(-1));
@@ -71,6 +69,39 @@ public class ContactManagerTest {
 
         cm.getFutureMeeting(id);
     }
+
+    @Test
+    public void shouldBeAbleToAddANewContact() {
+        String name = "Ryan";
+        String note = "note";
+        when(mockContact.getNotes()).thenReturn(note);
+        when(mockContact.getName()).thenReturn(name);
+
+        cm.addNewContact(name, note);
+        Contact contact = cm.getContacts(name).toArray(new Contact[0])[0];
+
+        assertThat(contact, is(instanceOf(Contact.class)));
+        assertThat(mockContact, is(equalTo(contact)));
+    }
+
+    @Test
+    public void shouldThrowNullPointerExceptionIfNoNameIsGiven() {
+        thrown.expect(NullPointerException.class);
+        String name = null;
+        String note = "note";
+
+        cm.addNewContact(name, note);
+    }
+
+    @Test
+    public void shouldThrowNullPointerExceptionIfNoNotesAreGiven() {
+        thrown.expect(NullPointerException.class);
+        String name = "Ryan";
+        String note = null;
+
+        cm.addNewContact(name, note);
+    }
+
 
     private Calendar mockDate(int days) {
         Calendar date = new GregorianCalendar();
