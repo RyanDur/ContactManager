@@ -126,6 +126,21 @@ public class ContactManagerTest {
         assertThat(mockContact, is(equalTo(contact)));
     }
 
+    @Test
+    public void shouldThrowIllegalArgumentExceptionIfAnyOfTheIdsDoNotCorrespondToARealContact() {
+	thrown.expect(IllegalArgumentException.class);
+
+	String name = "Ryan";
+        String note = "note";
+	int knownId = 4;
+	int unknownId = 50;
+
+        when(mockContact.getId()).thenReturn(knownId);
+
+        cm.addNewContact(name, note);
+        cm.getContacts(knownId, unknownId);
+    }
+
     private Calendar mockDate(int days) {
         Calendar date = new GregorianCalendar();
         date.add(Calendar.DATE, days);

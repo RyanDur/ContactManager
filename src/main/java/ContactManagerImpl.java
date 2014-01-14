@@ -99,6 +99,7 @@ public class ContactManagerImpl implements ContactManager {
     public Set<Contact> getContacts(int... ids) throws IllegalArgumentException {
         Set<Contact> set = new HashSet();
         for(int id : ids) {
+	    if(contactsById.get(id) == null) throw new IllegalArgumentException();
             set.add(contactsById.get(id));
         }
         return set;
