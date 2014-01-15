@@ -139,7 +139,7 @@ public class ContactManagerTest {
         when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
         cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
 
-        Meeting meeting = cm.getMeeting(knownId);
+        Meeting meeting = cm.getPastMeeting(knownId);
         assertThat(meeting, is(equalTo((Meeting) mockPastMeeting)));
     }
 

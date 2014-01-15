@@ -22,6 +22,8 @@ public class ContactManagerImpl implements ContactManager {
         this.contactFactory = contactFactory;
         this.meetingFactory = meetingFactory;
         meetings = new LinkedHashMap<Integer, Meeting>();
+        futureMeetings = new LinkedHashMap<Integer, FutureMeeting>();
+        pastMeetings = new LinkedHashMap<Integer, PastMeeting>();
         contactsByName = new LinkedHashMap<String, Contact>();
         contactsById = new LinkedHashMap<Integer, Contact>();
     }
@@ -32,7 +34,8 @@ public class ContactManagerImpl implements ContactManager {
 
         int meetingId = idGenerator.getMeetingId();
         try {
-            meetings.put(meetingId, meetingFactory.createFutureMeeting(meetingId, contacts, date));
+	    FutureMeeting meeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
+            futureMeetings.put(meetingId, meeting);
         }
         catch (InvalidMeetingException e) {
             System.out.println("Error " + e.getMessage());
@@ -43,19 +46,19 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
-        return null;
+        return pastMeetings.get(id);
     }
 
     @Override
     public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
-        Meeting meeting = meetings.get(id);
+        FutureMeeting meeting = futureMeetings.get(id);
         if(meeting.getDate().compareTo(new GregorianCalendar()) < 0) throw new IllegalArgumentException();
-        return (FutureMeeting) meeting;
+        return meeting;
     }
 
     @Override
     public Meeting getMeeting(int id) {
-        return meetings.get(id);
+        return futureMeetings.get(id);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class ContactManagerImpl implements ContactManager {
     public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) throws IllegalArgumentException, NullPointerException {
         int meetingId = idGenerator.getMeetingId();
         try {
-            meetings.put(meetingId, meetingFactory.createPastMeeting(meetingId, contacts, date, text));
+            pastMeetings.put(meetingId, meetingFactory.createPastMeeting(meetingId, contacts, date, text));
         }
         catch (InvalidMeetingException e) {
             System.out.println("Error " + e.getMessage());
