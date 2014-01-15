@@ -122,10 +122,9 @@ public class ContactManagerTest {
     }
 
     @Test
-    public void shouldBeAbleToGetAnyMeeting() {
+    public void shouldBeAbleToGetMeeting() {
         int id = cm.addFutureMeeting(mockContacts, mockDate);
         Meeting meeting = cm.getMeeting(id);
-        assertThat(meeting, is(instanceOf(Meeting.class)));
         assertThat(meeting, is(equalTo((Meeting) mockFutureMeeting)));
     }
 
@@ -137,7 +136,11 @@ public class ContactManagerTest {
 
     @Test
     public void shouldBeAbleToCreateAPastMeeting() {
-	when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
+        when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
+        cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
+
+        Meeting meeting = cm.getMeeting(knownId);
+        assertThat(meeting, is(equalTo((Meeting) mockPastMeeting)));
     }
 
     private void addMockContact() {
