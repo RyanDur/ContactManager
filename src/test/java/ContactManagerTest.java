@@ -140,7 +140,7 @@ public class ContactManagerTest {
     public void shouldBeAbleToCreateAPastMeeting() {
         when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
         cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
-
+        when(mockPastMeeting.getDate()).thenReturn(mockDate(-1));
         PastMeeting meeting = cm.getPastMeeting(knownId);
         assertThat(meeting, is(equalTo(mockPastMeeting)));
     }
@@ -170,7 +170,7 @@ public class ContactManagerTest {
     public void shouldThrowIllegalArgumentExceptionifTheListOfContactsIsEmpty() {
         thrown.expect(IllegalArgumentException.class);
 
-	Set<Contact> emptyContacts = new HashSet<Contact>();
+        Set<Contact> emptyContacts = new HashSet<Contact>();
         cm.addNewPastMeeting(emptyContacts, mockDate, knownNote);
     }
 
@@ -178,8 +178,19 @@ public class ContactManagerTest {
     public void shouldThrowIllegalArgumentExceptionifAnyOfTheContactsDoNotExist() {
         thrown.expect(IllegalArgumentException.class);
 
-	mockContacts.add(mock(Contact.class));
+        mockContacts.add(mock(Contact.class));
         cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
+    }
+
+    @Test
+    public void shoulThrowIllegalArgumentExceptionIfThereIsAMeetingWithAnIdHappeningInTheFuture() {
+        thrown.expect(IllegalArgumentException.class);
+
+        when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
+        cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
+
+        when(mockPastMeeting.getDate()).thenReturn(mockDate);
+        cm.getPastMeeting(knownId);
     }
 
 

@@ -46,7 +46,9 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
-        return pastMeetings.get(id);
+        PastMeeting meeting = pastMeetings.get(id);
+        if(meeting.getDate().compareTo(new GregorianCalendar()) > 0) throw new IllegalArgumentException();
+        return meeting;
     }
 
     @Override
