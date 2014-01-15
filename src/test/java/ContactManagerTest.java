@@ -40,7 +40,7 @@ public class ContactManagerTest {
     public void shouldBeAbleToAddaMeetingForTheFuture() {
         when(mockFutureMeeting.getDate()).thenReturn(mockDate);
         int id = cm.addFutureMeeting(mockContacts, mockDate);
-        Meeting meeting = cm.getFutureMeeting(id);
+        FutureMeeting meeting = cm.getFutureMeeting(id);
 
         assertThat(meeting, is(instanceOf(FutureMeeting.class)));
         assertThat(mockFutureMeeting, is(equalTo(meeting)));
@@ -125,12 +125,14 @@ public class ContactManagerTest {
     public void shouldBeAbleToGetMeeting() {
         int id = cm.addFutureMeeting(mockContacts, mockDate);
         Meeting meeting = cm.getMeeting(id);
+
         assertThat(meeting, is(equalTo((Meeting) mockFutureMeeting)));
     }
 
     @Test
     public void shouldGetNullIfMeetingDoesNotExist() {
         Meeting meeting = cm.getMeeting(8);
+
         assertThat(meeting, is(equalTo(null)));
     }
 
@@ -139,9 +141,47 @@ public class ContactManagerTest {
         when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
         cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
 
-        Meeting meeting = cm.getPastMeeting(knownId);
-        assertThat(meeting, is(equalTo((Meeting) mockPastMeeting)));
+        PastMeeting meeting = cm.getPastMeeting(knownId);
+        assertThat(meeting, is(equalTo(mockPastMeeting)));
     }
+
+    @Test
+    public void shouldThrowANullPointerExceptionIfContactsIsNull() {
+        thrown.expect(NullPointerException.class);
+
+        cm.addNewPastMeeting(null, mockDate, knownNote);
+    }
+
+    @Test
+    public void shouldThrowANullPointerExceptionIfDateIsNull() {
+        thrown.expect(NullPointerException.class);
+
+        cm.addNewPastMeeting(mockContacts, null, knownNote);
+    }
+
+    @Test
+    public void shouldThrowANullPointerExceptionIftextIsNull() {
+        thrown.expect(NullPointerException.class);
+
+        cm.addNewPastMeeting(mockContacts, mockDate, null);
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionifTheListOfContactsIsEmpty() {
+        thrown.expect(IllegalArgumentException.class);
+
+	Set<Contact> emptyContacts = new HashSet<Contact>();
+        cm.addNewPastMeeting(emptyContacts, mockDate, knownNote);
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionifAnyOfTheContactsDoNotExist() {
+        thrown.expect(IllegalArgumentException.class);
+
+	mockContacts.add(mock(Contact.class));
+        cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
+    }
+
 
     private void addMockContact() {
         when(mockContact.getName()).thenReturn(knownName);
