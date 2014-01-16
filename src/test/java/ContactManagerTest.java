@@ -2,6 +2,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -11,6 +13,8 @@ import static org.mockito.Mockito.*;
 
 public class ContactManagerTest {
     private IdGenerator mockIdGenerator;
+    ContactFactory mockContactFactory;
+    private MeetingFactory mockMeetingFactory;
     private ContactManager cm;
     private Set<Contact> mockContacts;
     private Contact mockContact;
@@ -27,19 +31,18 @@ public class ContactManagerTest {
 
     @Before
     public void setup() throws InvalidMeetingException {
-        knownId = 4;
+        knownId = 400;
         knownName = "Ryan";
         knownNote = "note";
 
         setupMocks();
-        cm = new ContactManagerImpl(mockMeetingFactory(), mockContactFactory(), mockIdGenerator);
-        addMockContact();
+        cm = spy(new ContactManagerImpl(mockMeetingFactory, mockContactFactory, mockIdGenerator));
+        addMockContact(mockContact, knownId, knownName);
     }
 
     @Test
-    public void shouldBeAbleToAddaMeetingForTheFuture() {
-        when(mockFutureMeeting.getDate()).thenReturn(mockDate);
-        int id = cm.addFutureMeeting(mockContacts, mockDate);
+    public void shouldBeAbleToAddaMeetingForTheFuture() throws InvalidMeetingException {
+        int id = addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate, 0);
         FutureMeeting meeting = cm.getFutureMeeting(id);
 
         assertThat(meeting, is(instanceOf(FutureMeeting.class)));
@@ -54,22 +57,22 @@ public class ContactManagerTest {
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionIfAContactIsUnknown() {
+    public void shouldThrowIllegalArgumentExceptionIfAContactIsUnknown() throws InvalidMeetingException {
         thrown.expect(IllegalArgumentException.class);
 
         int unknownId = 42;
         Contact unknownContact = mock(Contact.class);
         mockContacts.add(unknownContact);
         when(unknownContact.getId()).thenReturn(unknownId);
-        cm.addFutureMeeting(mockContacts, mockDate(1));
+        addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), knownId);
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionIfUserTyToGetPastMeetingFromFutureMeeting() {
+    public void shouldThrowIllegalArgumentExceptionIfUserTyToGetPastMeetingFromFutureMeeting() throws InvalidMeetingException {
         thrown.expect(IllegalArgumentException.class);
 
+        int id = addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), knownId);
         when(mockFutureMeeting.getDate()).thenReturn(mockDate(-1));
-        int id = cm.addFutureMeeting(mockContacts, mockDate);
         cm.getFutureMeeting(id);
     }
 
@@ -122,11 +125,17 @@ public class ContactManagerTest {
     }
 
     @Test
-    public void shouldBeAbleToGetMeeting() {
-        int id = cm.addFutureMeeting(mockContacts, mockDate);
+    public void shouldBeAbleToGetMeeting() throws InvalidMeetingException {
+        int id = addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate, knownId);
         Meeting meeting = cm.getMeeting(id);
 
+        int pastId = 9;
+        when(mockPastMeeting.getId()).thenReturn(pastId);
+        addMockPastMeeting(mockPastMeeting, mockContacts, mockDate, pastId, knownNote);
+        Meeting meeting1 = cm.getMeeting(pastId);
+
         assertThat(meeting, is(equalTo((Meeting) mockFutureMeeting)));
+        assertThat(meeting1, is(equalTo((Meeting) mockPastMeeting)));
     }
 
     @Test
@@ -137,66 +146,116 @@ public class ContactManagerTest {
     }
 
     @Test
-    public void shouldBeAbleToCreateAPastMeeting() {
-        when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
-        cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
-        when(mockPastMeeting.getDate()).thenReturn(mockDate(-1));
+    public void shouldBeAbleToCreateAPastMeeting() throws InvalidMeetingException {
+        addMockPastMeeting(mockPastMeeting, mockContacts, mockDate(-1), knownId, knownNote);
         PastMeeting meeting = cm.getPastMeeting(knownId);
+
         assertThat(meeting, is(equalTo(mockPastMeeting)));
     }
 
     @Test
-    public void shouldThrowANullPointerExceptionIfContactsIsNull() {
+    public void shouldThrowANullPointerExceptionIfContactsIsNull() throws InvalidMeetingException {
         thrown.expect(NullPointerException.class);
 
-        cm.addNewPastMeeting(null, mockDate, knownNote);
+        addMockPastMeeting(mockPastMeeting, null, mockDate, knownId, knownNote);
     }
 
     @Test
-    public void shouldThrowANullPointerExceptionIfDateIsNull() {
+    public void shouldThrowANullPointerExceptionIfDateIsNull() throws InvalidMeetingException {
         thrown.expect(NullPointerException.class);
 
-        cm.addNewPastMeeting(mockContacts, null, knownNote);
+        addMockPastMeeting(mockPastMeeting, mockContacts, null, knownId, knownNote);
     }
 
     @Test
-    public void shouldThrowANullPointerExceptionIftextIsNull() {
+    public void shouldThrowANullPointerExceptionIftextIsNull() throws InvalidMeetingException {
         thrown.expect(NullPointerException.class);
 
-        cm.addNewPastMeeting(mockContacts, mockDate, null);
+        addMockPastMeeting(mockPastMeeting, mockContacts, mockDate, knownId, null);
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionifTheListOfContactsIsEmpty() {
+    public void shouldThrowIllegalArgumentExceptionifTheListOfContactsIsEmpty() throws InvalidMeetingException {
         thrown.expect(IllegalArgumentException.class);
 
         Set<Contact> emptyContacts = new HashSet<Contact>();
-        cm.addNewPastMeeting(emptyContacts, mockDate, knownNote);
+        addMockPastMeeting(mockPastMeeting, emptyContacts, mockDate, knownId, knownNote);
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionifAnyOfTheContactsDoNotExist() {
+    public void shouldThrowIllegalArgumentExceptionifAnyOfTheContactsDoNotExist() throws InvalidMeetingException {
         thrown.expect(IllegalArgumentException.class);
 
         mockContacts.add(mock(Contact.class));
-        cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
+        addMockPastMeeting(mockPastMeeting, mockContacts, mockDate, knownId, knownNote);
     }
 
     @Test
-    public void shoulThrowIllegalArgumentExceptionIfThereIsAMeetingWithAnIdHappeningInTheFuture() {
+    public void shouldThrowIllegalArgumentExceptionIfThereIsAMeetingHappeningInTheFuture() throws InvalidMeetingException {
         thrown.expect(IllegalArgumentException.class);
 
-        when(mockIdGenerator.getMeetingId()).thenReturn(knownId);
-        cm.addNewPastMeeting(mockContacts, mockDate, knownNote);
 
-        when(mockPastMeeting.getDate()).thenReturn(mockDate);
+        addMockPastMeeting(mockPastMeeting, mockContacts, mockDate(-1), knownId, knownNote);
+        when(mockPastMeeting.getDate()).thenReturn(mockDate(1));
         cm.getPastMeeting(knownId);
     }
 
+    @Test
+    public void shouldBeAbleToGetTheFutureMeetingsOfAContact() throws InvalidMeetingException {
+        Set<Contact> set = new HashSet<Contact>();
+        Set<Contact> listOfContactsWithKnown = mockContacts;
+        listOfContactsWithKnown.add(mockContact);
 
-    private void addMockContact() {
-        when(mockContact.getName()).thenReturn(knownName);
-        when(mockContact.getId()).thenReturn(knownId);
+	FutureMeeting mockFutureMeetingWithKnownContact = mock(FutureMeeting.class);
+        addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), 0);
+        addMockFutureMeeting(mockFutureMeetingWithKnownContact, listOfContactsWithKnown, mockDate(1), 0);
+
+        List<Meeting> expected = new ArrayList<Meeting>();
+	expected.add(mockFutureMeetingWithKnownContact);
+
+        assertThat(expected, is(equalTo(cm.getFutureMeetingList(mockContact))));
+    }
+
+    private int addMockFutureMeeting(FutureMeeting fm, Set<Contact> contacts, Calendar date, int id) throws InvalidMeetingException {
+        setFutureMeeting(fm);
+        when(mockIdGenerator.getMeetingId()).thenReturn(id);
+        when(fm.getId()).thenReturn(id);
+        when(fm.getDate()).thenReturn(date);
+        when(fm.getContacts()).thenReturn(contacts);
+        return cm.addFutureMeeting(contacts, date);
+    }
+
+    private void addMockPastMeeting(PastMeeting pm, Set<Contact> contacts, Calendar date, int id, String note) throws InvalidMeetingException {
+        setPastMeeting(pm);
+        when(mockIdGenerator.getMeetingId()).thenReturn(id);
+        when(pm.getId()).thenReturn(id);
+        when(pm.getDate()).thenReturn(date);
+        when(pm.getContacts()).thenReturn(contacts);
+        cm.addNewPastMeeting(contacts, date, note);
+    }
+
+    private void setFutureMeeting(FutureMeeting fm) throws InvalidMeetingException {
+        Set<Contact> anySet = any();
+        Calendar anyDate = any();
+        when(mockMeetingFactory.createFutureMeeting(anyInt(), anySet, anyDate)).thenReturn(fm);
+    }
+
+    private void setPastMeeting(PastMeeting pm) throws InvalidMeetingException {
+        Set<Contact> anySet = any();
+        Calendar anyDate = any();
+        when(mockMeetingFactory.createPastMeeting(anyInt(), anySet, anyDate, anyString())).thenReturn(pm);
+    }
+
+    private void setMeeting(Meeting m) throws InvalidMeetingException {
+        Set<Contact> anySet = any();
+        Calendar anyDate = any();
+        when(mockMeetingFactory.createMeeting(anyInt(), anySet, anyDate)).thenReturn(m);
+    }
+
+    private void addMockContact(Contact mockContact, int id, String name) {
+        when(mockContactFactory.createContact(anyInt(), anyString())).thenReturn(mockContact);
+        when(mockContact.getName()).thenReturn(name);
+        when(mockContact.getId()).thenReturn(id);
         cm.addNewContact(knownName, knownNote);
     }
 
@@ -206,30 +265,23 @@ public class ContactManagerTest {
         return date;
     }
 
-    private MeetingFactory mockMeetingFactory() throws InvalidMeetingException {
-        MeetingFactory mockMeetingFactory = mock(MeetingFactory.class);
-        when(mockMeetingFactory.createMeeting(anyInt(), eq(mockContacts), eq(mockDate))).thenReturn(mockMeeting);
-        when(mockMeetingFactory.createFutureMeeting(anyInt(), eq(mockContacts), eq(mockDate))).thenReturn(mockFutureMeeting);
-        when(mockMeetingFactory.createPastMeeting(anyInt(), eq(mockContacts), eq(mockDate), anyString())).thenReturn(mockPastMeeting);
-        return mockMeetingFactory;
-    }
-
-    private ContactFactory mockContactFactory() {
-        ContactFactory mockContactFactory = mock(ContactFactory.class);
-        when(mockContactFactory.createContact(anyInt(), anyString())).thenReturn(mockContact);
-        return mockContactFactory;
+    private void mockMeetingFactory() throws InvalidMeetingException {
+        setMeeting(mockMeeting);
+        setFutureMeeting(mockFutureMeeting);
+        setPastMeeting(mockPastMeeting);
     }
 
     private void setupMocks() {
+        mockContactFactory = mock(ContactFactory.class);
+        mockMeetingFactory = mock(MeetingFactory.class);
+        mockFutureMeeting = mock(FutureMeeting.class);
         mockContacts = new HashSet<Contact>();
         mockContact = mock(Contact.class);
         mockContacts.add(mockContact);
         mockDate = mockDate(1);
 
         mockMeeting = mock(Meeting.class);
-        mockFutureMeeting = mock(FutureMeeting.class);
         mockPastMeeting = mock(PastMeeting.class);
         mockIdGenerator = mock(IdGenerator.class);
     }
-
 }

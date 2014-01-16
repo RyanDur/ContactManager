@@ -35,7 +35,8 @@ public class ContactManagerImpl implements ContactManager {
         int meetingId = idGenerator.getMeetingId();
         try {
             FutureMeeting meeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
-            futureMeetings.put(meetingId, meeting);
+            futureMeetings.put(meeting.getId(), meeting);
+            meetings.put(meeting.getId(), meeting);
         }
         catch (InvalidMeetingException e) {
             System.out.println("Error " + e.getMessage());
@@ -60,12 +61,19 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public Meeting getMeeting(int id) {
-        return futureMeetings.get(id);
+        return meetings.get(id);
     }
 
     @Override
     public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
-        return null;
+        List<Meeting> futureMeetingList = new ArrayList<Meeting>();
+        for (Meeting meeting : futureMeetings.values()){
+            Set<Contact> contacts = meeting.getContacts();
+            if(contacts.contains(contact)) {
+                futureMeetingList.add(meeting);
+            }
+        }
+        return futureMeetingList;
     }
 
     @Override
@@ -84,7 +92,9 @@ public class ContactManagerImpl implements ContactManager {
         if(notValidContacts(contacts)) throw new IllegalArgumentException();
         int meetingId = idGenerator.getMeetingId();
         try {
-            pastMeetings.put(meetingId, meetingFactory.createPastMeeting(meetingId, contacts, date, text));
+            PastMeeting meeting = meetingFactory.createPastMeeting(meetingId, contacts, date, text);
+            pastMeetings.put(meeting.getId(), meeting);
+            meetings.put(meeting.getId(), meeting);
         }
         catch (InvalidMeetingException e) {
             System.out.println("Error " + e.getMessage());
