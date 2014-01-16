@@ -202,18 +202,31 @@ public class ContactManagerTest {
 
     @Test
     public void shouldBeAbleToGetTheFutureMeetingsOfAContact() throws InvalidMeetingException {
-        Set<Contact> set = new HashSet<Contact>();
-        Set<Contact> listOfContactsWithKnown = mockContacts;
-        listOfContactsWithKnown.add(mockContact);
+        Contact anotherContact = mock(Contact.class);
+        int anotherContactId = 92;
+        addMockContact(anotherContact, anotherContactId, knownName);
 
-	FutureMeeting mockFutureMeetingWithKnownContact = mock(FutureMeeting.class);
+        Contact knownContact = mock(Contact.class);
+        int knownContactId = 191;
+        addMockContact(knownContact, knownContactId, knownName);
+
+        Set<Contact> moreMockedContacts = mockContacts;
+        moreMockedContacts.add(anotherContact);
+
+        Set<Contact> listOfContactsWithKnown = new HashSet<Contact>();
+        listOfContactsWithKnown.add(knownContact);
+
+        FutureMeeting mockFutureMeetingWithKnownContact = mock(FutureMeeting.class);
+        FutureMeeting anotherMockFutureMeeting = mock(FutureMeeting.class);
+
         addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), 0);
-        addMockFutureMeeting(mockFutureMeetingWithKnownContact, listOfContactsWithKnown, mockDate(1), 0);
+        addMockFutureMeeting(anotherMockFutureMeeting, moreMockedContacts, mockDate(1), 1);
+        addMockFutureMeeting(mockFutureMeetingWithKnownContact, listOfContactsWithKnown, mockDate(1), 2);
 
         List<Meeting> expected = new ArrayList<Meeting>();
-	expected.add(mockFutureMeetingWithKnownContact);
+        expected.add(mockFutureMeetingWithKnownContact);
 
-        assertThat(expected, is(equalTo(cm.getFutureMeetingList(mockContact))));
+        assertThat(cm.getFutureMeetingList(knownContact), is(equalTo(expected)));
     }
 
     private int addMockFutureMeeting(FutureMeeting fm, Set<Contact> contacts, Calendar date, int id) throws InvalidMeetingException {
