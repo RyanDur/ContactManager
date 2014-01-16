@@ -81,16 +81,24 @@ public class ContactManagerImpl implements ContactManager {
     public List<Meeting> getFutureMeetingList(Calendar date) {
         List<Meeting> futureMeetingList = new ArrayList<Meeting>();
         for (Meeting meeting : futureMeetings.values()){
-	    if(date == meeting.getDate()) {
-		futureMeetingList.add(meeting);
-	    }
+            if(date == meeting.getDate()) {
+                futureMeetingList.add(meeting);
+            }
         }
         return futureMeetingList;
     }
 
     @Override
     public List<PastMeeting> getPastMeetingList(Contact contact) throws IllegalArgumentException {
-        return null;
+        if(notValidContact(contact)) throw new IllegalArgumentException();
+        List<PastMeeting> pastMeetingList = new ArrayList<PastMeeting>();
+        for (PastMeeting meeting : pastMeetings.values()){
+            Set<Contact> contacts = meeting.getContacts();
+            if(contacts.contains(contact)) {
+                pastMeetingList.add(meeting);
+            }
+        }
+        return pastMeetingList;
     }
 
     @Override
@@ -111,7 +119,19 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public void addMeetingNotes(int id, String text) throws IllegalArgumentException, IllegalStateException, NullPointerException {
-
+        FutureMeeting meeting = (FutureMeeting) getMeeting(id);
+        if(meeting.getDate().compareTo(new GregorianCalendar()) < 0) {
+            try {
+		PastMeeting pastMeeting = meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), text);
+                pastMeetings.put(pastMeeting.getId(), pastMeeting);
+                futureMeetings.remove(meeting);
+                meetings.put(pastMeeting.getId(), pastMeeting);
+	    }
+	    catch (InvalidMeetingException e) {
+		System.out.println("Error " + e.getMessage());
+		e.printStackTrace();
+	    }
+        }
     }
 
     @Override
@@ -156,9 +176,9 @@ public class ContactManagerImpl implements ContactManager {
         if(contacts.isEmpty()) return true;
 
         for(Contact contact : contacts) {
-	    if(notValidContact(contact)) {
-		return true;
-	    }
+            if(notValidContact(contact)) {
+                return true;
+            }
         }
         return false;
     }
