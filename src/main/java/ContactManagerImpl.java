@@ -21,11 +21,11 @@ public class ContactManagerImpl implements ContactManager {
         this.idGenerator = idGenerator;
         this.contactFactory = contactFactory;
         this.meetingFactory = meetingFactory;
-        meetings = new LinkedHashMap<Integer, Meeting>();
-        futureMeetings = new LinkedHashMap<Integer, FutureMeeting>();
-        pastMeetings = new LinkedHashMap<Integer, PastMeeting>();
-        contactsByName = new LinkedHashMap<String, Contact>();
-        contactsById = new LinkedHashMap<Integer, Contact>();
+        meetings = new LinkedHashMap<>();
+        futureMeetings = new LinkedHashMap<>();
+        pastMeetings = new LinkedHashMap<>();
+        contactsByName = new LinkedHashMap<>();
+        contactsById = new LinkedHashMap<>();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ContactManagerImpl implements ContactManager {
     @Override
     public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
         if(notValidContact(contact)) throw new IllegalArgumentException();
-        List<Meeting> futureMeetingList = new ArrayList<Meeting>();
+        List<Meeting> futureMeetingList = new ArrayList<>();
         for (Meeting meeting : futureMeetings.values()){
             Set<Contact> contacts = meeting.getContacts();
             if(contacts.contains(contact)) {
@@ -79,7 +79,7 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public List<Meeting> getFutureMeetingList(Calendar date) {
-        List<Meeting> futureMeetingList = new ArrayList<Meeting>();
+        List<Meeting> futureMeetingList = new ArrayList<>();
         for (Meeting meeting : futureMeetings.values()){
             if(date == meeting.getDate()) {
                 futureMeetingList.add(meeting);
@@ -91,7 +91,7 @@ public class ContactManagerImpl implements ContactManager {
     @Override
     public List<PastMeeting> getPastMeetingList(Contact contact) throws IllegalArgumentException {
         if(notValidContact(contact)) throw new IllegalArgumentException();
-        List<PastMeeting> pastMeetingList = new ArrayList<PastMeeting>();
+        List<PastMeeting> pastMeetingList = new ArrayList<>();
         for (PastMeeting meeting : pastMeetings.values()){
             Set<Contact> contacts = meeting.getContacts();
             if(contacts.contains(contact)) {
@@ -120,17 +120,13 @@ public class ContactManagerImpl implements ContactManager {
     @Override
     public void addMeetingNotes(int id, String text) throws IllegalArgumentException, IllegalStateException, NullPointerException {
         FutureMeeting meeting = (FutureMeeting) getMeeting(id);
-        if(meeting.getDate().compareTo(new GregorianCalendar()) < 0) {
-            try {
-		PastMeeting pastMeeting = meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), text);
-                pastMeetings.put(pastMeeting.getId(), pastMeeting);
-                futureMeetings.remove(meeting);
-                meetings.put(pastMeeting.getId(), pastMeeting);
-	    }
-	    catch (InvalidMeetingException e) {
-		System.out.println("Error " + e.getMessage());
-		e.printStackTrace();
-	    }
+        if(meeting.getDate().compareTo(new GregorianCalendar()) < 0) try {
+          PastMeeting pastMeeting = meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), text);
+          pastMeetings.put(pastMeeting.getId(), pastMeeting);
+          meetings.put(pastMeeting.getId(), pastMeeting);
+        } catch (InvalidMeetingException e) {
+          System.out.println("Error " + e.getMessage());
+          e.printStackTrace();
         }
     }
 
@@ -146,30 +142,27 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public Set<Contact> getContacts(int... ids) throws IllegalArgumentException {
-        Set<Contact> set = new HashSet();
+        HashSet<Contact> contacts = new HashSet<>();
         for(int id : ids) {
             if(contactsById.get(id) == null) throw new IllegalArgumentException();
-            set.add(contactsById.get(id));
+            contacts.add(contactsById.get(id));
         }
-        return set;
+        return contacts;
     }
 
     @Override
     public Set<Contact> getContacts(String name) throws NullPointerException {
         if(name == null) throw new NullPointerException();
-        Set<Contact> set = new HashSet();
-        set.add(contactsByName.get(name));
-        return set;
+        Set<Contact> contacts = new HashSet<>();
+        contacts.add(contactsByName.get(name));
+        return contacts;
     }
 
     @Override
     public void flush() {}
 
     private boolean notValidFutureMeeting(Set<Contact> contacts, Calendar date) {
-        if(date.compareTo(new GregorianCalendar()) < 0) {
-            return true;
-        }
-        return notValidContacts(contacts);
+      return date.compareTo(new GregorianCalendar()) < 0 || notValidContacts(contacts);
     }
 
     private boolean notValidContacts(Set<Contact> contacts) {

@@ -18,7 +18,7 @@ public class MeetingTest {
     public ExpectedException thrown = ExpectedException.none();
 
     private Set<Contact> getMockContacts(int numOfMocks) {
-        Set<Contact> set = new HashSet<Contact>();
+        Set<Contact> set = new HashSet<>();
         for(int i = 0; i < numOfMocks; i++) {
             set.add(mock(Contact.class));
         }
