@@ -66,6 +66,7 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
+        if(notValidContact(contact)) throw new IllegalArgumentException();
         List<Meeting> futureMeetingList = new ArrayList<Meeting>();
         for (Meeting meeting : futureMeetings.values()){
             Set<Contact> contacts = meeting.getContacts();
@@ -149,10 +150,14 @@ public class ContactManagerImpl implements ContactManager {
         if(contacts.isEmpty()) return true;
 
         for(Contact contact : contacts) {
-            if(contactsById.get(contact.getId()) == null) {
-                return true;
-            }
+	    if(notValidContact(contact)) {
+		return true;
+	    }
         }
         return false;
+    }
+
+    private boolean notValidContact(Contact contact) {
+        return contactsById.get(contact.getId()) == null;
     }
 }

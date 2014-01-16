@@ -229,6 +229,14 @@ public class ContactManagerTest {
         assertThat(cm.getFutureMeetingList(knownContact), is(equalTo(expected)));
     }
 
+    @Test
+    public void shouldThrowIllegalArgumentExceptionIfTheContactDoesNotExist() throws InvalidMeetingException {
+	thrown.expect(IllegalArgumentException.class);
+
+        addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), 0);
+        cm.getFutureMeetingList(mock(Contact.class));
+    }
+
     private int addMockFutureMeeting(FutureMeeting fm, Set<Contact> contacts, Calendar date, int id) throws InvalidMeetingException {
         setFutureMeeting(fm);
         when(mockIdGenerator.getMeetingId()).thenReturn(id);
