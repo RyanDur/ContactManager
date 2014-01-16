@@ -79,7 +79,13 @@ public class ContactManagerImpl implements ContactManager {
 
     @Override
     public List<Meeting> getFutureMeetingList(Calendar date) {
-        return null;
+        List<Meeting> futureMeetingList = new ArrayList<Meeting>();
+        for (Meeting meeting : futureMeetings.values()){
+	    if(date == meeting.getDate()) {
+		futureMeetingList.add(meeting);
+	    }
+        }
+        return futureMeetingList;
     }
 
     @Override

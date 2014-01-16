@@ -237,6 +237,20 @@ public class ContactManagerTest {
         cm.getFutureMeetingList(mock(Contact.class));
     }
 
+    @Test
+    public void shouldBeAbleToGetTheFutureMeetingsByDate() throws InvalidMeetingException {
+        FutureMeeting anotherMockFutureMeeting = mock(FutureMeeting.class);
+
+	Calendar date = mockDate(1);
+        addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(2), 0);
+        addMockFutureMeeting(anotherMockFutureMeeting, mockContacts, date, 1);
+
+        List<Meeting> expected = new ArrayList<Meeting>();
+        expected.add(anotherMockFutureMeeting);
+
+        assertThat(cm.getFutureMeetingList(date), is(equalTo(expected)));
+    }
+
     private int addMockFutureMeeting(FutureMeeting fm, Set<Contact> contacts, Calendar date, int id) throws InvalidMeetingException {
         setFutureMeeting(fm);
         when(mockIdGenerator.getMeetingId()).thenReturn(id);
