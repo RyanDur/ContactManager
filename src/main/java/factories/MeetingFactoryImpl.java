@@ -3,10 +3,11 @@ package factories;
 import exceptions.InvalidMeetingException;
 import models.*;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
-public class MeetingFactoryImpl implements MeetingFactory {
+public class MeetingFactoryImpl implements MeetingFactory, Serializable {
   private static MeetingFactory meetingFactoryInstance = null;
 
   private MeetingFactoryImpl() {

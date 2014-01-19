@@ -4,8 +4,9 @@ import exceptions.InvalidMeetingException;
 
 import java.util.Calendar;
 import java.util.Set;
+import java.io.Serializable;
 
-public class MeetingImpl implements Meeting {
+public class MeetingImpl implements Meeting, Serializable {
   private int id;
   private Set<Contact> contacts;
   private Calendar date;

@@ -1,6 +1,8 @@
 package generators;
 
-public class IdGeneratorImpl implements IdGenerator {
+import java.io.Serializable;
+
+public class IdGeneratorImpl implements IdGenerator, Serializable {
   private static IdGeneratorImpl idGeneratorInstance = null;
   private static int meetingId = 0;
   private static int contactId = 0;

@@ -3,15 +3,18 @@ package controllers;
 import exceptions.InvalidMeetingException;
 import factories.ContactFactory;
 import factories.MeetingFactory;
+import factories.SerializationFactory;
 import generators.IdGenerator;
 import models.Contact;
 import models.FutureMeeting;
 import models.Meeting;
 import models.PastMeeting;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class ContactManagerImpl implements ContactManager {
+public class ContactManagerImpl implements ContactManager, Serializable {
+  private SerializationFactory serializationFactory;
   private MeetingFactory meetingFactory;
   private ContactFactory contactFactory;
   private IdGenerator idGenerator;
@@ -19,10 +22,11 @@ public class ContactManagerImpl implements ContactManager {
   private Map<String, Set<Contact>> contactsByName;
   private Map<Integer, Contact> contactsById;
 
-  public ContactManagerImpl(MeetingFactory meetingFactory, ContactFactory contactFactory, IdGenerator idGenerator) {
+  public ContactManagerImpl(MeetingFactory meetingFactory, ContactFactory contactFactory, IdGenerator idGenerator, SerializationFactory serializationFactory) {
     this.idGenerator = idGenerator;
     this.contactFactory = contactFactory;
     this.meetingFactory = meetingFactory;
+    this.serializationFactory = serializationFactory;
     meetings = new HashMap<>();
     contactsByName = new HashMap<>();
     contactsById = new HashMap<>();

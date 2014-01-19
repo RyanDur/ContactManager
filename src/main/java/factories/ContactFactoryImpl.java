@@ -3,7 +3,9 @@ package factories;
 import models.Contact;
 import models.ContactImpl;
 
-public class ContactFactoryImpl implements ContactFactory {
+import java.io.Serializable;
+
+public class ContactFactoryImpl implements ContactFactory, Serializable {
   private static ContactFactory contactFactoryInstance = null;
 
   private ContactFactoryImpl() {
