@@ -168,7 +168,7 @@ public class ContactManagerTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateAPastMeeting() {
+  public void shouldBeAbleToAddAPastMeeting() {
     addMockPastMeeting(mockPastMeeting, mockContacts, mockDate(-1), knownId, knownNote);
     PastMeeting meeting = cm.getPastMeeting(knownId);
 

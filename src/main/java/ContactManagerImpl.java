@@ -41,14 +41,14 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
     PastMeeting meeting = (PastMeeting) meetings.get(id);
-    if (meeting.getDate().compareTo(new GregorianCalendar()) > 0) throw new IllegalArgumentException();
+    if (isInTheFuture(meeting.getDate())) throw new IllegalArgumentException();
     return meeting;
   }
 
   @Override
   public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
     FutureMeeting meeting = (FutureMeeting) meetings.get(id);
-    if (meeting.getDate().compareTo(new GregorianCalendar()) < 0) throw new IllegalArgumentException();
+    if (isInThePast(meeting.getDate())) throw new IllegalArgumentException();
     return meeting;
   }
 
@@ -113,7 +113,7 @@ public class ContactManagerImpl implements ContactManager {
     if(text == null) throw new NullPointerException();
     if (getMeeting(id) == null) throw new IllegalArgumentException();
     FutureMeeting meeting = (FutureMeeting) getMeeting(id);
-    if (meeting.getDate().compareTo(new GregorianCalendar()) > 0) throw new IllegalStateException();
+    if (isInTheFuture(meeting.getDate())) throw new IllegalStateException();
     try {
       PastMeeting pastMeeting = meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), text);
       meetings.put(pastMeeting.getId(), pastMeeting);
@@ -160,8 +160,16 @@ public class ContactManagerImpl implements ContactManager {
   public void flush() {
   }
 
+  private boolean isInThePast(Calendar date) {
+    return  date.compareTo(new GregorianCalendar()) < 0;
+  }
+
+  private boolean isInTheFuture(Calendar date) {
+    return date.compareTo(new GregorianCalendar()) > 0;
+  }
+
   private boolean notValidFutureMeeting(Set<Contact> contacts, Calendar date) {
-    return date.compareTo(new GregorianCalendar()) < 0 || notValidContacts(contacts);
+    return isInThePast(date) || notValidContacts(contacts);
   }
 
   private boolean notValidContacts(Set<Contact> contacts) {
