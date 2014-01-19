@@ -10,6 +10,7 @@ import java.util.List;
 import exceptions.InvalidMeetingException;
 import factories.ContactFactory;
 import factories.MeetingFactory;
+import factories.SerializationFactory;
 import generators.IdGenerator;
 import models.Contact;
 import models.FutureMeeting;
@@ -55,14 +56,14 @@ public class ContactManagerTest {
 
   @Before
   public void setup() throws InvalidMeetingException {
-    knownId = 400;
+    knownId = 4;
     knownName = "Ryan";
     knownNote = "note";
     numberOfFutureMeetings = 100;
     int numberOfPastMeetings = 100;
 
     setupMocks();
-    cm = Mockito.spy(new ContactManagerImpl(mockMeetingFactory, mockContactFactory, mockIdGenerator));
+    cm = Mockito.spy(new ContactManagerImpl(mockMeetingFactory, mockContactFactory, mockIdGenerator, mock(SerializationFactory.class)));
     addMockContact(mockContact, knownId, knownName);
     setupMeetings(numberOfFutureMeetings, numberOfPastMeetings);
   }
