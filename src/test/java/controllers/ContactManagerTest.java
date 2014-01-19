@@ -1,3 +1,5 @@
+package controllers;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
@@ -5,14 +7,32 @@ import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptions.InvalidMeetingException;
+import factories.ContactFactory;
+import factories.MeetingFactory;
+import generators.IdGenerator;
+import models.Contact;
+import models.FutureMeeting;
+import models.Meeting;
+import models.PastMeeting;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ContactManagerTest {
   private IdGenerator mockIdGenerator;
@@ -28,7 +48,7 @@ public class ContactManagerTest {
   private String knownName;
   private String knownNote;
   private int numberOfFutureMeetings;
-  private int numberOfPastMeetings;
+  //private int numberOfPastMeetings;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -39,10 +59,10 @@ public class ContactManagerTest {
     knownName = "Ryan";
     knownNote = "note";
     numberOfFutureMeetings = 100;
-    numberOfPastMeetings = 100;
+    int numberOfPastMeetings = 100;
 
     setupMocks();
-    cm = spy(new ContactManagerImpl(mockMeetingFactory, mockContactFactory, mockIdGenerator));
+    cm = Mockito.spy(new ContactManagerImpl(mockMeetingFactory, mockContactFactory, mockIdGenerator));
     addMockContact(mockContact, knownId, knownName);
     setupMeetings(numberOfFutureMeetings, numberOfPastMeetings);
   }
@@ -232,10 +252,12 @@ public class ContactManagerTest {
 
     FutureMeeting mockFutureMeetingWithKnownContact = mock(FutureMeeting.class);
     FutureMeeting anotherMockFutureMeeting = mock(FutureMeeting.class);
+    PastMeeting mockPastMeetingWithKnownContact = mock(PastMeeting.class);
 
     addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), 0);
     addMockFutureMeeting(anotherMockFutureMeeting, moreMockedContacts, mockDate(1), 1);
     addMockFutureMeeting(mockFutureMeetingWithKnownContact, listOfContactsWithKnown, mockDate(1), 2);
+    addMockPastMeeting(mockPastMeetingWithKnownContact, listOfContactsWithKnown, mockDate(-1), 3, knownNote);
 
     List<Meeting> expected = new ArrayList<>();
     expected.add(mockFutureMeetingWithKnownContact);
@@ -261,7 +283,7 @@ public class ContactManagerTest {
 
     List<Meeting> actual = cm.getFutureMeetingList(mockDate);
 
-    assertTrue(actual.size() == numberOfFutureMeetings+1);
+    assertTrue(actual.size() == numberOfFutureMeetings + 1);
     assertTrue(actual.contains(anotherMockFutureMeeting));
   }
 
@@ -274,12 +296,14 @@ public class ContactManagerTest {
     Set<Contact> moreMockedContacts = listOfContacts(10, null, 100);
     Set<Contact> listOfContactsWithKnown = listOfContacts(10, knownContact, 200);
 
+    FutureMeeting mockFutureMeetingWithKnownContact = mock(FutureMeeting.class);
     PastMeeting mockPastMeetingWithKnownContact = mock(PastMeeting.class);
     PastMeeting anotherMockPastMeeting = mock(PastMeeting.class);
 
     addMockPastMeeting(mockPastMeeting, mockContacts, mockDate(-1), 0, knownNote);
     addMockPastMeeting(anotherMockPastMeeting, moreMockedContacts, mockDate(-1), 1, knownNote);
     addMockPastMeeting(mockPastMeetingWithKnownContact, listOfContactsWithKnown, mockDate(-1), 2, knownNote);
+    addMockFutureMeeting(mockFutureMeetingWithKnownContact, listOfContactsWithKnown, mockDate(1), 3);
 
     List<PastMeeting> expected = new ArrayList<>();
     expected.add(mockPastMeetingWithKnownContact);
@@ -373,7 +397,7 @@ public class ContactManagerTest {
     Set<Contact> list = new HashSet<>();
     for (int i = 0; i < numberOfUnknownContacts; i++) {
       Contact mockContact = mock(Contact.class);
-      addMockContact(mockContact, i + idDrift, knownName+i);
+      addMockContact(mockContact, i + idDrift, knownName + i);
       list.add(mockContact);
     }
     if (contact != null) {

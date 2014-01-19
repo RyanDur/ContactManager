@@ -1,11 +1,15 @@
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.LinkedHashMap;
+package controllers;
+
+import exceptions.InvalidMeetingException;
+import factories.ContactFactory;
+import factories.MeetingFactory;
+import generators.IdGenerator;
+import models.Contact;
+import models.FutureMeeting;
+import models.Meeting;
+import models.PastMeeting;
+
+import java.util.*;
 
 public class ContactManagerImpl implements ContactManager {
   private MeetingFactory meetingFactory;
@@ -19,9 +23,9 @@ public class ContactManagerImpl implements ContactManager {
     this.idGenerator = idGenerator;
     this.contactFactory = contactFactory;
     this.meetingFactory = meetingFactory;
-    meetings = new LinkedHashMap<>();
-    contactsByName = new LinkedHashMap<>();
-    contactsById = new LinkedHashMap<>();
+    meetings = new HashMap<>();
+    contactsByName = new HashMap<>();
+    contactsById = new HashMap<>();
   }
 
   @Override
@@ -40,14 +44,14 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
-    PastMeeting meeting = (PastMeeting) meetings.get(id);
+    PastMeeting meeting = (PastMeeting) getMeeting(id);
     if (isInTheFuture(meeting.getDate())) throw new IllegalArgumentException();
     return meeting;
   }
 
   @Override
   public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
-    FutureMeeting meeting = (FutureMeeting) meetings.get(id);
+    FutureMeeting meeting = (FutureMeeting) getMeeting(id);
     if (isInThePast(meeting.getDate())) throw new IllegalArgumentException();
     return meeting;
   }
@@ -63,7 +67,7 @@ public class ContactManagerImpl implements ContactManager {
     List<Meeting> futureMeetingList = new ArrayList<>();
     for (Meeting meeting : meetings.values()) {
       Set<Contact> contacts = meeting.getContacts();
-      if (contacts.contains(contact)) {
+      if (meeting instanceof FutureMeeting && contacts.contains(contact)) {
         futureMeetingList.add(meeting);
       }
     }
@@ -110,7 +114,7 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public void addMeetingNotes(int id, String text) throws IllegalArgumentException, IllegalStateException, NullPointerException {
-    if(text == null) throw new NullPointerException();
+    if (text == null) throw new NullPointerException();
     if (getMeeting(id) == null) throw new IllegalArgumentException();
     FutureMeeting meeting = (FutureMeeting) getMeeting(id);
     if (isInTheFuture(meeting.getDate())) throw new IllegalStateException();
@@ -161,7 +165,7 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   private boolean isInThePast(Calendar date) {
-    return  date.compareTo(new GregorianCalendar()) < 0;
+    return date.compareTo(new GregorianCalendar()) < 0;
   }
 
   private boolean isInTheFuture(Calendar date) {

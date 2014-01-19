@@ -1,13 +1,13 @@
+package generators;
+
 public interface IdGenerator {
   /**
-   *
    * @return
    */
-    int getMeetingId();
+  int getMeetingId();
 
   /**
-   *
    * @return
    */
-    int getContactId();
+  int getContactId();
 }

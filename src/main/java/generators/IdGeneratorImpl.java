@@ -1,3 +1,5 @@
+package generators;
+
 public class IdGeneratorImpl implements IdGenerator {
   private static IdGeneratorImpl idGeneratorInstance = null;
   private static int meetingId = 0;

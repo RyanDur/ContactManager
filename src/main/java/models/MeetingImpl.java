@@ -1,3 +1,7 @@
+package models;
+
+import exceptions.InvalidMeetingException;
+
 import java.util.Calendar;
 import java.util.Set;
 

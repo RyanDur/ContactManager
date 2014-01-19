@@ -1,9 +1,7 @@
 package models;
 
-import models.Contact;
-import models.ContactImpl;
-import org.hamcrest.CoreMatchers;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

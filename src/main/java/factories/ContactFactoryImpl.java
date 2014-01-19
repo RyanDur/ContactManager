@@ -1,3 +1,8 @@
+package factories;
+
+import models.Contact;
+import models.ContactImpl;
+
 public class ContactFactoryImpl implements ContactFactory {
   private static ContactFactory contactFactoryInstance = null;
 

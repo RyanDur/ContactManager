@@ -1,3 +1,5 @@
+package exceptions;
+
 public class InvalidMeetingException extends Exception {
 
   public InvalidMeetingException() {
