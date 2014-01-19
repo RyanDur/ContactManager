@@ -2,12 +2,16 @@ package generators;
 
 public interface IdGenerator {
   /**
-   * @return
+   * generate a unique id for a meeting.
+   *
+   * @return an id for a meeting
    */
   int getMeetingId();
 
   /**
-   * @return
+   * generate a unique id for a contact.
+   *
+   * @return an id for a contact
    */
   int getContactId();
 }
