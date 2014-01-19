@@ -20,11 +20,6 @@ public class MeetingFactoryImpl implements MeetingFactory {
   }
 
   @Override
-  public Meeting createMeeting(int id, Set<Contact> contacts, Calendar date) throws InvalidMeetingException {
-    return new MeetingImpl(id, contacts, date);
-  }
-
-  @Override
   public FutureMeeting createFutureMeeting(int id, Set<Contact> contacts, Calendar date) throws InvalidMeetingException {
     return new FutureMeetingImpl(id, contacts, date);
   }
