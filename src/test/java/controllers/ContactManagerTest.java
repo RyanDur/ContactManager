@@ -1,27 +1,26 @@
 package controllers;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import exceptions.InvalidMeetingException;
-import factories.ContactFactory;
-import factories.MeetingFactory;
-import factories.SerializationFactory;
+import factories.*;
 import generators.IdGenerator;
+import hooks.ShutDownHook;
 import models.Contact;
 import models.FutureMeeting;
 import models.Meeting;
 import models.PastMeeting;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.Assertion;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
+import serializers.ContactManagerSerializer;
+import serializers.ContactManagerSerializerImpl;
+
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -29,16 +28,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+//import org.junit.contrib.java.lang.system.*;
 
 public class ContactManagerTest {
   private IdGenerator mockIdGenerator;
   private ContactFactory mockContactFactory;
   private MeetingFactory mockMeetingFactory;
+  private SerializationFactory mockSerializationFactory;
+  private ContactManagerSerializer mockContactManagerSerializer;
+  private HookFactory mockHookFactory;
+  private ContactManagerUtility mockContactManagerUtility;
   private ContactManager cm;
   private Set<Contact> mockContacts;
   private Contact mockContact;
@@ -54,6 +56,9 @@ public class ContactManagerTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
+  @Rule
+  public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+
   @Before
   public void setup() throws InvalidMeetingException {
     knownId = 4;
@@ -63,7 +68,8 @@ public class ContactManagerTest {
     int numberOfPastMeetings = 100;
 
     setupMocks();
-    cm = Mockito.spy(new ContactManagerImpl(mockMeetingFactory, mockContactFactory, mockIdGenerator, mock(SerializationFactory.class)));
+    setupMockContactManagerUtility();
+    cm = new ContactManagerImpl(mockContactManagerUtility);
     addMockContact(mockContact, knownId, knownName);
     setupMeetings(numberOfFutureMeetings, numberOfPastMeetings);
   }
@@ -458,8 +464,21 @@ public class ContactManagerTest {
     return date;
   }
 
+  private void setupMockContactManagerUtility() {
+    mockContactManagerUtility = mock(ContactManagerUtility.class);
+    when(mockContactManagerUtility.createContactFactory()).thenReturn(mockContactFactory);
+    when(mockContactManagerUtility.createMeetingFactory()).thenReturn(mockMeetingFactory);
+    when(mockContactManagerUtility.createIdGenerator()).thenReturn(mockIdGenerator);
+    when(mockContactManagerUtility.createSerializationFactory()).thenReturn(mockSerializationFactory);
+
+  }
+
   private void setupMocks() {
     mockContactFactory = mock(ContactFactory.class);
+    mockSerializationFactory = mock(SerializationFactory.class);
+    mockContactManagerSerializer = mock(ContactManagerSerializer.class);
+    mockHookFactory = mock(HookFactory.class);
+
     mockMeetingFactory = mock(MeetingFactory.class);
     mockFutureMeeting = mock(FutureMeeting.class);
     mockContacts = new HashSet<>();

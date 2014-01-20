@@ -1,14 +1,15 @@
 package controllers;
 
 import exceptions.InvalidMeetingException;
-import factories.ContactFactory;
-import factories.MeetingFactory;
-import factories.SerializationFactory;
+import factories.*;
 import generators.IdGenerator;
+import generators.IdGeneratorImpl;
+import hooks.ShutDownHook;
 import models.Contact;
 import models.FutureMeeting;
 import models.Meeting;
 import models.PastMeeting;
+import serializers.ContactManagerSerializer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,22 +22,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class ContactManagerImpl implements ContactManager, Serializable {
+  private HookFactory hookFactory;
   private SerializationFactory serializationFactory;
   private MeetingFactory meetingFactory;
   private ContactFactory contactFactory;
   private IdGenerator idGenerator;
-  private Map<Integer, Meeting> meetings;
-  private Map<String, Set<Contact>> contactsByName;
-  private Map<Integer, Contact> contactsById;
+  private Map<Integer, Meeting> meetings = new HashMap<>();
+  private Map<String, Set<Contact>> contactsByName = new HashMap<>();
+  private Map<Integer, Contact> contactsById = new HashMap<>();
 
-  public ContactManagerImpl(MeetingFactory meetingFactory, ContactFactory contactFactory, IdGenerator idGenerator, SerializationFactory serializationFactory) {
-    this.idGenerator = idGenerator;
-    this.contactFactory = contactFactory;
-    this.meetingFactory = meetingFactory;
-    this.serializationFactory = serializationFactory;
-    meetings = new HashMap<>();
-    contactsByName = new HashMap<>();
-    contactsById = new HashMap<>();
+  public ContactManagerImpl(ContactManagerUtility contactManagerUtility) {
+    this.idGenerator = contactManagerUtility.createIdGenerator();
+    this.contactFactory = contactManagerUtility.createContactFactory();
+    this.meetingFactory = contactManagerUtility.createMeetingFactory();
+    this.serializationFactory = contactManagerUtility.createSerializationFactory();
   }
 
   @Override
@@ -173,6 +172,8 @@ public class ContactManagerImpl implements ContactManager, Serializable {
 
   @Override
   public void flush() {
+    ContactManagerSerializer contactManagerSerializer = serializationFactory.createContactManagerSerializer();
+    contactManagerSerializer.serializeContactManager(this);
   }
 
   private boolean isInThePast(Calendar date) {
@@ -200,5 +201,9 @@ public class ContactManagerImpl implements ContactManager, Serializable {
 
   private boolean notValidContact(Contact contact) {
     return contactsById.get(contact.getId()) == null;
+  }
+
+  public static void main(String []args) {
+    ContactManager cm = new ContactManagerImpl(ContactManagerUtilityImpl.getInstance());
   }
 }
