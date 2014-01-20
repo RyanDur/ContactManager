@@ -44,6 +44,7 @@ public class ContactManagerTest {
   private ContactManager cm;
   private Set<Contact> mockContacts;
   private Contact mockContact;
+  private ShutDownHook mockShutDownHook;
   private FutureMeeting mockFutureMeeting;
   private PastMeeting mockPastMeeting;
   private Calendar mockDate = mockDate(1);
@@ -379,6 +380,21 @@ public class ContactManagerTest {
     cm.addMeetingNotes(knownId, null);
   }
 
+  @Test
+  public void shouldPersistContactManagerOnSystemExit() {
+    when(mockSerializationFactory.createContactManagerSerializer()).thenReturn(mockContactManagerSerializer);
+    exit.expectSystemExit();
+
+    exit.checkAssertionAfterwards(new Assertion() {
+      @Override
+      public void checkAssertion() throws Exception {
+        verify(mockShutDownHook, times(1)).flushHook();
+      }
+    });
+
+    System.exit(0);
+  }
+
   private void setupMeetings(int numberOfFutureMeetings, int numberOfPastMeetings) {
     setupFutureMeetings(numberOfFutureMeetings);
     setupPastMeetings(numberOfPastMeetings);
@@ -470,7 +486,11 @@ public class ContactManagerTest {
     when(mockContactManagerUtility.createMeetingFactory()).thenReturn(mockMeetingFactory);
     when(mockContactManagerUtility.createIdGenerator()).thenReturn(mockIdGenerator);
     when(mockContactManagerUtility.createSerializationFactory()).thenReturn(mockSerializationFactory);
+    when(mockContactManagerUtility.createHookFactory()).thenReturn(mockHookFactory);
 
+    mockShutDownHook = mock(ShutDownHook.class);
+    when(mockHookFactory.createShutDownHook(any(ContactManager.class))).thenReturn(mockShutDownHook);
+    when(mockShutDownHook.flushHook()).thenReturn(mock(Thread.class));
   }
 
   private void setupMocks() {

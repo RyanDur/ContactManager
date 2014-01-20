@@ -3,7 +3,9 @@ package factories;
 import generators.IdGenerator;
 import generators.IdGeneratorImpl;
 
-public class ContactManagerUtilityImpl implements ContactManagerUtility {
+import java.io.Serializable;
+
+public class ContactManagerUtilityImpl implements ContactManagerUtility, Serializable {
   private static ContactManagerUtility contactManagerUtilityInstance = null;
 
   public static ContactManagerUtility getInstance() {

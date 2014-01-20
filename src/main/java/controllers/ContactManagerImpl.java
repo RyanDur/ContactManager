@@ -36,6 +36,8 @@ public class ContactManagerImpl implements ContactManager, Serializable {
     this.contactFactory = contactManagerUtility.createContactFactory();
     this.meetingFactory = contactManagerUtility.createMeetingFactory();
     this.serializationFactory = contactManagerUtility.createSerializationFactory();
+    this.hookFactory = contactManagerUtility.createHookFactory();
+    registerHooks();
   }
 
   @Override
@@ -150,7 +152,6 @@ public class ContactManagerImpl implements ContactManager, Serializable {
       Set<Contact> values = contactsByName.get(contact.getName());
       values.add(contact);
     }
-
     contactsById.put(contact.getId(), contact);
   }
 
@@ -203,7 +204,9 @@ public class ContactManagerImpl implements ContactManager, Serializable {
     return contactsById.get(contact.getId()) == null;
   }
 
-  public static void main(String []args) {
-    ContactManager cm = new ContactManagerImpl(ContactManagerUtilityImpl.getInstance());
+  private void registerHooks() {
+    ShutDownHook onExit = hookFactory.createShutDownHook(this);
+    Thread hook = onExit.flushHook();
+    Runtime.getRuntime().addShutdownHook(hook);
   }
 }
