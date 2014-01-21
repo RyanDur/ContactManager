@@ -29,25 +29,28 @@ public class MeetingsTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
+  private IdGenerator mockIdGenerator;
 
   @Before
   public void setup() {
     mockMeetingFactory = mock(MeetingFactory.class);
-    IdGenerator mockIdGenerator = mock(IdGenerator.class);
+    mockIdGenerator = mock(IdGenerator.class);
     meetings = new MeetingsImpl(mockMeetingFactory, mockIdGenerator);
   }
 
   @Test
   public void shouldBeAbleToAddAMeetingForTheFuture() {
+    final int mockId = 1;
+    Calendar date = mockDate(1);
     Set<Contact> contacts = new HashSet<>();
     FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
-    setFutureMeeting(mockFutureMeeting);
 
-    int id = meetings.addFutureMeeting(contacts, mockDate(1));
+    int id = addFutureMeeting(contacts, date, mockId, mockFutureMeeting);
     FutureMeeting futureMeeting = meetings.getFutureMeeting(id);
 
     assertThat(futureMeeting, is(equalTo(mockFutureMeeting)));
   }
+
 
   @Test
   public void shouldThrowAnIllegalArgumentExceptionIfDateIsInThePast() {
@@ -55,6 +58,17 @@ public class MeetingsTest {
 
     Set<Contact> contacts = new HashSet<>();
     meetings.addFutureMeeting(contacts, mockDate(-1));
+  }
+
+  @Test
+  public void shouldThrowIllegalArgumentExceptionIfFoundMeetingHasHappened() {
+    thrown.expect(IllegalArgumentException.class);
+
+    FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
+    int id = addFutureMeeting(new HashSet<Contact>(), mockDate(1), 1, mockFutureMeeting);
+    when(mockFutureMeeting.getDate()).thenReturn(mockDate(-1));
+
+    meetings.getFutureMeeting(id);
   }
 
   private void setFutureMeeting(FutureMeeting futureMeeting) {
@@ -71,5 +85,13 @@ public class MeetingsTest {
     Calendar date = new GregorianCalendar();
     date.add(Calendar.DATE, days);
     return date;
+  }
+
+  private int addFutureMeeting(Set<Contact> contacts, Calendar date, int mockId, FutureMeeting mockFutureMeeting) {
+    setFutureMeeting(mockFutureMeeting);
+    when(mockIdGenerator.getMeetingId()).thenReturn(mockId);
+    when(mockFutureMeeting.getId()).thenReturn(mockId);
+    when(mockFutureMeeting.getDate()).thenReturn(date);
+    return meetings.addFutureMeeting(contacts, date);
   }
 }

@@ -35,7 +35,9 @@ public class MeetingsImpl implements Meetings {
 
   @Override
   public FutureMeeting getFutureMeeting(int id) {
-    return (FutureMeeting) meetings.get(id);
+    FutureMeeting futureMeeting = (FutureMeeting) meetings.get(id);
+    if(isInThePast(futureMeeting.getDate())) throw new IllegalArgumentException();
+    return futureMeeting;
   }
 
   private boolean isInThePast(Calendar date) {
