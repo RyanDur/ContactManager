@@ -23,9 +23,29 @@ public class ContactsControllerImpl implements ContactsController {
 
   @Override
   public void add(String name, String notes) {
-    Contact contact = contactFactory.createContact(idGenerator.getContactId(), name);
-    contact.addNotes(notes);
-    contactsById.put(contact.getId(), contact);
+    if (name == null || notes == null) throw new NullPointerException();
+    int id = idGenerator.getContactId();
+    if (contactsById.get(id) == null) {
+      Contact contact = contactFactory.createContact(id , name);
+      contact.addNotes(notes);
+      setContactsById(contact);
+      setContactsByName(contact);
+    }
+  }
+
+  @Override
+  public Contact get(int id) {
+    if (contactsById.get(id) == null) throw new IllegalArgumentException();
+    return contactsById.get(id);
+  }
+
+  @Override
+  public Set<Contact> get(String name) {
+    if (name == null) throw new NullPointerException();
+    return contactsByName.get(name);
+  }
+
+  private void setContactsByName(Contact contact) {
     Set<Contact> values = contactsByName.get(contact.getName());
     if (values == null) {
       Set<Contact> contacts = new HashSet<>();
@@ -36,13 +56,7 @@ public class ContactsControllerImpl implements ContactsController {
     }
   }
 
-  @Override
-  public Contact get(int id) {
-    return contactsById.get(id);
-  }
-
-  @Override
-  public Set<Contact> get(String name) {
-    return contactsByName.get(name);
+  private void setContactsById(Contact contact) {
+    contactsById.put(contact.getId(), contact);
   }
 }
