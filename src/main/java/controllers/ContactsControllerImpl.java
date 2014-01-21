@@ -1,5 +1,7 @@
 package controllers;
 
+import factories.ContactFactory;
+import generators.IdGenerator;
 import models.Contact;
 
 import java.util.HashMap;
@@ -7,16 +9,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by ryandurling on 1/21/14.
- */
 public class ContactsControllerImpl implements ContactsController {
 
   private Map<String, Set<Contact>> contactsByName = new HashMap<>();
   private Map<Integer, Contact> contactsById = new HashMap<>();
+  private ContactFactory contactFactory;
+  private IdGenerator idGenerator;
+
+  public ContactsControllerImpl(ContactFactory contactFactory, IdGenerator idGenerator) {
+    this.contactFactory = contactFactory;
+    this.idGenerator = idGenerator;
+  }
 
   @Override
-  public void add(Contact contact) {
+  public void add(String name, String notes) {
+    Contact contact = contactFactory.createContact(idGenerator.getContactId(), name);
+    contact.addNotes(notes);
     contactsById.put(contact.getId(), contact);
     Set<Contact> values = contactsByName.get(contact.getName());
     if (values == null) {
@@ -29,10 +37,8 @@ public class ContactsControllerImpl implements ContactsController {
   }
 
   @Override
-  public Set<Contact> get(int id) {
-    Set<Contact> contactSet = new HashSet<>();
-    contactSet.add(contactsById.get(id));
-    return contactSet;
+  public Contact get(int id) {
+    return contactsById.get(id);
   }
 
   @Override
