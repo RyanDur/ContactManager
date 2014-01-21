@@ -1,5 +1,7 @@
 package factories;
 
+import controllers.ContactsController;
+import controllers.ContactsControllerImpl;
 import generators.IdGenerator;
 import generators.IdGeneratorImpl;
 
@@ -38,5 +40,12 @@ public class ContactManagerUtilityImpl implements ContactManagerUtility, Seriali
   @Override
   public HookFactory createHookFactory() {
     return HookFactoryImpl.getInstance();
+  }
+
+  @Override
+  public ContactsController createContactController() {
+    ContactFactory contactFactory = ContactFactoryImpl.getInstance();
+    IdGenerator idGenerator = IdGeneratorImpl.getInstance();
+    return new ContactsControllerImpl(contactFactory, idGenerator);
   }
 }

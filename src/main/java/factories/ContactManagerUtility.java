@@ -1,5 +1,6 @@
 package factories;
 
+import controllers.ContactsController;
 import generators.IdGenerator;
 
 public interface ContactManagerUtility {
@@ -13,4 +14,6 @@ public interface ContactManagerUtility {
   SerializationFactory createSerializationFactory();
 
   HookFactory createHookFactory();
+
+  ContactsController createContactController();
 }
