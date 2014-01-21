@@ -206,7 +206,6 @@ public class ContactManagerImpl implements ContactManager, Serializable {
 
   private void registerHooks() {
     ShutDownHook onExit = hookFactory.createShutDownHook(this);
-    Thread hook = onExit.flushHook();
-    Runtime.getRuntime().addShutdownHook(hook);
+    Runtime.getRuntime().addShutdownHook(onExit.flushHook());
   }
 }

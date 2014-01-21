@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Set;
 
 public class PastMeetingImpl extends MeetingImpl implements PastMeeting {
+  private static final long serialVersionUID = 2253001125503946986L;
   private String notes;
 
   public PastMeetingImpl(int id, Set<Contact> contacts, Calendar date, String notes) throws InvalidMeetingException {

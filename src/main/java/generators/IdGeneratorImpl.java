@@ -3,6 +3,7 @@ package generators;
 import java.io.Serializable;
 
 public class IdGeneratorImpl implements IdGenerator, Serializable {
+  private static final long serialVersionUID = 8246940422068829605L;
   private static IdGeneratorImpl idGeneratorInstance = null;
   private static int meetingId = 0;
   private static int contactId = 0;
@@ -23,5 +24,9 @@ public class IdGeneratorImpl implements IdGenerator, Serializable {
 
   public int getContactId() {
     return contactId++;
+  }
+
+  protected Object readResolve() {
+    return getInstance();
   }
 }
