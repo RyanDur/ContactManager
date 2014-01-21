@@ -3,7 +3,7 @@ package controllers;
 import models.Contact;
 import java.util.Set;
 
-public interface ContactsController {
+public interface Contacts {
 
   void add(String name, String notes);
 

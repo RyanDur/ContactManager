@@ -9,14 +9,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ContactsControllerImpl implements ContactsController {
+public class ContactsImpl implements Contacts {
 
   private Map<String, Set<Contact>> contactsByName = new HashMap<>();
   private Map<Integer, Contact> contactsById = new HashMap<>();
   private ContactFactory contactFactory;
   private IdGenerator idGenerator;
 
-  public ContactsControllerImpl(ContactFactory contactFactory, IdGenerator idGenerator) {
+  public ContactsImpl(ContactFactory contactFactory, IdGenerator idGenerator) {
     this.contactFactory = contactFactory;
     this.idGenerator = idGenerator;
   }

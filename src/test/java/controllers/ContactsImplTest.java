@@ -6,7 +6,6 @@ import models.Contact;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.rules.ExpectedException;
 
 import java.util.HashSet;
@@ -22,10 +21,10 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ContactsControllerImplTest {
+public class ContactsImplTest {
   ContactFactory mockContactFactory;
   IdGenerator mockIdGenerator;
-  ContactsController contacts;
+  Contacts contacts;
   Contact contact;
   int id;
   String name;
