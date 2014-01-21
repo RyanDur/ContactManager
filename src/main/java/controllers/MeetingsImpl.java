@@ -6,6 +6,7 @@ import generators.IdGenerator;
 import models.Contact;
 import models.FutureMeeting;
 import models.Meeting;
+import models.PastMeeting;
 
 import java.util.*;
 
@@ -35,12 +36,35 @@ public class MeetingsImpl implements Meetings {
 
   @Override
   public FutureMeeting getFutureMeeting(int id) {
-    FutureMeeting futureMeeting = (FutureMeeting) meetings.get(id);
+    Meeting futureMeeting = meetings.get(id);
     if(isInThePast(futureMeeting.getDate())) throw new IllegalArgumentException();
-    return futureMeeting;
+    return (FutureMeeting) futureMeeting;
+  }
+
+  @Override
+  public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) {
+    if(contacts == null || date == null || text == null) throw new NullPointerException();
+    int id = idGenerator.getMeetingId();
+    try {
+      PastMeeting meeting = meetingFactory.createPastMeeting(id, contacts, date, text);
+      meetings.put(meeting.getId(), meeting);
+    } catch (InvalidMeetingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public PastMeeting getPastMeeting(int id) {
+    Meeting pastMeeting =  meetings.get(id);
+    if(isInTheFuture(pastMeeting.getDate())) throw new IllegalArgumentException();
+    return (PastMeeting) pastMeeting;
   }
 
   private boolean isInThePast(Calendar date) {
     return date.compareTo(Calendar.getInstance()) < 0;
+  }
+
+  private boolean isInTheFuture(Calendar date) {
+    return date.compareTo(new GregorianCalendar()) > 0;
   }
 }
