@@ -1,6 +1,6 @@
 package factories;
 
-import controllers.ContactsController;
+import controllers.Contacts;
 import generators.IdGenerator;
 
 public interface ContactManagerUtility {
@@ -15,5 +15,5 @@ public interface ContactManagerUtility {
 
   HookFactory createHookFactory();
 
-  ContactsController createContactController();
+  Contacts createContacts();
 }

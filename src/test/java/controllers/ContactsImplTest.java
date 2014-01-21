@@ -41,7 +41,7 @@ public class ContactsImplTest {
 
     mockContactFactory = mock(ContactFactory.class);
     mockIdGenerator = mock(IdGenerator.class);
-    contacts = new ContactsControllerImpl(mockContactFactory, mockIdGenerator);
+    contacts = new ContactsImpl(mockContactFactory, mockIdGenerator);
 
     contact = mock(Contact.class);
     registerContact(contact, name, id);
