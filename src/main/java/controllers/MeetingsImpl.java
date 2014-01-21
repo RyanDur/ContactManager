@@ -7,10 +7,7 @@ import models.Contact;
 import models.FutureMeeting;
 import models.Meeting;
 
-import java.util.Calendar;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 public class MeetingsImpl implements Meetings {
   MeetingFactory meetingFactory;
@@ -24,6 +21,7 @@ public class MeetingsImpl implements Meetings {
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
+    if(isInThePast(date)) throw new IllegalArgumentException();
     int meetingId = idGenerator.getMeetingId();
     try {
       FutureMeeting meeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
@@ -38,5 +36,9 @@ public class MeetingsImpl implements Meetings {
   @Override
   public FutureMeeting getFutureMeeting(int id) {
     return (FutureMeeting) meetings.get(id);
+  }
+
+  private boolean isInThePast(Calendar date) {
+    return date.compareTo(Calendar.getInstance()) < 0;
   }
 }

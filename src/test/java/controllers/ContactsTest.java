@@ -21,7 +21,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ContactsImplTest {
+public class ContactsTest {
   ContactFactory mockContactFactory;
   IdGenerator mockIdGenerator;
   Contacts contacts;

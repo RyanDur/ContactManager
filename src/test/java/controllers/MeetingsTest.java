@@ -6,7 +6,9 @@ import generators.IdGenerator;
 import models.Contact;
 import models.FutureMeeting;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,6 +27,9 @@ public class MeetingsTest {
   Meetings meetings;
   MeetingFactory mockMeetingFactory;
 
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
   @Before
   public void setup() {
     mockMeetingFactory = mock(MeetingFactory.class);
@@ -34,17 +39,22 @@ public class MeetingsTest {
 
   @Test
   public void shouldBeAbleToAddAMeetingForTheFuture() {
-    Calendar date = new GregorianCalendar();
-    Contact contact = mock(Contact.class);
     Set<Contact> contacts = new HashSet<>();
-    contacts.add(contact);
     FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
     setFutureMeeting(mockFutureMeeting);
 
-    int id = meetings.addFutureMeeting(contacts, date);
+    int id = meetings.addFutureMeeting(contacts, mockDate(1));
     FutureMeeting futureMeeting = meetings.getFutureMeeting(id);
 
     assertThat(futureMeeting, is(equalTo(mockFutureMeeting)));
+  }
+
+  @Test
+  public void shouldThrowAnIllegalArgumentExceptionIfDateIsInThePast() {
+    thrown.expect(IllegalArgumentException.class);
+
+    Set<Contact> contacts = new HashSet<>();
+    meetings.addFutureMeeting(contacts, mockDate(-1));
   }
 
   private void setFutureMeeting(FutureMeeting futureMeeting) {
@@ -55,5 +65,11 @@ public class MeetingsTest {
     } catch (InvalidMeetingException e) {
       e.printStackTrace();
     }
+  }
+
+  private Calendar mockDate(int days) {
+    Calendar date = new GregorianCalendar();
+    date.add(Calendar.DATE, days);
+    return date;
   }
 }
