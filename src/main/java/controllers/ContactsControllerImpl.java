@@ -45,6 +45,22 @@ public class ContactsControllerImpl implements ContactsController {
     return contactsByName.get(name);
   }
 
+  @Override
+  public boolean notValidContactSet(Set<Contact> contacts) {
+    if (contacts.isEmpty()) return true;
+
+    for (Contact contact : contacts) {
+      if (notValidContact(contact)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean notValidContact(Contact contact) {
+    return contactsById.get(contact.getId()) == null;
+  }
+
   private void setContactsByName(Contact contact) {
     Set<Contact> values = contactsByName.get(contact.getName());
     if (values == null) {

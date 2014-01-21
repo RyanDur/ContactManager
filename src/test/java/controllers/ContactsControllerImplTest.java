@@ -15,6 +15,8 @@ import java.util.Set;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 public class ContactsControllerImplTest {
   ContactFactory mockContactFactory;
+  IdGenerator mockIdGenerator;
   ContactsController contacts;
   Contact contact;
   int id;
@@ -38,7 +41,8 @@ public class ContactsControllerImplTest {
     notes = "note";
 
     mockContactFactory = mock(ContactFactory.class);
-    contacts = new ContactsControllerImpl(mockContactFactory, mock(IdGenerator.class));
+    mockIdGenerator = mock(IdGenerator.class);
+    contacts = new ContactsControllerImpl(mockContactFactory, mockIdGenerator);
 
     contact = mock(Contact.class);
     registerContact(contact, name, id);
@@ -47,14 +51,11 @@ public class ContactsControllerImplTest {
 
   @Test
   public void shouldBeAbleToGetAContactById() {
-    contacts.add(name, notes);
-
     assertThat(contact, is(equalTo(contacts.get(id))));
   }
 
   @Test
   public void shouldBeAbleToGetAContactByName() {
-    contacts.add(name, notes);
     Set<Contact> contactSet = new HashSet<>();
     contactSet.add(contact);
 
@@ -87,7 +88,7 @@ public class ContactsControllerImplTest {
     expected.add(contact);
     Set<Contact> actual = contacts.get(name);
 
-    assertThat(expected, is(equalTo(actual)));
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
@@ -100,7 +101,7 @@ public class ContactsControllerImplTest {
     expected.add(contact);
     Set<Contact> actual = contacts.get(name);
 
-    assertThat(expected, is(equalTo(actual)));
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
@@ -117,7 +118,35 @@ public class ContactsControllerImplTest {
     contacts.add(name, null);
   }
 
+  @Test
+  public void shouldKnowIfAContactExistsInTheCollection() {
+    Contact contact1 = mock(Contact.class);
+    registerContact(contact1, name, 3);
+    contacts.add(name, notes);
+
+    Set<Contact> expected = new HashSet<>();
+    expected.add(contact);
+    expected.add(contact1);
+
+    assertFalse(contacts.notValidContactSet(expected));
+
+    int unknownId = 4;
+    Contact unknownContact = mock(Contact.class);
+    when(unknownContact.getId()).thenReturn(unknownId);
+    when(unknownContact.getName()).thenReturn(name);
+    expected.add(unknownContact);
+
+    assertTrue(contacts.notValidContactSet(expected));
+  }
+
+  @Test
+  public void shouldNotAllowAnEmptyCollection() {
+    Set<Contact> expected = new HashSet<>();
+    assertTrue(contacts.notValidContactSet(expected));
+  }
+
   private void registerContact(Contact contact, String name, int id) {
+    when(mockIdGenerator.getContactId()).thenReturn(id);
     when(contact.getId()).thenReturn(id);
     when(contact.getName()).thenReturn(name);
     when(mockContactFactory.createContact(anyInt(), anyString())).thenReturn(contact);

@@ -10,4 +10,6 @@ public interface ContactsController {
   Contact get(int id);
 
   Set<Contact> get(String name);
+
+  boolean notValidContactSet(Set<Contact> contacts);
 }
