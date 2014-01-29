@@ -1,17 +1,17 @@
 package pij.ryan.durling.controllers;
 
-import pij.ryan.durling.exceptions.InvalidMeetingException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
+import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.factories.MeetingFactory;
 import pij.ryan.durling.generators.IdGenerator;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 import pij.ryan.durling.models.PastMeeting;
+
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -97,21 +97,26 @@ public class MeetingsTest {
   }
 
   @Test
-  public void shouldGetACollectionOfMeetingsByDate() {  // TODO not sure about this implementation
-    FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
-    Calendar date = mockDay(1);
+  public void shouldGetACollectionOfMeetingsByDate() {
+    Calendar date = mockDay(6);
     Set<Contact> contacts = mockContacts(3);
-    addFutureMeeting(contacts, mockDay(2), 0, futureMeeting1);
 
+    Calendar date1 = mockDay(4);
+    FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
+    addFutureMeeting(contacts, date1, 5, futureMeeting1);
+
+    Calendar date2 = mockDay(2);
     FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
-    addFutureMeeting(contacts, mockDay(1), 1, futureMeeting2);
+    addFutureMeeting(contacts, date2, 6, futureMeeting2);
 
+    Calendar date3 = mockDay(3);
     FutureMeeting futureMeeting3 = mock(FutureMeeting.class);
-    addFutureMeeting(contacts, mockDay(3), 2, futureMeeting3);
+    addFutureMeeting(contacts, date3, 7, futureMeeting3);
+
     List<Meeting> futureMeetings = new ArrayList<>();
     futureMeetings.add(futureMeeting2);
-    futureMeetings.add(futureMeeting1);
     futureMeetings.add(futureMeeting3);
+    futureMeetings.add(futureMeeting1);
 
     assertThat(meetings.get(date), is(equalTo(futureMeetings)));
   }
@@ -119,17 +124,19 @@ public class MeetingsTest {
   @Test
   public void shouldGetMeetingsByContact() {
     Contact knownContact = mock(Contact.class);
+    when(knownContact.getId()).thenReturn(500);
 
     Set<Contact> contacts = mockContacts(3);
     contacts.add(knownContact);
+    Set<Contact> contacts1 = mockContacts(3);
+    contacts1.add(knownContact);
+
     FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
     addFutureMeeting(contacts, mockDate(2), 0, futureMeeting1);
 
     FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
     addFutureMeeting(mockContacts(3), mockDate(1), 1, futureMeeting2);
 
-    Set<Contact> contacts1 = mockContacts(3);
-    contacts1.add(knownContact);
     FutureMeeting futureMeeting3 = mock(FutureMeeting.class);
     addFutureMeeting(contacts1, mockDate(3), 2, futureMeeting3);
 
@@ -190,9 +197,10 @@ public class MeetingsTest {
     return date;
   }
 
-  private Calendar mockDate(int days) {
-    Calendar date = new GregorianCalendar();
-    date.add(Calendar.DATE, days);
+  private Calendar mockDate(int day) {
+    Calendar date = Calendar.getInstance();
+    date.add(Calendar.DATE, day);
+    date.add(Calendar.HOUR_OF_DAY, 0);
     return date;
   }
 
