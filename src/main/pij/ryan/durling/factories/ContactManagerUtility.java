@@ -1,4 +1,7 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
+
+import pij.ryan.durling.controllers.Contacts;
+import pij.ryan.durling.generators.IdGenerator;
 
 public interface ContactManagerUtility {
 

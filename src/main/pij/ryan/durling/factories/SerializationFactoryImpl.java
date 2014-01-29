@@ -1,4 +1,9 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
+
+import pij.ryan.durling.serializers.ContactManagerDeserializer;
+import pij.ryan.durling.serializers.ContactManagerDeserializerImpl;
+import pij.ryan.durling.serializers.ContactManagerSerializer;
+import pij.ryan.durling.serializers.ContactManagerSerializerImpl;
 
 import java.io.Serializable;
 

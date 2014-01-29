@@ -1,4 +1,4 @@
-package ryan.durling.exceptions;
+package pij.ryan.durling.exceptions;
 
 public class InvalidMeetingException extends Exception {
 

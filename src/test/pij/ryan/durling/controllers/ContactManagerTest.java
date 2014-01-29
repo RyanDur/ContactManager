@@ -31,8 +31,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-//import org.junit.contrib.java.lang.system.*;
-
 public class ContactManagerTest {
   private IdGenerator mockIdGenerator;
   private ContactFactory mockContactFactory;

@@ -1,4 +1,8 @@
-package ryan.durling.controllers;
+package pij.ryan.durling.controllers;
+
+import pij.ryan.durling.factories.ContactFactory;
+import pij.ryan.durling.generators.IdGenerator;
+import pij.ryan.durling.models.Contact;
 
 import java.util.HashMap;
 import java.util.HashSet;

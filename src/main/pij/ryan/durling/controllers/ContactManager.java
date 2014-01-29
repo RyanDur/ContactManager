@@ -1,4 +1,9 @@
-package ryan.durling.controllers;
+package pij.ryan.durling.controllers;
+
+import pij.ryan.durling.models.Contact;
+import pij.ryan.durling.models.FutureMeeting;
+import pij.ryan.durling.models.Meeting;
+import pij.ryan.durling.models.PastMeeting;
 
 import java.util.Calendar;
 import java.util.List;

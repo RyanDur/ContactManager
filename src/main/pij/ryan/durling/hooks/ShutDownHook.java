@@ -1,4 +1,6 @@
-package ryan.durling.hooks;
+package pij.ryan.durling.hooks;
+
+import pij.ryan.durling.controllers.ContactManager;
 
 public class ShutDownHook {
   private ContactManager contactManager;

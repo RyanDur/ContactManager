@@ -1,4 +1,9 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
+
+import pij.ryan.durling.exceptions.InvalidMeetingException;
+import pij.ryan.durling.models.Contact;
+import pij.ryan.durling.models.FutureMeeting;
+import pij.ryan.durling.models.PastMeeting;
 
 import java.util.Calendar;
 import java.util.Set;

@@ -1,4 +1,6 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
+
+import pij.ryan.durling.models.Contact;
 
 public interface ContactFactory {
 

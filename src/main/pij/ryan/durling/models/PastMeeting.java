@@ -1,4 +1,4 @@
-package ryan.durling.models;
+package pij.ryan.durling.models;
 
 /**
  * A meeting that was held in the past.

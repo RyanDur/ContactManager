@@ -1,6 +1,6 @@
-package ryan.durling.serializers;
+package pij.ryan.durling.serializers;
 
-import ryan.durling.controllers.ContactManager;
+import pij.ryan.durling.controllers.ContactManager;
 
 import java.io.FileInputStream;
 import java.io.IOException;

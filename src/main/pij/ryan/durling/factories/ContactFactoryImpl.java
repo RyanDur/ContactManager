@@ -1,8 +1,7 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
 
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.ContactImpl;
-import ryan.durling.factories.ContactFactory;
 
 import java.io.Serializable;
 

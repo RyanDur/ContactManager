@@ -1,7 +1,6 @@
 package pij.ryan.durling.models;
 
 import pij.ryan.durling.exceptions.InvalidMeetingException;
-
 import java.util.Calendar;
 import java.util.Set;
 

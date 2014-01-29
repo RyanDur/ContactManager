@@ -1,4 +1,4 @@
-package ryan.durling.generators;
+package pij.ryan.durling.generators;
 
 public interface IdGenerator {
   /**

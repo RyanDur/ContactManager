@@ -1,4 +1,7 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
+
+import pij.ryan.durling.controllers.ContactManager;
+import pij.ryan.durling.hooks.ShutDownHook;
 
 import java.io.Serializable;
 

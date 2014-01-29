@@ -1,4 +1,9 @@
-package ryan.durling.factories;
+package pij.ryan.durling.factories;
+
+import pij.ryan.durling.controllers.Contacts;
+import pij.ryan.durling.controllers.ContactsImpl;
+import pij.ryan.durling.generators.IdGenerator;
+import pij.ryan.durling.generators.IdGeneratorImpl;
 
 import java.io.Serializable;
 

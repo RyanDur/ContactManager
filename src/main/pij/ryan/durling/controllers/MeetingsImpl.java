@@ -1,4 +1,12 @@
-package ryan.durling.controllers;
+package pij.ryan.durling.controllers;
+
+import pij.ryan.durling.exceptions.InvalidMeetingException;
+import pij.ryan.durling.factories.MeetingFactory;
+import pij.ryan.durling.generators.IdGenerator;
+import pij.ryan.durling.models.Contact;
+import pij.ryan.durling.models.FutureMeeting;
+import pij.ryan.durling.models.Meeting;
+import pij.ryan.durling.models.PastMeeting;
 
 import java.util.*;
 
@@ -6,6 +14,7 @@ public class MeetingsImpl implements Meetings {
   MeetingFactory meetingFactory;
   private IdGenerator idGenerator;
   private HashMap<Integer, Meeting> meetings = new HashMap<>();
+  private HashMap<Integer, Set<Integer>> meetingsByDate = new HashMap<>();
 
   public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator) {
     this.meetingFactory = meetingFactory;
@@ -19,6 +28,7 @@ public class MeetingsImpl implements Meetings {
     try {
       FutureMeeting meeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
       meetings.put(meeting.getId(), meeting);
+      addMeetingByDate(meeting);
     } catch (InvalidMeetingException e) {
       System.out.println("Error " + e.getMessage());
       e.printStackTrace();
@@ -33,6 +43,7 @@ public class MeetingsImpl implements Meetings {
     try {
       PastMeeting meeting = meetingFactory.createPastMeeting(id, contacts, date, text);
       meetings.put(meeting.getId(), meeting);
+      addMeetingByDate(meeting);
     } catch (InvalidMeetingException e) {
       e.printStackTrace();
     }
@@ -45,16 +56,10 @@ public class MeetingsImpl implements Meetings {
 
   @Override
   public List<Meeting> get(Calendar date) {
-    Calendar tomorrow = Calendar.getInstance();
-    tomorrow.roll(Calendar.DATE, true);
-    Calendar yesterday = Calendar.getInstance();
-    yesterday.roll(Calendar.DATE, false);
-
+    Set<Integer> meetingIds = meetingsByDate.get(dateKey(date));
     List<Meeting> meetingList = new ArrayList<>();
-    for (Meeting meeting : meetings.values()) {
-      if (date.before(tomorrow) && date.after(yesterday)) {
-        meetingList.add(meeting);
-      }
+    for (Integer id : meetingIds) {
+        meetingList.add(meetings.get(id));
     }
     sort(meetingList);
     return meetingList;
@@ -74,6 +79,27 @@ public class MeetingsImpl implements Meetings {
   @Override
   public void convert(FutureMeeting meeting, String notes) {
 
+  }
+
+  private void addMeetingByDate(Meeting meeting) {
+    Integer dateKey = dateKey(meeting.getDate());
+    Set<Integer> meetings = meetingsByDate.get(dateKey);
+    if(meetings == null) {
+      Set<Integer> meetingIds = new HashSet<>();
+      meetingIds.add(meeting.getId());
+      meetingsByDate.put(dateKey, meetingIds);
+    } else {
+      meetings.add(meeting.getId());
+    }
+  }
+
+  private int dateKey(Calendar date) {
+    int year = date.get(Calendar.YEAR);
+    int month = date.get(Calendar.MONTH);
+    int week = date.get(Calendar.WEEK_OF_MONTH);
+    int day = date.get(Calendar.DAY_OF_WEEK);
+    String sDate = year+ "" +month+ "" +week+ "" +day;
+    return Integer.parseInt(sDate);
   }
 
   private void sort(List<Meeting> meetings) {
