@@ -14,8 +14,8 @@ public class MeetingsImpl implements Meetings {
   MeetingFactory meetingFactory;
   private IdGenerator idGenerator;
   private HashMap<Integer, Meeting> meetings = new HashMap<>();
-  private HashMap<Integer, List<Integer>> meetingsByDate = new HashMap<>();
-  private HashMap<Integer, List<Integer>> meetingsByContact = new HashMap<>();
+  private HashMap<Integer, Set<Integer>> meetingsByDate = new HashMap<>();
+  private HashMap<Integer, Set<Integer>> meetingsByContact = new HashMap<>();
 
   public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator) {
     this.meetingFactory = meetingFactory;
@@ -50,13 +50,26 @@ public class MeetingsImpl implements Meetings {
   }
 
   @Override
+  public void convertToPastMeeting(FutureMeeting meeting, String notes) throws IllegalStateException, NullPointerException, IllegalArgumentException {
+    if (meetings.get(meeting.getId()) == null) throw new IllegalArgumentException();
+    if (isInTheFuture(meeting.getDate())) throw new IllegalStateException();
+    if (notes == null) throw new NullPointerException();
+    try {
+      PastMeeting pastMeeting = meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), notes);
+      addMeeting(pastMeeting);
+    } catch (InvalidMeetingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
   public Meeting get(int id) {
     return meetings.get(id);
   }
 
   @Override
   public List<Meeting> get(Calendar date) {
-    List<Integer> meetingIds = meetingsByDate.get(dateKey(date));
+    Set<Integer> meetingIds = meetingsByDate.get(dateKey(date));
     List<Meeting> resultList = new ArrayList<>();
     if (meetingIds != null) {
       for (Integer id : meetingIds) {
@@ -69,7 +82,7 @@ public class MeetingsImpl implements Meetings {
 
   @Override
   public List<Meeting> get(Contact contact) {
-    List<Integer> meetingIds = meetingsByContact.get(contact.getId());
+    Set<Integer> meetingIds = meetingsByContact.get(contact.getId());
     List<Meeting> resultList = new ArrayList<>();
     if (meetingIds != null) {
       for (Integer id : meetingIds) {
@@ -77,12 +90,6 @@ public class MeetingsImpl implements Meetings {
       }
     }
     return resultList;
-  }
-
-
-  @Override
-  public void convert(FutureMeeting meeting, String notes) {
-
   }
 
   private void addMeeting(Meeting meeting) {
@@ -103,9 +110,9 @@ public class MeetingsImpl implements Meetings {
   }
 
   private void addMeetingByContact(Contact contact, Meeting meeting) {
-    List<Integer> meetings = meetingsByContact.get(contact.getId());
-    if(meetings == null) {
-      List<Integer> meetingIds = new ArrayList<>();
+    Set<Integer> meetings = meetingsByContact.get(contact.getId());
+    if (meetings == null) {
+      Set<Integer> meetingIds = new HashSet<>();
       meetingIds.add(meeting.getId());
       meetingsByContact.put(contact.getId(), meetingIds);
     } else {
@@ -115,9 +122,9 @@ public class MeetingsImpl implements Meetings {
 
   private void addMeetingByDate(Meeting meeting) {
     Integer dateKey = dateKey(meeting.getDate());
-    List<Integer> meetings = meetingsByDate.get(dateKey);
-    if(meetings == null) {
-      List<Integer> meetingIds = new ArrayList<>();
+    Set<Integer> meetings = meetingsByDate.get(dateKey);
+    if (meetings == null) {
+      Set<Integer> meetingIds = new HashSet<>();
       meetingIds.add(meeting.getId());
       meetingsByDate.put(dateKey, meetingIds);
     } else {
@@ -130,7 +137,7 @@ public class MeetingsImpl implements Meetings {
     int month = date.get(Calendar.MONTH);
     int week = date.get(Calendar.WEEK_OF_MONTH);
     int day = date.get(Calendar.DAY_OF_WEEK);
-    String sDate = year+ "" +month+ "" +week+ "" +day;
+    String sDate = year + "" + month + "" + week + "" + day;
     return Integer.parseInt(sDate);
   }
 
@@ -151,5 +158,9 @@ public class MeetingsImpl implements Meetings {
 
   private boolean isInThePast(Calendar date) {
     return date.compareTo(Calendar.getInstance()) < 0;
+  }
+
+  private boolean isInTheFuture(Calendar date) {
+    return date.compareTo(new GregorianCalendar()) > 0;
   }
 }

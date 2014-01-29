@@ -19,5 +19,5 @@ public interface Meetings {
 
   List<Meeting> get(Contact contact);
 
-  void convert(FutureMeeting meeting, String notes);
+  void convertToPastMeeting(FutureMeeting meeting, String notes);
 }
