@@ -5,10 +5,7 @@ import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 import pij.ryan.durling.models.PastMeeting;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ContactManagerImpl implements ContactManager {
   Contacts contactController;
@@ -45,8 +42,18 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   @Override
-  public List<Meeting> getFutureMeetingList(Contact contact) {
-    return null;  //TODO
+  public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
+    if (contactController.notValidContactId(contact.getId())) throw new IllegalArgumentException();
+    List<Meeting> meetingList = new ArrayList<>();
+    List<Meeting> contactsMeetings = meetingController.get(contact);
+    if (contactsMeetings != null) {
+      for (Meeting meeting : contactsMeetings) {
+        if (meeting instanceof FutureMeeting) {
+          meetingList.add(meeting);
+        }
+      }
+    }
+    return meetingList;
   }
 
   @Override

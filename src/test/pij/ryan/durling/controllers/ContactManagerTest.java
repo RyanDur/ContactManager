@@ -10,9 +10,7 @@ import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 import pij.ryan.durling.models.PastMeeting;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -257,5 +255,46 @@ public class ContactManagerTest {
     Meeting actual = cm.getMeeting(id);
     verify(meetings).get(id);
     assertThat(null, is(equalTo(actual)));
+  }
+
+  @Test
+  public void shouldBeAbleToGetAListOfFutureMeetingsForAContact() {
+    Contact contact = mock(Contact.class);
+    List<Meeting> meetingsList = new ArrayList<>();
+    FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
+    FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
+    PastMeeting pastMeeting = mock(PastMeeting.class);
+    meetingsList.add(futureMeeting1);
+    meetingsList.add(pastMeeting);
+    meetingsList.add(futureMeeting2);
+    List<Meeting> expected = new ArrayList<>();
+    expected.add(futureMeeting1);
+    expected.add(futureMeeting2);
+
+    when(meetings.get(contact)).thenReturn(meetingsList);
+    List<Meeting> actual = cm.getFutureMeetingList(contact);
+    verify(meetings).get(contact);
+
+    assertThat(expected, is(equalTo(actual)));
+  }
+
+  @Test
+  public void shouldThrowIllegalArgumentExceptionIfTheContactDoesNotExist() {
+    thrown.expect(IllegalArgumentException.class);
+    Contact contact = mock(Contact.class);
+    when(contacts.notValidContactId(contact.getId())).thenReturn(true);
+    cm.getFutureMeetingList(contact);
+  }
+
+  @Test
+  public void shouldBeAbleToGetAAnEmptyListOfFutureMeetingsForAContact() {
+    Contact contact = mock(Contact.class);
+    List<Meeting> expected = new ArrayList<>();
+
+    when(meetings.get(contact)).thenReturn(null);
+    List<Meeting> actual = cm.getFutureMeetingList(contact);
+    verify(meetings).get(contact);
+
+    assertThat(expected, is(equalTo(actual)));
   }
 }
