@@ -18,21 +18,21 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
-    if (contactsCtrl.notValidContactSet(contacts) || dateIsInThePast(date)) throw new IllegalArgumentException();
+    if (contactsCtrl.notValidContactSet(contacts) || dateIsBeforeToday(date)) throw new IllegalArgumentException();
     return meetingsCtrl.addFutureMeeting(contacts, date);
   }
 
   @Override
   public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
     Meeting meeting = getMeeting(id);
-    if (meeting != null && dateIsInTheFuture(meeting.getDate())) throw new IllegalArgumentException();
+    if (meeting != null && dateIsAfterToday(meeting.getDate())) throw new IllegalArgumentException();
     return (PastMeeting) meeting;
   }
 
   @Override
   public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
     Meeting meeting = getMeeting(id);
-    if (meeting != null && dateIsInThePast(meeting.getDate())) throw new IllegalArgumentException();
+    if (meeting != null && dateIsBeforeToday(meeting.getDate())) throw new IllegalArgumentException();
     return (FutureMeeting) meeting;
   }
 
@@ -81,7 +81,7 @@ public class ContactManagerImpl implements ContactManager {
     if (text == null) throw new NullPointerException();
     Meeting meeting = meetingsCtrl.get(id);
     if (meeting == null) throw new IllegalArgumentException();
-    if (dateIsInTheFuture(meeting.getDate())) throw new IllegalStateException();
+    if (dateIsAfterToday(meeting.getDate())) throw new IllegalStateException();
     meetingsCtrl.convertToPastMeeting(meeting, text);
   }
 
@@ -112,12 +112,19 @@ public class ContactManagerImpl implements ContactManager {
     //TODO
   }
 
-  private boolean dateIsInThePast(Calendar date) {
-    return date.compareTo(Calendar.getInstance()) < 0;
+  private boolean dateIsBeforeToday(Calendar date) {
+    Calendar c = Calendar.getInstance();
+    c.set(Calendar.HOUR, 0);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    c.set(Calendar.MILLISECOND, 0);
+    return date.before(c.getTime());
   }
 
-  private boolean dateIsInTheFuture(Calendar date) {
-    return date.compareTo(Calendar.getInstance()) > 0;
+  private boolean dateIsAfterToday(Calendar date) {
+    Calendar c = Calendar.getInstance();
+    c.add(Calendar.DATE, 0);
+    return date.after(c.getTime());
   }
 
   private void sort(List<Meeting> meetings) {
