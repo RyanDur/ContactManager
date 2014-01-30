@@ -44,8 +44,8 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
     if (contactController.notValidContactId(contact.getId())) throw new IllegalArgumentException();
-    List<Meeting> meetingList = new ArrayList<>();
     List<Meeting> contactsMeetings = meetingController.get(contact);
+    List<Meeting> meetingList = new ArrayList<>();
     if (contactsMeetings != null) {
       for (Meeting meeting : contactsMeetings) {
         if (meeting instanceof FutureMeeting) {
@@ -58,7 +58,17 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public List<Meeting> getFutureMeetingList(Calendar date) {
-    return null;  //TODO
+    List<Meeting> datedMeetings = meetingController.get(date);
+    List<Meeting> meetingList = new ArrayList<>();
+    if (datedMeetings != null) {
+      for (Meeting meeting : datedMeetings) {
+        if (meeting instanceof FutureMeeting) {
+          meetingList.add(meeting);
+        }
+      }
+    }
+    sort(meetingList);
+    return meetingList;
   }
 
   @Override
@@ -115,5 +125,20 @@ public class ContactManagerImpl implements ContactManager {
 
   private boolean dateIsInTheFuture(Calendar date) {
     return date.compareTo(Calendar.getInstance()) > 0;
+  }
+
+  private void sort(List<Meeting> meetings) {
+    if (meetings != null) {
+      Collections.sort(meetings, dateComparator());
+    }
+  }
+
+  private Comparator dateComparator() {
+    return new Comparator<Meeting>() {
+      @Override
+      public int compare(Meeting o1, Meeting o2) {
+        return o1.getDate().compareTo(o2.getDate());
+      }
+    };
   }
 }

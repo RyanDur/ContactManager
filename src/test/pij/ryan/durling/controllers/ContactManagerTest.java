@@ -297,4 +297,58 @@ public class ContactManagerTest {
 
     assertThat(expected, is(equalTo(actual)));
   }
+
+  @Test
+  public void shouldBeAbleToGetAListOfFutureMeetingsForADate() {
+    List<Meeting> meetingsList = new ArrayList<>();
+    FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
+    FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
+    PastMeeting pastMeeting = mock(PastMeeting.class);
+    meetingsList.add(futureMeeting1);
+    meetingsList.add(pastMeeting);
+    meetingsList.add(futureMeeting2);
+    List<Meeting> expected = new ArrayList<>();
+    expected.add(futureMeeting1);
+    expected.add(futureMeeting2);
+
+    when(meetings.get(date)).thenReturn(meetingsList);
+    List<Meeting> actual = cm.getFutureMeetingList(date);
+    verify(meetings).get(date);
+
+    assertThat(expected, is(equalTo(actual)));
+  }
+
+  @Test
+  public void shouldBeAbleToGetAListOfFutureMeetingsForADateInChronologicalOrder() {
+    List<Meeting> meetingsList = new ArrayList<>();
+    FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
+    when(futureMeeting1.getDate()).thenReturn(mockDay(3));
+    FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
+    when(futureMeeting2.getDate()).thenReturn(mockDay(1));
+    FutureMeeting futureMeeting3 = mock(FutureMeeting.class);
+    when(futureMeeting3.getDate()).thenReturn(mockDay(2));
+    meetingsList.add(futureMeeting1);
+    meetingsList.add(futureMeeting2);
+    meetingsList.add(futureMeeting3);
+
+    List<Meeting> expected = new ArrayList<>();
+    expected.add(futureMeeting2);
+    expected.add(futureMeeting3);
+    expected.add(futureMeeting1);
+
+    when(meetings.get(date)).thenReturn(meetingsList);
+    List<Meeting> actual = cm.getFutureMeetingList(date);
+    verify(meetings).get(date);
+
+    assertThat(expected, is(equalTo(actual)));
+  }
+
+  private Calendar mockDay(int hour) {
+    Calendar date = Calendar.getInstance();
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    date.add(Calendar.HOUR_OF_DAY, hour);
+    return date;
+  }
 }
