@@ -27,14 +27,14 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
-    Meeting meeting = meetingController.get(id);
+    Meeting meeting = getMeeting(id);
     if (meeting != null && dateIsInTheFuture(meeting.getDate())) throw new IllegalArgumentException();
     return (PastMeeting) meeting;
   }
 
   @Override
   public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
-    Meeting meeting = meetingController.get(id);
+    Meeting meeting = getMeeting(id);
     if (meeting != null && dateIsInThePast(meeting.getDate())) throw new IllegalArgumentException();
     return (FutureMeeting) meeting;
   }
