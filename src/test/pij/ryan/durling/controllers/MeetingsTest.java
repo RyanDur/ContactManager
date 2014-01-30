@@ -98,25 +98,25 @@ public class MeetingsTest {
 
   @Test
   public void shouldGetACollectionOfMeetingsByDate() {
-    Calendar date = mockDay(6);
+    Calendar date = mockDay(0);
     Set<Contact> contacts = mockContacts(3);
 
-    Calendar date1 = mockDay(4);
+    Calendar date1 = mockDay(3);
     FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
     addFutureMeeting(contacts, date1, 5, futureMeeting1);
 
-    Calendar date2 = mockDay(2);
+    Calendar date2 = mockDay(1);
     FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
     addFutureMeeting(contacts, date2, 6, futureMeeting2);
 
-    Calendar date3 = mockDay(3);
+    Calendar date3 = mockDay(2);
     FutureMeeting futureMeeting3 = mock(FutureMeeting.class);
     addFutureMeeting(contacts, date3, 7, futureMeeting3);
 
     List<Meeting> futureMeetings = new ArrayList<>();
+    futureMeetings.add(futureMeeting1);
     futureMeetings.add(futureMeeting2);
     futureMeetings.add(futureMeeting3);
-    futureMeetings.add(futureMeeting1);
 
     assertThat(meetings.get(date), is(equalTo(futureMeetings)));
   }
@@ -242,14 +242,20 @@ public class MeetingsTest {
 
   private Calendar mockDay(int hour) {
     Calendar date = Calendar.getInstance();
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
     date.add(Calendar.HOUR_OF_DAY, hour);
     return date;
   }
 
   private Calendar mockDate(int day) {
     Calendar date = Calendar.getInstance();
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
     date.add(Calendar.DATE, day);
-    date.add(Calendar.HOUR_OF_DAY, 0);
     return date;
   }
 

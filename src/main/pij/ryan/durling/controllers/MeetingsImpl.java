@@ -75,7 +75,6 @@ public class MeetingsImpl implements Meetings {
       for (Integer id : meetingIds) {
         resultList.add(meetings.get(id));
       }
-      sort(resultList);
     }
     return resultList;
   }
@@ -139,21 +138,6 @@ public class MeetingsImpl implements Meetings {
     int day = date.get(Calendar.DAY_OF_WEEK);
     String sDate = year + "" + month + "" + week + "" + day;
     return Integer.parseInt(sDate);
-  }
-
-  private void sort(List<Meeting> meetings) {
-    if (meetings != null) {
-      Collections.sort(meetings, dateComparator());
-    }
-  }
-
-  private Comparator dateComparator() {
-    return new Comparator<Meeting>() {
-      @Override
-      public int compare(Meeting o1, Meeting o2) {
-        return o1.getDate().compareTo(o2.getDate());
-      }
-    };
   }
 
   private boolean isInThePast(Calendar date) {
