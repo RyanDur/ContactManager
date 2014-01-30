@@ -56,8 +56,10 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   @Override
-  public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) {
-    //TODO
+  public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) throws IllegalArgumentException {
+    if (contacts == null || date == null || text == null) throw new NullPointerException();
+    if (contactController.notValidContactSet(contacts)) throw new IllegalArgumentException();
+    meetingController.addNewPastMeeting(contacts, date, text);
   }
 
   @Override

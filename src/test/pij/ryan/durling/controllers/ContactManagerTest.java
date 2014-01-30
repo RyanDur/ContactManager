@@ -17,7 +17,10 @@ import static org.mockito.Mockito.*;
 
 public class ContactManagerTest {
   Contacts contacts = mock(Contacts.class);
+  Calendar date;
+  String notes = "notes";
   Meetings meetings = mock(Meetings.class);
+  Set<Contact> contactSet = new HashSet<>();
   ContactManager cm;
 
   @Rule
@@ -26,6 +29,8 @@ public class ContactManagerTest {
   @Before
   public void setup() {
     cm = new ContactManagerImpl(contacts, meetings);
+    contactSet.add(mock(Contact.class));
+    date = Calendar.getInstance();
   }
 
   @Test
@@ -37,14 +42,12 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowNullPointerExceptionIfAddNewContactsNameIsNull() {
     thrown.expect(NullPointerException.class);
-
     cm.addNewContact(null, "notes");
   }
 
   @Test
   public void shouldThrowNullPointerExceptionIfAddNewContactsNotesAreNull() {
     thrown.expect(NullPointerException.class);
-
     cm.addNewContact("Ryan", null);
   }
 
@@ -57,7 +60,6 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowNullPointerExceptionIfGetContactsNameIsNull() {
     thrown.expect(NullPointerException.class);
-
     String name = null;
     cm.getContacts(name);
   }
@@ -77,41 +79,67 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowIllegalArgumentExceptionIfAnyOfTheIDsDoNotCorrespondToARealContact() {
     thrown.expect(IllegalArgumentException.class);
-
     when(contacts.notValidContactId((int[]) anyVararg())).thenReturn(true);
     cm.getContacts(10);
   }
 
   @Test
   public void shouldBeAbleToAddAFutureMeeting() {
-    Set<Contact> contactSet = new HashSet<>();
-    contactSet.add(mock(Contact.class));
-    Calendar date = Calendar.getInstance();
     cm.addFutureMeeting(contactSet, date);
-
     verify(meetings).addFutureMeeting(contactSet, date);
   }
 
   @Test
-  public void shouldThrowAnIllegalArgumentExceptionIfAContactDoesNotExist() {
+  public void shouldThrowAnIllegalArgumentExceptionIfAContactDoesNotExistWhenAddingAFutureMeeting() {
     thrown.expect(IllegalArgumentException.class);
-
-    Set<Contact> contactSet = new HashSet<>();
-    contactSet.add(mock(Contact.class));
-    Calendar date = Calendar.getInstance();
     when(contacts.notValidContactSet(contactSet)).thenReturn(true);
     cm.addFutureMeeting(contactSet, date);
   }
 
   @Test
-  public void shouldThrowAnIllegalArgumentExceptionIfATheDateIsInThePast() {
+  public void shouldThrowAnIllegalArgumentExceptionIfATheDateIsInThePastWhenAddingAFutureMeeting() {
     thrown.expect(IllegalArgumentException.class);
-
-    Set<Contact> contactSet = new HashSet<>();
-    contactSet.add(mock(Contact.class));
-    Calendar date = Calendar.getInstance();
     date.add(Calendar.DATE, -1);
     when(contacts.notValidContactSet(contactSet)).thenReturn(false);
     cm.addFutureMeeting(contactSet, date);
+  }
+
+  @Test
+  public void shouldBeAbleToAddAPastMeeting() {
+    cm.addNewPastMeeting(contactSet, date, notes);
+    verify(meetings).addNewPastMeeting(contactSet, date, notes);
+  }
+
+  @Test
+  public void shouldThrowIllegalArgumentExceptionIfTheListOfContactsIsEmptyWhenAddingAPastMeeting() {
+    thrown.expect(IllegalArgumentException.class);
+    Set<Contact> emptyContactSet = new HashSet<>();
+    when(contacts.notValidContactSet(emptyContactSet)).thenReturn(true);
+    cm.addNewPastMeeting(emptyContactSet, date, notes);
+  }
+
+  @Test
+  public void shouldThrowIllegalArgumentExceptionIfAnyOfTheContactsDoesNotExistWhenAddingAPastMeeting() {
+    thrown.expect(IllegalArgumentException.class);
+    when(contacts.notValidContactSet(contactSet)).thenReturn(true);
+    cm.addNewPastMeeting(contactSet, date, notes);
+  }
+
+  @Test
+  public void shouldThrowNullPointerExceptionIfContactsAreNullWhenAddingAPastMeeting() {
+    thrown.expect(NullPointerException.class);
+    cm.addNewPastMeeting(null, date, notes);
+  }
+
+  @Test
+  public void shouldThrowNullPointerExceptionIfTheDateIsNullWhenAddingAPastMeeting() {
+    thrown.expect(NullPointerException.class);
+    cm.addNewPastMeeting(contactSet, null, notes);
+  }
+
+  @Test
+  public void shouldThrowNullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting() {
+    thrown.expect(NullPointerException.class);
+    cm.addNewPastMeeting(contactSet, date, null);
   }
 }
