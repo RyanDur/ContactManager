@@ -1,7 +1,6 @@
 package pij.ryan.durling.controllers;
 
 import pij.ryan.durling.models.Contact;
-import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 
 import java.util.Calendar;
@@ -19,5 +18,5 @@ public interface Meetings {
 
   List<Meeting> get(Contact contact);
 
-  void convertToPastMeeting(FutureMeeting meeting, String notes);
+  void convertToPastMeeting(int id, String notes);
 }

@@ -50,8 +50,9 @@ public class MeetingsImpl implements Meetings {
   }
 
   @Override
-  public void convertToPastMeeting(FutureMeeting meeting, String notes) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-    if (meetings.get(meeting.getId()) == null) throw new IllegalArgumentException();
+  public void convertToPastMeeting(int id, String notes) throws IllegalStateException, NullPointerException, IllegalArgumentException {
+    Meeting meeting = meetings.get(id);
+    if (meeting == null) throw new IllegalArgumentException();
     if (isInTheFuture(meeting.getDate())) throw new IllegalStateException();
     if (notes == null) throw new NullPointerException();
     try {
