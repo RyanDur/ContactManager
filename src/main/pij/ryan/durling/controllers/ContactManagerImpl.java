@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Set;
 
 public class ContactManagerImpl implements ContactManager {
-  Contacts contacts;
+  Contacts contactController;
+  Meetings meetingController;
 
-  public ContactManagerImpl(Contacts contacts) {
-      this.contacts = contacts;
+  public ContactManagerImpl(Contacts contacts, Meetings meetings) {
+    contactController = contacts;
+    meetingController = meetings;
   }
 
   @Override
-  public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
-    return 0;  //TODO
+  public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
+    if(contactController.notValidContactSet(contacts) || dateIsInThePast(date)) throw new IllegalArgumentException();
+    return meetingController.addFutureMeeting(contacts, date);
   }
 
   @Override
@@ -65,15 +68,15 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public void addNewContact(String name, String notes) throws NullPointerException {
     if (name == null || notes == null) throw new NullPointerException();
-    contacts.add(name, notes);
+    contactController.add(name, notes);
   }
 
   @Override
   public Set<Contact> getContacts(int... ids) throws IllegalArgumentException {
-    if (contacts.notValidContactId(ids)) throw new IllegalArgumentException();
+    if (contactController.notValidContactId(ids)) throw new IllegalArgumentException();
     Set<Contact> contactSet = new HashSet<>();
     for (int id : ids) {
-      contactSet.add(contacts.get(id));
+      contactSet.add(contactController.get(id));
     }
     return contactSet;
   }
@@ -81,11 +84,15 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public Set<Contact> getContacts(String name) {
     if (name == null) throw new NullPointerException();
-    return contacts.get(name);
+    return contactController.get(name);
   }
 
   @Override
   public void flush() {
     //TODO
+  }
+
+  private boolean dateIsInThePast(Calendar date) {
+    return date.compareTo(Calendar.getInstance()) < 0;
   }
 }
