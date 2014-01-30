@@ -88,7 +88,7 @@ public class MeetingsTest {
   }
 
   @Test
-  public void shouldThrowANullPointerExceptionIfTheNotesAreNull() {
+  public void shouldThrowANullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting() {
     thrown.expect(NullPointerException.class);
 
     Set<Contact> contacts = mockContacts(3);
@@ -161,7 +161,7 @@ public class MeetingsTest {
     when(mockPastMeeting.getDate()).thenReturn(mockDate(-1));
     setPastMeeting(mockPastMeeting);
 
-    meetings.convertToPastMeeting(futureMeeting.getId(), notes);
+    meetings.convertToPastMeeting(futureMeeting, notes);
     PastMeeting actual = (PastMeeting) meetings.get(id);
 
     assertThat(futureMeeting.getId(), is(equalTo(actual.getId())));
@@ -176,11 +176,11 @@ public class MeetingsTest {
     int id = 0;
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
     addFutureMeeting(mockContacts(3), mockDate(2), id, futureMeeting);
-    meetings.convertToPastMeeting(futureMeeting.getId(), notes);
+    meetings.convertToPastMeeting(futureMeeting, notes);
   }
 
   @Test
-  public void shouldthrowANullPointerExceptionIfTheNotesAreNull() {
+  public void shouldThrowANullPointerExceptionIfTheNotesAreNullWhenConvertingToAPastMeeting() {
     thrown.expect(NullPointerException.class);
 
     String notes = null;
@@ -188,7 +188,7 @@ public class MeetingsTest {
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
     addFutureMeeting(mockContacts(3), mockDate(2), id, futureMeeting);
     when(futureMeeting.getDate()).thenReturn(mockDate(-1));
-    meetings.convertToPastMeeting(futureMeeting.getId(), notes);
+    meetings.convertToPastMeeting(futureMeeting, notes);
   }
 
   @Test
@@ -200,7 +200,7 @@ public class MeetingsTest {
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
     when(futureMeeting.getDate()).thenReturn(mockDate(-1));
     when(futureMeeting.getId()).thenReturn(id);
-    meetings.convertToPastMeeting(futureMeeting.getId(), notes);
+    meetings.convertToPastMeeting(futureMeeting, notes);
   }
 
 

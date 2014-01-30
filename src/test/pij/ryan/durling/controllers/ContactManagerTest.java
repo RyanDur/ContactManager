@@ -6,11 +6,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import pij.ryan.durling.models.Contact;
+import pij.ryan.durling.models.FutureMeeting;
+import pij.ryan.durling.models.Meeting;
+import pij.ryan.durling.models.PastMeeting;
 
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -18,6 +24,7 @@ import static org.mockito.Mockito.*;
 public class ContactManagerTest {
   Contacts contacts = mock(Contacts.class);
   Calendar date;
+  int id = 0;
   String notes = "notes";
   Meetings meetings = mock(Meetings.class);
   Set<Contact> contactSet = new HashSet<>();
@@ -141,5 +148,70 @@ public class ContactManagerTest {
   public void shouldThrowNullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting() {
     thrown.expect(NullPointerException.class);
     cm.addNewPastMeeting(contactSet, date, null);
+  }
+
+  @Test
+  public void shouldBeAbleToAddNotesToAMeetingThatHasTakenPlace() {
+    FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
+    date.add(Calendar.DATE, -1);
+    when(mockFutureMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockFutureMeeting);
+    cm.addMeetingNotes(id, notes);
+    verify(meetings).convertToPastMeeting(mockFutureMeeting, notes);
+  }
+
+  @Test
+  public void shouldThrowAnIllegalArgumentExceptionIfTheMeetingDoesNotExistWhenAddingNotesToAMeeting() {
+    thrown.expect(IllegalArgumentException.class);
+    when(meetings.get(id)).thenReturn(null);
+    cm.addMeetingNotes(id, notes);
+  }
+
+  @Test
+  public void shouldThrowAnIllegalStateExceptionIfTheMeetingIsSetForADateInTheFutureWhenAddingNotesToAMeeting() {
+    thrown.expect(IllegalStateException.class);
+    FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
+    date.add(Calendar.DATE, 1);
+    when(mockFutureMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockFutureMeeting);
+    cm.addMeetingNotes(id, notes);
+  }
+
+  @Test
+  public void shouldThrowANullPointerExceptionIfTheNotesAreNull() {
+    thrown.expect(NullPointerException.class);
+    FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
+    date.add(Calendar.DATE, -1);
+    when(mockFutureMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockFutureMeeting);
+    cm.addMeetingNotes(id, null);
+  }
+
+  @Test
+  public void shouldBeAbleToGetAPastMeeting() {
+    Meeting mockMeeting = mock(PastMeeting.class);
+    date.add(Calendar.DATE, -1);
+    when(mockMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockMeeting);
+    cm.getPastMeeting(id);
+    verify(meetings).get(id);
+  }
+
+  @Test
+  public void shouldBeGetNullThereIsNoPastMeeting() {
+    when(meetings.get(id)).thenReturn(null);
+    Meeting actual = cm.getPastMeeting(id);
+    verify(meetings).get(id);
+    assertThat(null, is(equalTo(actual)));
+  }
+
+  @Test
+  public void ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInTheFutureWhenGettingAPastMeeting() {
+    thrown.expect(IllegalArgumentException.class);
+    Meeting mockMeeting = mock(PastMeeting.class);
+    date.add(Calendar.DATE, 1);
+    when(mockMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockMeeting);
+    cm.getPastMeeting(id);
   }
 }

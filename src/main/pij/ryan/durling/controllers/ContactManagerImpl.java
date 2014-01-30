@@ -21,13 +21,15 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
-    if(contactController.notValidContactSet(contacts) || dateIsInThePast(date)) throw new IllegalArgumentException();
+    if (contactController.notValidContactSet(contacts) || dateIsInThePast(date)) throw new IllegalArgumentException();
     return meetingController.addFutureMeeting(contacts, date);
   }
 
   @Override
-  public PastMeeting getPastMeeting(int id) {
-    return null;  //TODO
+  public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
+    Meeting meeting = meetingController.get(id);
+    if (meeting != null && dateIsInTheFuture(meeting.getDate())) throw new IllegalArgumentException();
+    return (PastMeeting) meeting;
   }
 
   @Override
@@ -63,8 +65,12 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   @Override
-  public void addMeetingNotes(int id, String text) {
-    //TODO
+  public void addMeetingNotes(int id, String text) throws IllegalArgumentException, IllegalStateException, NullPointerException {
+    if (text == null) throw new NullPointerException();
+    Meeting meeting = meetingController.get(id);
+    if (meeting == null) throw new IllegalArgumentException();
+    if (dateIsInTheFuture(meeting.getDate())) throw new IllegalStateException();
+    meetingController.convertToPastMeeting(meeting, text);
   }
 
   @Override
@@ -84,7 +90,7 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   @Override
-  public Set<Contact> getContacts(String name) throws NullPointerException{
+  public Set<Contact> getContacts(String name) throws NullPointerException {
     if (name == null) throw new NullPointerException();
     return contactController.get(name);
   }
@@ -96,5 +102,9 @@ public class ContactManagerImpl implements ContactManager {
 
   private boolean dateIsInThePast(Calendar date) {
     return date.compareTo(Calendar.getInstance()) < 0;
+  }
+
+  private boolean dateIsInTheFuture(Calendar date) {
+    return date.compareTo(Calendar.getInstance()) > 0;
   }
 }
