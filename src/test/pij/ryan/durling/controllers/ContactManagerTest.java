@@ -90,6 +90,8 @@ public class ContactManagerTest {
 
   @Test
   public void shouldBeAbleToAddAFutureMeeting() {
+    when(contacts.notValidContactSet(contactSet)).thenReturn(false);
+    date.add(Calendar.DATE, 1);
     cm.addFutureMeeting(contactSet, date);
     verify(meetings).addFutureMeeting(contactSet, date);
   }
@@ -302,7 +304,9 @@ public class ContactManagerTest {
   public void shouldBeAbleToGetAListOfFutureMeetingsForADate() {
     List<Meeting> meetingsList = new ArrayList<>();
     FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
+    when(futureMeeting1.getDate()).thenReturn(mockDay(1));
     FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
+    when(futureMeeting2.getDate()).thenReturn(mockDay(2));
     PastMeeting pastMeeting = mock(PastMeeting.class);
     meetingsList.add(futureMeeting1);
     meetingsList.add(pastMeeting);

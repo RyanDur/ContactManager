@@ -44,29 +44,12 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
     if (contactController.notValidContactId(contact.getId())) throw new IllegalArgumentException();
-    List<Meeting> contactsMeetings = meetingController.get(contact);
-    List<Meeting> meetingList = new ArrayList<>();
-    if (contactsMeetings != null) {
-      for (Meeting meeting : contactsMeetings) {
-        if (meeting instanceof FutureMeeting) {
-          meetingList.add(meeting);
-        }
-      }
-    }
-    return meetingList;
+    return extractFutureMeetings(meetingController.get(contact));
   }
 
   @Override
   public List<Meeting> getFutureMeetingList(Calendar date) {
-    List<Meeting> datedMeetings = meetingController.get(date);
-    List<Meeting> meetingList = new ArrayList<>();
-    if (datedMeetings != null) {
-      for (Meeting meeting : datedMeetings) {
-        if (meeting instanceof FutureMeeting) {
-          meetingList.add(meeting);
-        }
-      }
-    }
+    List<Meeting> meetingList = extractFutureMeetings(meetingController.get(date));
     sort(meetingList);
     return meetingList;
   }
@@ -140,5 +123,17 @@ public class ContactManagerImpl implements ContactManager {
         return o1.getDate().compareTo(o2.getDate());
       }
     };
+  }
+
+  private List<Meeting> extractFutureMeetings(List<Meeting> meetings) {
+    List<Meeting> meetingList = new ArrayList<>();
+    if (meetings != null) {
+      for (Meeting meeting : meetings) {
+        if (meeting instanceof FutureMeeting) {
+          meetingList.add(meeting);
+        }
+      }
+    }
+    return meetingList;
   }
 }
