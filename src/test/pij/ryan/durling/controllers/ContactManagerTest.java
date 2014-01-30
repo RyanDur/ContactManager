@@ -347,6 +347,47 @@ public class ContactManagerTest {
     assertThat(expected, is(equalTo(actual)));
   }
 
+  @Test
+  public void shouldBeAbleToGetAListOfPastMeetingsForAContact() {
+    Contact contact = mock(Contact.class);
+    List<Meeting> meetingsList = new ArrayList<>();
+    PastMeeting pastMeeting1 = mock(PastMeeting.class);
+    PastMeeting pastMeeting2 = mock(PastMeeting.class);
+    FutureMeeting futureMeeting = mock(FutureMeeting.class);
+    meetingsList.add(pastMeeting1);
+    meetingsList.add(futureMeeting);
+    meetingsList.add(pastMeeting2);
+    List<PastMeeting> expected = new ArrayList<>();
+    expected.add(pastMeeting1);
+    expected.add(pastMeeting2);
+
+    when(meetings.get(contact)).thenReturn(meetingsList);
+    List<PastMeeting> actual = cm.getPastMeetingList(contact);
+    verify(meetings).get(contact);
+
+    assertThat(expected, is(equalTo(actual)));
+  }
+
+  @Test
+  public void shouldThrowAnIllegalArgumentExceptionIfTheContactDoesNotExistWhenGettingAListOfPastMeetings() {
+    thrown.expect(IllegalArgumentException.class);
+    Contact contact = mock(Contact.class);
+    when(contacts.notValidContactId(contact.getId())).thenReturn(true);
+    cm.getPastMeetingList(contact);
+  }
+
+  @Test
+  public void shouldBeAbleToGetAnEmptyListOfPastMeetingsForAContact() {
+    Contact contact = mock(Contact.class);
+    List<PastMeeting> expected = new ArrayList<>();
+
+    when(meetings.get(contact)).thenReturn(null);
+    List<PastMeeting> actual = cm.getPastMeetingList(contact);
+    verify(meetings).get(contact);
+
+    assertThat(expected, is(equalTo(actual)));
+  }
+
   private Calendar mockDay(int hour) {
     Calendar date = Calendar.getInstance();
     date.set(Calendar.MINUTE, 0);

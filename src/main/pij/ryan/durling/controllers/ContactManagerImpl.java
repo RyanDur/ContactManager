@@ -8,18 +8,18 @@ import pij.ryan.durling.models.PastMeeting;
 import java.util.*;
 
 public class ContactManagerImpl implements ContactManager {
-  Contacts contactController;
-  Meetings meetingController;
+  Contacts contactsCtrl;
+  Meetings meetingsCtrl;
 
   public ContactManagerImpl(Contacts contacts, Meetings meetings) {
-    contactController = contacts;
-    meetingController = meetings;
+    contactsCtrl = contacts;
+    meetingsCtrl = meetings;
   }
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
-    if (contactController.notValidContactSet(contacts) || dateIsInThePast(date)) throw new IllegalArgumentException();
-    return meetingController.addFutureMeeting(contacts, date);
+    if (contactsCtrl.notValidContactSet(contacts) || dateIsInThePast(date)) throw new IllegalArgumentException();
+    return meetingsCtrl.addFutureMeeting(contacts, date);
   }
 
   @Override
@@ -38,55 +38,65 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public Meeting getMeeting(int id) {
-    return meetingController.get(id);
+    return meetingsCtrl.get(id);
   }
 
   @Override
   public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
-    if (contactController.notValidContactId(contact.getId())) throw new IllegalArgumentException();
-    return extractFutureMeetings(meetingController.get(contact));
+    if (contactsCtrl.notValidContactId(contact.getId())) throw new IllegalArgumentException();
+    return extractFutureMeetings(meetingsCtrl.get(contact));
   }
 
   @Override
   public List<Meeting> getFutureMeetingList(Calendar date) {
-    List<Meeting> meetingList = extractFutureMeetings(meetingController.get(date));
+    List<Meeting> meetingList = extractFutureMeetings(meetingsCtrl.get(date));
     sort(meetingList);
     return meetingList;
   }
 
   @Override
   public List<PastMeeting> getPastMeetingList(Contact contact) {
-    return null;  //TODO
+    if (contactsCtrl.notValidContactId(contact.getId())) throw new IllegalArgumentException();
+    List<PastMeeting> meetingList = new ArrayList<>();
+    List<Meeting> contactsMeetings = meetingsCtrl.get(contact);
+    if (contactsMeetings != null) {
+      for (Meeting meeting : contactsMeetings) {
+        if (meeting instanceof PastMeeting) {
+          meetingList.add((PastMeeting) meeting);
+        }
+      }
+    }
+    return meetingList;
   }
 
   @Override
   public void addNewPastMeeting(Set<Contact> contacts, Calendar date, String text) throws IllegalArgumentException, NullPointerException {
     if (contacts == null || date == null || text == null) throw new NullPointerException();
-    if (contactController.notValidContactSet(contacts)) throw new IllegalArgumentException();
-    meetingController.addNewPastMeeting(contacts, date, text);
+    if (contactsCtrl.notValidContactSet(contacts)) throw new IllegalArgumentException();
+    meetingsCtrl.addNewPastMeeting(contacts, date, text);
   }
 
   @Override
   public void addMeetingNotes(int id, String text) throws IllegalArgumentException, IllegalStateException, NullPointerException {
     if (text == null) throw new NullPointerException();
-    Meeting meeting = meetingController.get(id);
+    Meeting meeting = meetingsCtrl.get(id);
     if (meeting == null) throw new IllegalArgumentException();
     if (dateIsInTheFuture(meeting.getDate())) throw new IllegalStateException();
-    meetingController.convertToPastMeeting(meeting, text);
+    meetingsCtrl.convertToPastMeeting(meeting, text);
   }
 
   @Override
   public void addNewContact(String name, String notes) throws NullPointerException {
     if (name == null || notes == null) throw new NullPointerException();
-    contactController.add(name, notes);
+    contactsCtrl.add(name, notes);
   }
 
   @Override
   public Set<Contact> getContacts(int... ids) throws IllegalArgumentException {
-    if (contactController.notValidContactId(ids)) throw new IllegalArgumentException();
+    if (contactsCtrl.notValidContactId(ids)) throw new IllegalArgumentException();
     Set<Contact> contactSet = new HashSet<>();
     for (int id : ids) {
-      contactSet.add(contactController.get(id));
+      contactSet.add(contactsCtrl.get(id));
     }
     return contactSet;
   }
@@ -94,7 +104,7 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public Set<Contact> getContacts(String name) throws NullPointerException {
     if (name == null) throw new NullPointerException();
-    return contactController.get(name);
+    return contactsCtrl.get(name);
   }
 
   @Override
