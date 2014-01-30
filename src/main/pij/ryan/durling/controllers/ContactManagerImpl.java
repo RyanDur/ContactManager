@@ -41,7 +41,7 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public Meeting getMeeting(int id) {
-    return null;  //TODO
+    return meetingController.get(id);
   }
 
   @Override

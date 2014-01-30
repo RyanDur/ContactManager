@@ -242,4 +242,20 @@ public class ContactManagerTest {
     when(meetings.get(id)).thenReturn(mockMeeting);
     cm.getFutureMeeting(id);
   }
+
+  @Test
+  public void shouldBeAbleToGetAMeeting() {
+    Meeting mockMeeting = mock(FutureMeeting.class);
+    when(meetings.get(id)).thenReturn(mockMeeting);
+    cm.getMeeting(id);
+    verify(meetings).get(id);
+  }
+
+  @Test
+  public void shouldGetNullThereIsNoMeeting() {
+    when(meetings.get(id)).thenReturn(null);
+    Meeting actual = cm.getMeeting(id);
+    verify(meetings).get(id);
+    assertThat(null, is(equalTo(actual)));
+  }
 }
