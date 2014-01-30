@@ -1,15 +1,14 @@
 package pij.ryan.durling.controllers;
 
 
-import pij.ryan.durling.generators.IdGenerator;
-import pij.ryan.durling.models.Contact;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import pij.ryan.durling.factories.ContactFactory;
+import pij.ryan.durling.generators.IdGenerator;
+import pij.ryan.durling.models.Contact;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -145,6 +144,15 @@ public class ContactsTest {
   public void shouldNotAllowAnEmptyCollection() {
     Set<Contact> expected = new HashSet<>();
     assertTrue(contacts.notValidContactSet(expected));
+  }
+
+  @Test
+  public void shouldBeAbleToCheckIfIndeterminateNumberOfIdsExistInContacts() {
+    assertTrue(contacts.notValidContactId(1, 2, 4));
+
+    assertTrue(contacts.notValidContactId(id, 2));
+
+    assertFalse(contacts.notValidContactId(id));
   }
 
   private void registerContact(Contact contact, String name, int id) {

@@ -22,7 +22,7 @@ public class ContactsImpl implements Contacts {
   }
 
   @Override
-  public void add(String name, String notes) {
+  public void add(String name, String notes) throws NullPointerException {
     if (name == null || notes == null) throw new NullPointerException();
     int id = idGenerator.getContactId();
     if (contactsById.get(id) == null) {
@@ -48,17 +48,22 @@ public class ContactsImpl implements Contacts {
   @Override
   public boolean notValidContactSet(Set<Contact> contacts) {
     if (contacts.isEmpty()) return true;
-
     for (Contact contact : contacts) {
-      if (notValidContact(contact)) {
+      if (notValidContactId(contact.getId())) {
         return true;
       }
     }
     return false;
   }
 
-  private boolean notValidContact(Contact contact) {
-    return contactsById.get(contact.getId()) == null;
+  @Override
+  public boolean notValidContactId(int... ids) {
+    for (int id : ids) {
+      if (contactsById.get(id) == null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void setContactsByName(Contact contact) {

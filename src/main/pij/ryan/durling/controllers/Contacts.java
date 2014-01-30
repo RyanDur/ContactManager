@@ -13,4 +13,6 @@ public interface Contacts {
   Set<Contact> get(String name);
 
   boolean notValidContactSet(Set<Contact> contacts);
+
+  boolean notValidContactId(int... ids);
 }

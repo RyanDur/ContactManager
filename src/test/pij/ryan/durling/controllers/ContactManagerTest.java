@@ -1,155 +1,57 @@
 package pij.ryan.durling.controllers;
 
 
-import pij.ryan.durling.exceptions.InvalidMeetingException;
-import pij.ryan.durling.factories.*;
-import pij.ryan.durling.generators.IdGenerator;
-import pij.ryan.durling.hooks.ShutDownHook;
-import pij.ryan.durling.models.Contact;
-import pij.ryan.durling.models.FutureMeeting;
-import pij.ryan.durling.models.Meeting;
-import pij.ryan.durling.models.PastMeeting;
-import pij.ryan.durling.serializers.ContactManagerSerializer;
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.Assertion;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.rules.ExpectedException;
 
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ContactManagerTest {
-  private IdGenerator mockIdGenerator;
-  private ContactFactory mockContactFactory;
-  private MeetingFactory mockMeetingFactory;
-  private SerializationFactory mockSerializationFactory;
-  private ContactManagerSerializer mockContactManagerSerializer;
-  private HookFactory mockHookFactory;
-  private ContactManagerUtility mockContactManagerUtility;
-  private ContactManager cm;
-  private Set<Contact> mockContacts;
-  private Contact mockContact;
-  private ShutDownHook mockShutDownHook;
-  private FutureMeeting mockFutureMeeting;
-  private PastMeeting mockPastMeeting;
-  private Calendar mockDate = mockDate(1);
-  private int knownId;
-  private String knownName;
-  private String knownNote;
-  private int numberOfFutureMeetings;
-  //private int numberOfPastMeetings;
+  Contacts contacts = mock(Contacts.class);
+  ContactManager cm;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  @Rule
-  public final ExpectedSystemExit exit = ExpectedSystemExit.none();
-
   @Before
-  public void setup() throws InvalidMeetingException {
-    knownId = 4;
-    knownName = "Ryan";
-    knownNote = "note";
-    numberOfFutureMeetings = 100;
-    int numberOfPastMeetings = 100;
-
-    setupMocks();
-    setupMockContactManagerUtility();
-    cm = new ContactManagerImpl(mockContactManagerUtility);
-    addMockContact(mockContact, knownId, knownName);
-    setupMeetings(numberOfFutureMeetings, numberOfPastMeetings);
+  public void setup() {
+    cm = new ContactManagerImpl(contacts);
   }
 
   @Test
-  public void shouldBeAbleToAddaMeetingForTheFuture() {
-    int id = addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate, 0);
-    FutureMeeting meeting = cm.getFutureMeeting(id);
-
-    assertThat(meeting, is(instanceOf(FutureMeeting.class)));
-    assertThat(mockFutureMeeting, is(equalTo(meeting)));
+  public void shouldBeAbleToAddAContact() {
+    cm.addNewContact("Ryan", "notes");
+    verify(contacts).add(anyString(), anyString());
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionIfUserTryToAddPastMeetingToFutureDate() {
-    thrown.expect(IllegalArgumentException.class);
-
-    cm.addFutureMeeting(mockContacts, mockDate(-1));
-  }
-
-  @Test
-  public void shouldThrowIllegalArgumentExceptionIfAContactIsUnknown() {
-    thrown.expect(IllegalArgumentException.class);
-
-    int unknownId = 42;
-    Contact unknownContact = mock(Contact.class);
-    mockContacts.add(unknownContact);
-    when(unknownContact.getId()).thenReturn(unknownId);
-    addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), knownId);
-  }
-
-  @Test
-  public void shouldThrowIllegalArgumentExceptionIfUserTyToGetPastMeetingFromFutureMeeting() {
-    thrown.expect(IllegalArgumentException.class);
-
-    int id = addMockFutureMeeting(mockFutureMeeting, mockContacts, mockDate(1), knownId);
-    when(mockFutureMeeting.getDate()).thenReturn(mockDate(-1));
-    cm.getFutureMeeting(id);
-  }
-
-  @Test
-  public void shouldBeAbleToAddANewContactByName() {
-    Set<Contact> contacts;
-    contacts = cm.getContacts(knownName);
-
-    assertTrue(contacts.contains(mockContact));
-  }
-
-  @Test
-  public void shouldBeAbleToRetrieveContactsOfSamNameButDifferentId() {
-    Contact contact1 = mock(Contact.class);
-    Contact contact2 = mock(Contact.class);
-    addMockContact(contact1, 0, knownName);
-    addMockContact(contact2, 1, knownName);
-
-    Set<Contact> expected = new HashSet<>();
-    expected.add(contact1);
-    expected.add(contact2);
-    expected.add(mockContact);
-
-    Set<Contact> actual = cm.getContacts(knownName);
-
-    assertThat(expected, is(equalTo(actual)));
-  }
-
-  @Test
-  public void shouldThrowNullPointerExceptionIfNoNameIsGivenToAdd() {
+  public void shouldThrowNullPointerExceptionIfAddNewContactsNameIsNull() {
     thrown.expect(NullPointerException.class);
 
-    cm.addNewContact(null, knownNote);
+    cm.addNewContact(null, "notes");
   }
 
   @Test
-  public void shouldThrowNullPointerExceptionIfNoNotesAreGivenToAdd() {
+  public void shouldThrowNullPointerExceptionIfAddNewContactsNotesAreNull() {
     thrown.expect(NullPointerException.class);
 
-    cm.addNewContact(knownName, null);
+    cm.addNewContact("Ryan", null);
   }
 
   @Test
-  public void shouldThrowNullPointerExceptionIfNoNameIsGivenToGet() {
+  public void shouldBeAbleToGetAContactByName() {
+    cm.getContacts("Ryan");
+    verify(contacts).get(anyString());
+  }
+
+  @Test
+  public void shouldThrowNullPointerExceptionIfGetContactsNameIsNull() {
     thrown.expect(NullPointerException.class);
 
     String name = null;
