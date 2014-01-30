@@ -214,4 +214,32 @@ public class ContactManagerTest {
     when(meetings.get(id)).thenReturn(mockMeeting);
     cm.getPastMeeting(id);
   }
+
+  @Test
+  public void shouldBeAbleToGetAFutureMeeting() {
+    Meeting mockMeeting = mock(FutureMeeting.class);
+    date.add(Calendar.DATE, 1);
+    when(mockMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockMeeting);
+    cm.getFutureMeeting(id);
+    verify(meetings).get(id);
+  }
+
+  @Test
+  public void shouldBeGetNullThereIsNoFutureMeeting() {
+    when(meetings.get(id)).thenReturn(null);
+    Meeting actual = cm.getFutureMeeting(id);
+    verify(meetings).get(id);
+    assertThat(null, is(equalTo(actual)));
+  }
+
+  @Test
+  public void ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInThePastWhenGettingAFutureMeeting() {
+    thrown.expect(IllegalArgumentException.class);
+    Meeting mockMeeting = mock(PastMeeting.class);
+    date.add(Calendar.DATE, -1);
+    when(mockMeeting.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(mockMeeting);
+    cm.getFutureMeeting(id);
+  }
 }

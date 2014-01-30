@@ -33,8 +33,10 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   @Override
-  public FutureMeeting getFutureMeeting(int id) {
-    return null;  //TODO
+  public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
+    Meeting meeting = meetingController.get(id);
+    if (meeting != null && dateIsInThePast(meeting.getDate())) throw new IllegalArgumentException();
+    return (FutureMeeting) meeting;
   }
 
   @Override
