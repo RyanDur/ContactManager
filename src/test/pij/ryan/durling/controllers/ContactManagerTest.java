@@ -41,49 +41,69 @@ public class ContactManagerTest {
   @Test
   public void shouldBeAbleToAddAContact() {
     cm.addNewContact("Ryan", "notes");
+
     verify(contacts).add(anyString(), anyString());
   }
 
   @Test
   public void shouldThrowNullPointerExceptionIfAddNewContactsNameIsNull() {
     thrown.expect(NullPointerException.class);
+
     cm.addNewContact(null, "notes");
   }
 
   @Test
   public void shouldThrowNullPointerExceptionIfAddNewContactsNotesAreNull() {
     thrown.expect(NullPointerException.class);
+
     cm.addNewContact("Ryan", null);
   }
 
   @Test
   public void shouldBeAbleToGetAContactByName() {
-    cm.getContacts("Ryan");
+    Set<Contact> expected = new HashSet<>();
+    when(contacts.get(anyString())).thenReturn(expected);
+    Set<Contact> actual =  cm.getContacts("Ryan");
+
     verify(contacts).get(anyString());
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void shouldThrowNullPointerExceptionIfGetContactsNameIsNull() {
     thrown.expect(NullPointerException.class);
+
     String name = null;
     cm.getContacts(name);
   }
 
   @Test
   public void shouldBeAbleToGetAContactById() {
-    cm.getContacts(0, 1, 4);
+    Contact contact0 = mock(Contact.class);
+    Contact contact1 = mock(Contact.class);
+    Contact contact4 = mock(Contact.class);
+    Set<Contact> expected = new HashSet<>();
+    expected.add(contact0);
+    expected.add(contact1);
+    expected.add(contact4);
+    when(contacts.get(anyInt())).thenReturn(contact0, contact1, contact4);
+    Set<Contact> actual = cm.getContacts(0, 1, 4);
+
     verify(contacts, times(3)).get(anyInt());
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void shouldCheckIfIdsExistInTheContacts() {
     cm.getContacts(0, 1, 4);
+
     verify(contacts).notValidContactId((int[]) anyVararg());
   }
 
   @Test
   public void shouldThrowIllegalArgumentExceptionIfAnyOfTheIDsDoNotCorrespondToARealContact() {
     thrown.expect(IllegalArgumentException.class);
+
     when(contacts.notValidContactId((int[]) anyVararg())).thenReturn(true);
     cm.getContacts(10);
   }
@@ -93,12 +113,26 @@ public class ContactManagerTest {
     when(contacts.notValidContactSet(contactSet)).thenReturn(false);
     date.add(Calendar.DATE, 1);
     cm.addFutureMeeting(contactSet, date);
+
     verify(meetings).addFutureMeeting(contactSet, date);
+  }
+
+  @Test
+  public void shouldGetAnIDOfTheMeetingWhenAddingAFutureMeeting() {
+    when(contacts.notValidContactSet(contactSet)).thenReturn(false);
+    date.add(Calendar.DATE, 1);
+    int expected = 1;
+    when(meetings.addFutureMeeting(contactSet, date)).thenReturn(expected);
+    int actual = cm.addFutureMeeting(contactSet, date);
+
+    verify(meetings).addFutureMeeting(contactSet, date);
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void shouldThrowAnIllegalArgumentExceptionIfAContactDoesNotExistWhenAddingAFutureMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     when(contacts.notValidContactSet(contactSet)).thenReturn(true);
     cm.addFutureMeeting(contactSet, date);
   }
@@ -106,6 +140,7 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowAnIllegalArgumentExceptionIfATheDateIsInThePastWhenAddingAFutureMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     date.add(Calendar.DATE, -1);
     when(contacts.notValidContactSet(contactSet)).thenReturn(false);
     cm.addFutureMeeting(contactSet, date);
@@ -114,12 +149,14 @@ public class ContactManagerTest {
   @Test
   public void shouldBeAbleToAddAPastMeeting() {
     cm.addNewPastMeeting(contactSet, date, notes);
+
     verify(meetings).addNewPastMeeting(contactSet, date, notes);
   }
 
   @Test
   public void shouldThrowIllegalArgumentExceptionIfTheListOfContactsIsEmptyWhenAddingAPastMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     Set<Contact> emptyContactSet = new HashSet<>();
     when(contacts.notValidContactSet(emptyContactSet)).thenReturn(true);
     cm.addNewPastMeeting(emptyContactSet, date, notes);
@@ -128,6 +165,7 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowIllegalArgumentExceptionIfAnyOfTheContactsDoesNotExistWhenAddingAPastMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     when(contacts.notValidContactSet(contactSet)).thenReturn(true);
     cm.addNewPastMeeting(contactSet, date, notes);
   }
@@ -135,18 +173,21 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowNullPointerExceptionIfContactsAreNullWhenAddingAPastMeeting() {
     thrown.expect(NullPointerException.class);
+
     cm.addNewPastMeeting(null, date, notes);
   }
 
   @Test
   public void shouldThrowNullPointerExceptionIfTheDateIsNullWhenAddingAPastMeeting() {
     thrown.expect(NullPointerException.class);
+
     cm.addNewPastMeeting(contactSet, null, notes);
   }
 
   @Test
   public void shouldThrowNullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting() {
     thrown.expect(NullPointerException.class);
+
     cm.addNewPastMeeting(contactSet, date, null);
   }
 
@@ -157,12 +198,14 @@ public class ContactManagerTest {
     when(mockFutureMeeting.getDate()).thenReturn(date);
     when(meetings.get(id)).thenReturn(mockFutureMeeting);
     cm.addMeetingNotes(id, notes);
+
     verify(meetings).convertToPastMeeting(mockFutureMeeting, notes);
   }
 
   @Test
   public void shouldThrowAnIllegalArgumentExceptionIfTheMeetingDoesNotExistWhenAddingNotesToAMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     when(meetings.get(id)).thenReturn(null);
     cm.addMeetingNotes(id, notes);
   }
@@ -170,6 +213,7 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowAnIllegalStateExceptionIfTheMeetingIsSetForADateInTheFutureWhenAddingNotesToAMeeting() {
     thrown.expect(IllegalStateException.class);
+
     FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
     date.add(Calendar.DATE, 1);
     when(mockFutureMeeting.getDate()).thenReturn(date);
@@ -180,6 +224,7 @@ public class ContactManagerTest {
   @Test
   public void shouldThrowANullPointerExceptionIfTheNotesAreNull() {
     thrown.expect(NullPointerException.class);
+
     FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
     date.add(Calendar.DATE, -1);
     when(mockFutureMeeting.getDate()).thenReturn(date);
@@ -189,18 +234,21 @@ public class ContactManagerTest {
 
   @Test
   public void shouldBeAbleToGetAPastMeeting() {
-    Meeting mockMeeting = mock(PastMeeting.class);
+    Meeting expected = mock(PastMeeting.class);
     date.add(Calendar.DATE, -1);
-    when(mockMeeting.getDate()).thenReturn(date);
-    when(meetings.get(id)).thenReturn(mockMeeting);
-    cm.getPastMeeting(id);
+    when(expected.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(expected);
+    PastMeeting actual = cm.getPastMeeting(id);
+
     verify(meetings).get(id);
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
-  public void shouldBeGetNullThereIsNoPastMeeting() {
+  public void shouldGetNullWhenThereIsNoPastMeeting() {
     when(meetings.get(id)).thenReturn(null);
     Meeting actual = cm.getPastMeeting(id);
+
     verify(meetings).get(id);
     assertThat(null, is(equalTo(actual)));
   }
@@ -208,6 +256,7 @@ public class ContactManagerTest {
   @Test
   public void ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInTheFutureWhenGettingAPastMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     Meeting mockMeeting = mock(PastMeeting.class);
     date.add(Calendar.DATE, 1);
     when(mockMeeting.getDate()).thenReturn(date);
@@ -217,18 +266,21 @@ public class ContactManagerTest {
 
   @Test
   public void shouldBeAbleToGetAFutureMeeting() {
-    Meeting mockMeeting = mock(FutureMeeting.class);
+    Meeting expected = mock(FutureMeeting.class);
     date.add(Calendar.DATE, 1);
-    when(mockMeeting.getDate()).thenReturn(date);
-    when(meetings.get(id)).thenReturn(mockMeeting);
-    cm.getFutureMeeting(id);
+    when(expected.getDate()).thenReturn(date);
+    when(meetings.get(id)).thenReturn(expected);
+    FutureMeeting actual = cm.getFutureMeeting(id);
+
     verify(meetings).get(id);
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void shouldBeGetNullThereIsNoFutureMeeting() {
     when(meetings.get(id)).thenReturn(null);
     Meeting actual = cm.getFutureMeeting(id);
+
     verify(meetings).get(id);
     assertThat(null, is(equalTo(actual)));
   }
@@ -236,8 +288,9 @@ public class ContactManagerTest {
   @Test
   public void ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInThePastWhenGettingAFutureMeeting() {
     thrown.expect(IllegalArgumentException.class);
+
     Meeting mockMeeting = mock(PastMeeting.class);
-    date.add(Calendar.DATE, -1);
+    date.add(Calendar.DATE, -2);
     when(mockMeeting.getDate()).thenReturn(date);
     when(meetings.get(id)).thenReturn(mockMeeting);
     cm.getFutureMeeting(id);
@@ -245,16 +298,19 @@ public class ContactManagerTest {
 
   @Test
   public void shouldBeAbleToGetAMeeting() {
-    Meeting mockMeeting = mock(FutureMeeting.class);
-    when(meetings.get(id)).thenReturn(mockMeeting);
-    cm.getMeeting(id);
+    Meeting expected = mock(FutureMeeting.class);
+    when(meetings.get(id)).thenReturn(expected);
+    Meeting actual = cm.getMeeting(id);
+
     verify(meetings).get(id);
+    assertThat(actual, is(equalTo(expected)));
   }
 
   @Test
   public void shouldGetNullThereIsNoMeeting() {
     when(meetings.get(id)).thenReturn(null);
     Meeting actual = cm.getMeeting(id);
+
     verify(meetings).get(id);
     assertThat(null, is(equalTo(actual)));
   }
@@ -272,17 +328,17 @@ public class ContactManagerTest {
     List<Meeting> expected = new ArrayList<>();
     expected.add(futureMeeting1);
     expected.add(futureMeeting2);
-
     when(meetings.get(contact)).thenReturn(meetingsList);
     List<Meeting> actual = cm.getFutureMeetingList(contact);
-    verify(meetings).get(contact);
 
+    verify(meetings).get(contact);
     assertThat(expected, is(equalTo(actual)));
   }
 
   @Test
   public void shouldThrowIllegalArgumentExceptionIfTheContactDoesNotExist() {
     thrown.expect(IllegalArgumentException.class);
+
     Contact contact = mock(Contact.class);
     when(contacts.notValidContactId(contact.getId())).thenReturn(true);
     cm.getFutureMeetingList(contact);
@@ -292,11 +348,10 @@ public class ContactManagerTest {
   public void shouldBeAbleToGetAAnEmptyListOfFutureMeetingsForAContact() {
     Contact contact = mock(Contact.class);
     List<Meeting> expected = new ArrayList<>();
-
     when(meetings.get(contact)).thenReturn(null);
     List<Meeting> actual = cm.getFutureMeetingList(contact);
-    verify(meetings).get(contact);
 
+    verify(meetings).get(contact);
     assertThat(expected, is(equalTo(actual)));
   }
 
@@ -314,11 +369,10 @@ public class ContactManagerTest {
     List<Meeting> expected = new ArrayList<>();
     expected.add(futureMeeting1);
     expected.add(futureMeeting2);
-
     when(meetings.get(date)).thenReturn(meetingsList);
     List<Meeting> actual = cm.getFutureMeetingList(date);
-    verify(meetings).get(date);
 
+    verify(meetings).get(date);
     assertThat(expected, is(equalTo(actual)));
   }
 
@@ -334,16 +388,14 @@ public class ContactManagerTest {
     meetingsList.add(futureMeeting1);
     meetingsList.add(futureMeeting2);
     meetingsList.add(futureMeeting3);
-
     List<Meeting> expected = new ArrayList<>();
     expected.add(futureMeeting2);
     expected.add(futureMeeting3);
     expected.add(futureMeeting1);
-
     when(meetings.get(date)).thenReturn(meetingsList);
     List<Meeting> actual = cm.getFutureMeetingList(date);
-    verify(meetings).get(date);
 
+    verify(meetings).get(date);
     assertThat(expected, is(equalTo(actual)));
   }
 
@@ -360,17 +412,17 @@ public class ContactManagerTest {
     List<PastMeeting> expected = new ArrayList<>();
     expected.add(pastMeeting1);
     expected.add(pastMeeting2);
-
     when(meetings.get(contact)).thenReturn(meetingsList);
     List<PastMeeting> actual = cm.getPastMeetingList(contact);
-    verify(meetings).get(contact);
 
+    verify(meetings).get(contact);
     assertThat(expected, is(equalTo(actual)));
   }
 
   @Test
   public void shouldThrowAnIllegalArgumentExceptionIfTheContactDoesNotExistWhenGettingAListOfPastMeetings() {
     thrown.expect(IllegalArgumentException.class);
+
     Contact contact = mock(Contact.class);
     when(contacts.notValidContactId(contact.getId())).thenReturn(true);
     cm.getPastMeetingList(contact);
@@ -380,11 +432,10 @@ public class ContactManagerTest {
   public void shouldBeAbleToGetAnEmptyListOfPastMeetingsForAContact() {
     Contact contact = mock(Contact.class);
     List<PastMeeting> expected = new ArrayList<>();
-
     when(meetings.get(contact)).thenReturn(null);
     List<PastMeeting> actual = cm.getPastMeetingList(contact);
-    verify(meetings).get(contact);
 
+    verify(meetings).get(contact);
     assertThat(expected, is(equalTo(actual)));
   }
 

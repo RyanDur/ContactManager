@@ -113,18 +113,15 @@ public class ContactManagerImpl implements ContactManager {
   }
 
   private boolean dateIsBeforeToday(Calendar date) {
-    Calendar c = Calendar.getInstance();
-    c.set(Calendar.HOUR, 0);
-    c.set(Calendar.MINUTE, 0);
-    c.set(Calendar.SECOND, 0);
-    c.set(Calendar.MILLISECOND, 0);
-    return date.before(c.getTime());
+    int today = dateKey(Calendar.getInstance());
+    int otherDay = dateKey(date);
+    return otherDay < today;
   }
 
   private boolean dateIsAfterToday(Calendar date) {
-    Calendar c = Calendar.getInstance();
-    c.add(Calendar.DATE, 0);
-    return date.after(c.getTime());
+    int today = dateKey(Calendar.getInstance());
+    int otherDay = dateKey(date);
+    return otherDay > today;
   }
 
   private void sort(List<Meeting> meetings) {
@@ -140,6 +137,15 @@ public class ContactManagerImpl implements ContactManager {
         return o1.getDate().compareTo(o2.getDate());
       }
     };
+  }
+
+  private int dateKey(Calendar date) {
+    int year = date.get(Calendar.YEAR);
+    int month = date.get(Calendar.MONTH);
+    int week = date.get(Calendar.WEEK_OF_MONTH);
+    int day = date.get(Calendar.DAY_OF_WEEK);
+    String sDate = year + "" + month + "" + week + "" + day;
+    return Integer.parseInt(sDate);
   }
 
   private List<Meeting> extractFutureMeetings(List<Meeting> meetings) {
