@@ -10,29 +10,31 @@ import java.util.*;
 public class ContactManagerImpl implements ContactManager {
   Contacts contactsCtrl;
   Meetings meetingsCtrl;
+  CalendarDates dates;
 
-  public ContactManagerImpl(Contacts contacts, Meetings meetings) {
+  public ContactManagerImpl(Contacts contacts, Meetings meetings, CalendarDates dates) {
     contactsCtrl = contacts;
     meetingsCtrl = meetings;
+    this.dates = dates;
   }
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
-    if (contactsCtrl.notValidContactSet(contacts) || dateIsBeforeToday(date)) throw new IllegalArgumentException();
+    if (contactsCtrl.notValidContactSet(contacts) || dates.beforeToday(date)) throw new IllegalArgumentException();
     return meetingsCtrl.addFutureMeeting(contacts, date);
   }
 
   @Override
   public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
     Meeting meeting = getMeeting(id);
-    if (meeting != null && dateIsAfterToday(meeting.getDate())) throw new IllegalArgumentException();
+    if (meeting != null && dates.afterToday(meeting.getDate())) throw new IllegalArgumentException();
     return (PastMeeting) meeting;
   }
 
   @Override
   public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
     Meeting meeting = getMeeting(id);
-    if (meeting != null && dateIsBeforeToday(meeting.getDate())) throw new IllegalArgumentException();
+    if (meeting != null && dates.beforeToday(meeting.getDate())) throw new IllegalArgumentException();
     return (FutureMeeting) meeting;
   }
 
@@ -81,7 +83,7 @@ public class ContactManagerImpl implements ContactManager {
     if (text == null) throw new NullPointerException();
     Meeting meeting = meetingsCtrl.get(id);
     if (meeting == null) throw new IllegalArgumentException();
-    if (dateIsAfterToday(meeting.getDate())) throw new IllegalStateException();
+    if (dates.afterToday(meeting.getDate())) throw new IllegalStateException();
     meetingsCtrl.convertToPastMeeting(meeting, text);
   }
 
@@ -112,18 +114,6 @@ public class ContactManagerImpl implements ContactManager {
     //TODO
   }
 
-  private boolean dateIsBeforeToday(Calendar date) {
-    int today = dateKey(Calendar.getInstance());
-    int otherDay = dateKey(date);
-    return otherDay < today;
-  }
-
-  private boolean dateIsAfterToday(Calendar date) {
-    int today = dateKey(Calendar.getInstance());
-    int otherDay = dateKey(date);
-    return otherDay > today;
-  }
-
   private void sort(List<Meeting> meetings) {
     if (meetings != null) {
       Collections.sort(meetings, dateComparator());
@@ -137,15 +127,6 @@ public class ContactManagerImpl implements ContactManager {
         return o1.getDate().compareTo(o2.getDate());
       }
     };
-  }
-
-  private int dateKey(Calendar date) {
-    int year = date.get(Calendar.YEAR);
-    int month = date.get(Calendar.MONTH);
-    int week = date.get(Calendar.WEEK_OF_MONTH);
-    int day = date.get(Calendar.DAY_OF_WEEK);
-    String sDate = year + "" + month + "" + week + "" + day;
-    return Integer.parseInt(sDate);
   }
 
   private List<Meeting> extractFutureMeetings(List<Meeting> meetings) {

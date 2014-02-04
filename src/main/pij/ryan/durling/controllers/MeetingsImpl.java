@@ -4,31 +4,30 @@ import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.factories.MeetingFactory;
 import pij.ryan.durling.generators.IdGenerator;
 import pij.ryan.durling.models.Contact;
-import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
-import pij.ryan.durling.models.PastMeeting;
 
 import java.util.*;
 
 public class MeetingsImpl implements Meetings {
   MeetingFactory meetingFactory;
   private IdGenerator idGenerator;
+  private CalendarDates dates;
   private HashMap<Integer, Meeting> meetings = new HashMap<>();
   private HashMap<Integer, Set<Integer>> meetingsByDate = new HashMap<>();
   private HashMap<Integer, Set<Integer>> meetingsByContact = new HashMap<>();
 
-  public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator) {
+  public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator, CalendarDates dates) {
     this.meetingFactory = meetingFactory;
     this.idGenerator = idGenerator;
+    this.dates = dates;
   }
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
-    if (isInThePast(date)) throw new IllegalArgumentException();
+    if (dates.beforeToday(date)) throw new IllegalArgumentException();
     int meetingId = idGenerator.getMeetingId();
     try {
-      FutureMeeting meeting = meetingFactory.createFutureMeeting(meetingId, contacts, date);
-      addMeeting(meeting);
+      addMeeting(meetingFactory.createFutureMeeting(meetingId, contacts, date));
     } catch (InvalidMeetingException e) {
       System.out.println("Error " + e.getMessage());
       e.printStackTrace();
@@ -41,8 +40,7 @@ public class MeetingsImpl implements Meetings {
     if (contacts == null || date == null || text == null) throw new NullPointerException();
     int id = idGenerator.getMeetingId();
     try {
-      PastMeeting meeting = meetingFactory.createPastMeeting(id, contacts, date, text);
-      addMeeting(meeting);
+      addMeeting(meetingFactory.createPastMeeting(id, contacts, date, text));
     } catch (InvalidMeetingException e) {
       System.out.println("Error " + e.getMessage());
       e.printStackTrace();
@@ -52,11 +50,10 @@ public class MeetingsImpl implements Meetings {
   @Override
   public void convertToPastMeeting(Meeting meeting, String notes) throws IllegalStateException, NullPointerException, IllegalArgumentException {
     if (meetings.get(meeting.getId()) == null) throw new IllegalArgumentException();
-    if (isInTheFuture(meeting.getDate())) throw new IllegalStateException();
+    if (dates.afterToday(meeting.getDate())) throw new IllegalStateException();
     if (notes == null) throw new NullPointerException();
     try {
-      PastMeeting pastMeeting = meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), notes);
-      addMeeting(pastMeeting);
+      addMeeting(meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), notes));
     } catch (InvalidMeetingException e) {
       e.printStackTrace();
     }
@@ -69,7 +66,7 @@ public class MeetingsImpl implements Meetings {
 
   @Override
   public List<Meeting> get(Calendar date) {
-    Set<Integer> meetingIds = meetingsByDate.get(dateKey(date));
+    Set<Integer> meetingIds = meetingsByDate.get(dates.key(date));
     List<Meeting> resultList = new ArrayList<>();
     if (meetingIds != null) {
       for (Integer id : meetingIds) {
@@ -120,7 +117,7 @@ public class MeetingsImpl implements Meetings {
   }
 
   private void addMeetingByDate(Meeting meeting) {
-    Integer dateKey = dateKey(meeting.getDate());
+    Integer dateKey = dates.key(meeting.getDate());
     Set<Integer> meetings = meetingsByDate.get(dateKey);
     if (meetings == null) {
       Set<Integer> meetingIds = new HashSet<>();
@@ -129,22 +126,5 @@ public class MeetingsImpl implements Meetings {
     } else {
       meetings.add(meeting.getId());
     }
-  }
-
-  private int dateKey(Calendar date) {
-    int year = date.get(Calendar.YEAR);
-    int month = date.get(Calendar.MONTH);
-    int week = date.get(Calendar.WEEK_OF_MONTH);
-    int day = date.get(Calendar.DAY_OF_WEEK);
-    String sDate = year + "" + month + "" + week + "" + day;
-    return Integer.parseInt(sDate);
-  }
-
-  private boolean isInThePast(Calendar date) {
-    return date.compareTo(Calendar.getInstance()) < 0;
-  }
-
-  private boolean isInTheFuture(Calendar date) {
-    return date.compareTo(new GregorianCalendar()) > 0;
   }
 }

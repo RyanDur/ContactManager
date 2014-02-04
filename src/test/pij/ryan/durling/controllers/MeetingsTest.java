@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 public class MeetingsTest {
   Meetings meetings;
   MeetingFactory mockMeetingFactory;
+  CalendarDates mockDates;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
@@ -33,7 +34,8 @@ public class MeetingsTest {
   public void setup() {
     mockMeetingFactory = mock(MeetingFactory.class);
     mockIdGenerator = mock(IdGenerator.class);
-    meetings = new MeetingsImpl(mockMeetingFactory, mockIdGenerator);
+    mockDates = mock(CalendarDates.class);
+    meetings = new MeetingsImpl(mockMeetingFactory, mockIdGenerator, mockDates);
   }
 
   @Test
@@ -54,7 +56,9 @@ public class MeetingsTest {
     thrown.expect(IllegalArgumentException.class);
 
     Set<Contact> contacts = new HashSet<>();
-    meetings.addFutureMeeting(contacts, mockDate(-1));
+    Calendar date = mockDate(-1);
+    when(mockDates.beforeToday(date)).thenReturn(true);
+    meetings.addFutureMeeting(contacts, date);
   }
 
   @Test
@@ -174,8 +178,10 @@ public class MeetingsTest {
 
     String notes = "note";
     int id = 0;
+    Calendar date = mockDate(2);
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
-    addFutureMeeting(mockContacts(3), mockDate(2), id, futureMeeting);
+    when(mockDates.afterToday(date)).thenReturn(true);
+    addFutureMeeting(mockContacts(3), date, id, futureMeeting);
     meetings.convertToPastMeeting(futureMeeting, notes);
   }
 
@@ -245,7 +251,7 @@ public class MeetingsTest {
     date.set(Calendar.MINUTE, 0);
     date.set(Calendar.SECOND, 0);
     date.set(Calendar.MILLISECOND, 0);
-    date.add(Calendar.HOUR_OF_DAY, hour);
+    date.set(Calendar.HOUR_OF_DAY, hour);
     return date;
   }
 
