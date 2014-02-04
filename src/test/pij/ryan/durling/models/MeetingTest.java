@@ -25,15 +25,6 @@ public class MeetingTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private Set<Contact> getMockContacts(int numOfMocks) {
-    Set<Contact> set = new HashSet<>();
-    for (int i = 0; i < numOfMocks; i++) {
-      set.add(mock(Contact.class));
-    }
-    assertEquals(numOfMocks, set.size());
-    return set;
-  }
-
   @Before
   public void setup() {
     contacts = getMockContacts(3);
@@ -42,14 +33,14 @@ public class MeetingTest {
   }
 
   @Test
-  public void shouldThrowExceptionIfContacsAreNull() throws InvalidMeetingException {
+  public void shouldThrowExceptionIfContactsAreNull() throws InvalidMeetingException {
     thrown.expect(InvalidMeetingException.class);
 
     new MeetingImpl(id, null, date);
   }
 
   @Test
-  public void shouldThrowExceptionIfContacsAreEmpty() throws InvalidMeetingException {
+  public void shouldThrowExceptionIfContactsAreEmpty() throws InvalidMeetingException {
     thrown.expect(InvalidMeetingException.class);
 
     new MeetingImpl(id, getMockContacts(0), date);
@@ -62,5 +53,14 @@ public class MeetingTest {
     assertThat(id, is(equalTo(meeting.getId())));
     assertThat(date, is(equalTo(meeting.getDate())));
     assertThat(contacts, is(equalTo(meeting.getContacts())));
+  }
+
+  private Set<Contact> getMockContacts(int numOfMocks) {
+    Set<Contact> set = new HashSet<>();
+    for (int i = 0; i < numOfMocks; i++) {
+      set.add(mock(Contact.class));
+    }
+    assertEquals(numOfMocks, set.size());
+    return set;
   }
 }

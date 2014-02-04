@@ -17,7 +17,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class MeetingFactoryTest {
-  MeetingFactory mf;
+  private MeetingFactory mf;
 
   @Before
   public void setup() {

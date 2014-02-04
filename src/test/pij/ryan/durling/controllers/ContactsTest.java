@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mock;
 import pij.ryan.durling.factories.ContactFactory;
 import pij.ryan.durling.generators.IdGenerator;
 import pij.ryan.durling.models.Contact;
@@ -22,30 +23,29 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ContactsTest {
-  ContactFactory mockContactFactory;
-  IdGenerator mockIdGenerator;
-  Contacts contacts;
-  Contact contact;
-  int id;
-  String name;
-  String notes;
+
+  @Mock
+  private ContactFactory mockContactFactory;
+  @Mock
+  private IdGenerator mockIdGenerator;
+  @Mock
+  private Contact contact;
+
+  private Contacts contacts;
+  private String notes = "note";
+  private String name = "Ryan";
+  private int id = 0;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setup() {
-    id = 0;
-    name = "Ryan";
-    notes = "note";
-
-    mockContactFactory = mock(ContactFactory.class);
-    mockIdGenerator = mock(IdGenerator.class);
+    initMocks(this);
     contacts = new ContactsImpl(mockContactFactory, mockIdGenerator);
-
-    contact = mock(Contact.class);
     registerContact(contact, name, id);
     contacts.add(name, notes);
   }

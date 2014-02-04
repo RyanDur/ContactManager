@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mock;
 import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.factories.MeetingFactory;
 import pij.ryan.durling.generators.IdGenerator;
@@ -20,21 +21,25 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MeetingsTest {
-  Meetings meetings;
-  MeetingFactory mockMeetingFactory;
-  CalendarDates mockDates;
+
+  @Mock
+  private MeetingFactory mockMeetingFactory;
+  @Mock
+  private CalendarDates mockDates;
+  @Mock
+  private IdGenerator mockIdGenerator;
+
+  private Meetings meetings;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
-  private IdGenerator mockIdGenerator;
 
   @Before
   public void setup() {
-    mockMeetingFactory = mock(MeetingFactory.class);
-    mockIdGenerator = mock(IdGenerator.class);
-    mockDates = mock(CalendarDates.class);
+    initMocks(this);
     meetings = new MeetingsImpl(mockMeetingFactory, mockIdGenerator, mockDates);
   }
 
@@ -189,12 +194,11 @@ public class MeetingsTest {
   public void shouldThrowANullPointerExceptionIfTheNotesAreNullWhenConvertingToAPastMeeting() {
     thrown.expect(NullPointerException.class);
 
-    String notes = null;
     int id = 0;
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
     addFutureMeeting(mockContacts(3), mockDate(2), id, futureMeeting);
     when(futureMeeting.getDate()).thenReturn(mockDate(-1));
-    meetings.convertToPastMeeting(futureMeeting, notes);
+    meetings.convertToPastMeeting(futureMeeting, null);
   }
 
   @Test

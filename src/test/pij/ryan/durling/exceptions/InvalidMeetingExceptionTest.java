@@ -4,10 +4,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- * Created by ryandurling on 2/4/14.
- */
 public class InvalidMeetingExceptionTest {
+
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 

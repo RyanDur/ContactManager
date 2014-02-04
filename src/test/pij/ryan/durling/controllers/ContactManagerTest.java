@@ -17,22 +17,30 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.Mock;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ContactManagerTest {
-  CalendarDates mockDates  = mock(CalendarDates.class);
-  Contacts mockContacts = mock(Contacts.class);
-  Meetings mockMeetings = mock(Meetings.class);
-  Set<Contact> contactSet = new HashSet<>();
-  String notes = "notes";
-  ContactManager cm;
-  Calendar date;
-  int id = 0;
+
+  @Mock
+  private CalendarDates mockDates;
+  @Mock
+  private Contacts mockContacts;
+  @Mock
+  private Meetings mockMeetings;
+
+  private Set<Contact> contactSet = new HashSet<>();
+  private String notes = "notes";
+  private ContactManager cm;
+  private Calendar date;
+  private int id = 0;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setup() {
+    initMocks(this);
     cm = new ContactManagerImpl(mockContacts, mockMeetings, mockDates);
     contactSet.add(mock(Contact.class));
     date = Calendar.getInstance();
@@ -63,7 +71,7 @@ public class ContactManagerTest {
   public void shouldBeAbleToGetAContactByName() {
     Set<Contact> expected = new HashSet<>();
     when(mockContacts.get(anyString())).thenReturn(expected);
-    Set<Contact> actual =  cm.getContacts("Ryan");
+    Set<Contact> actual = cm.getContacts("Ryan");
 
     verify(mockContacts).get(anyString());
     assertThat(actual, is(equalTo(expected)));
