@@ -44,7 +44,6 @@ public class MeetingTest {
   @Test
   public void shouldThrowExceptionIfContacsAreNull() throws InvalidMeetingException {
     thrown.expect(InvalidMeetingException.class);
-    thrown.expectMessage("Needs atleast one contact");
 
     new MeetingImpl(id, null, date);
   }
@@ -52,7 +51,6 @@ public class MeetingTest {
   @Test
   public void shouldThrowExceptionIfContacsAreEmpty() throws InvalidMeetingException {
     thrown.expect(InvalidMeetingException.class);
-    thrown.expectMessage("Needs atleast one contact");
 
     new MeetingImpl(id, getMockContacts(0), date);
   }
