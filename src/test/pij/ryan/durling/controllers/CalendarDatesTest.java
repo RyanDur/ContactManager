@@ -10,7 +10,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class CalendarDatesImplTest {
+public class CalendarDatesTest {
   CalendarDates cd;
   @Before
   public void setup() {
