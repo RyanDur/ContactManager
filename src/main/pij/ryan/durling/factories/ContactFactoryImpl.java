@@ -3,9 +3,7 @@ package pij.ryan.durling.factories;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.ContactImpl;
 
-import java.io.Serializable;
-
-public class ContactFactoryImpl implements ContactFactory, Serializable {
+public class ContactFactoryImpl implements ContactFactory {
   private static ContactFactory contactFactoryInstance = null;
 
   private ContactFactoryImpl() {

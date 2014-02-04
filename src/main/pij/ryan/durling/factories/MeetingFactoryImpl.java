@@ -3,11 +3,10 @@ package pij.ryan.durling.factories;
 import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.models.*;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Set;
 
-public class MeetingFactoryImpl implements MeetingFactory, Serializable {
+public class MeetingFactoryImpl implements MeetingFactory {
   private static MeetingFactory meetingFactoryInstance = null;
 
   private MeetingFactoryImpl() {

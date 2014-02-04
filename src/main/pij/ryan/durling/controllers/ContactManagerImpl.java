@@ -16,6 +16,7 @@ public class ContactManagerImpl implements ContactManager {
     contactsCtrl = contacts;
     meetingsCtrl = meetings;
     this.dates = dates;
+    onExitHook();
   }
 
   @Override
@@ -112,6 +113,15 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public void flush() {
     //TODO
+  }
+
+  private void onExitHook() {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        flush();
+      }
+    });
   }
 
   private void sort(List<Meeting> meetings) {
