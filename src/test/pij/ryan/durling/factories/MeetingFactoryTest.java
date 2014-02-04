@@ -2,6 +2,8 @@ package pij.ryan.durling.factories;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.FutureMeeting;
@@ -17,11 +19,13 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class MeetingFactoryTest {
-  private MeetingFactory mf;
+
+  @Spy
+  private MeetingFactory mf = MeetingFactoryImpl.getInstance();
 
   @Before
   public void setup() {
-    mf = spy(MeetingFactoryImpl.getInstance());
+    MockitoAnnotations.initMocks(this);
   }
 
   @Test
