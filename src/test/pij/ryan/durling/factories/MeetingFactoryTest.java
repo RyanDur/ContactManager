@@ -2,7 +2,6 @@ package pij.ryan.durling.factories;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.models.Contact;
@@ -17,6 +16,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MeetingFactoryTest {
 
@@ -25,7 +25,7 @@ public class MeetingFactoryTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    initMocks(this);
   }
 
   @Test
