@@ -9,7 +9,6 @@ import pij.ryan.durling.models.PastMeeting;
 
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -29,8 +28,7 @@ public class MeetingFactoryTest {
   public void shouldBeAbleToGetAnInstanceOfAPastMeeting() throws InvalidMeetingException {
     PastMeeting expected = mock(PastMeeting.class);
     doReturn(expected).when(mf).createPastMeeting(anyInt(), anySetOf(Contact.class), any(Calendar.class), anyString());
-    Set<Contact> contactSet = new HashSet<>();
-    PastMeeting actual = mf.createPastMeeting(0, contactSet, Calendar.getInstance(), "notes");
+    PastMeeting actual = mf.createPastMeeting(0, new HashSet<Contact>(), Calendar.getInstance(), "notes");
 
     assertThat(actual, is(equalTo(expected)));
   }
@@ -39,8 +37,7 @@ public class MeetingFactoryTest {
   public void shouldBeAbleToGetAnInstanceOfAFutureMeeting() throws InvalidMeetingException {
     FutureMeeting expected = mock(FutureMeeting.class);
     doReturn(expected).when(mf).createFutureMeeting(anyInt(), anySetOf(Contact.class), any(Calendar.class));
-    Set<Contact> contactSet = new HashSet<>();
-    FutureMeeting actual = mf.createFutureMeeting(0, contactSet, Calendar.getInstance());
+    FutureMeeting actual = mf.createFutureMeeting(0, new HashSet<Contact>(), Calendar.getInstance());
 
     assertThat(actual, is(equalTo(expected)));
   }
