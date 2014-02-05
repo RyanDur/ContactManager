@@ -3,6 +3,8 @@ package pij.ryan.durling.controllers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.Assertion;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.rules.ExpectedException;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.FutureMeeting;

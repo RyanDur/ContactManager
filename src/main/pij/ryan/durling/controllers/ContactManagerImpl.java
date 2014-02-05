@@ -47,13 +47,15 @@ public class ContactManagerImpl implements ContactManager {
   @Override
   public List<Meeting> getFutureMeetingList(Contact contact) throws IllegalArgumentException {
     if (contactsCtrl.notValidContactId(contact.getId())) throw new IllegalArgumentException();
-    return extractFutureMeetings(meetingsCtrl.get(contact));
+    List<Meeting> meetings = extractFutureMeetings(meetingsCtrl.get(contact));
+    sortChronologically(meetings);
+    return meetings;
   }
 
   @Override
   public List<Meeting> getFutureMeetingList(Calendar date) {
     List<Meeting> meetingList = extractFutureMeetings(meetingsCtrl.get(date));
-    sort(meetingList);
+    sortChronologically(meetingList);
     return meetingList;
   }
 
@@ -69,6 +71,7 @@ public class ContactManagerImpl implements ContactManager {
         }
       }
     }
+    sortChronologically(meetingList);
     return meetingList;
   }
 
@@ -115,16 +118,11 @@ public class ContactManagerImpl implements ContactManager {
     //TODO
   }
 
-  private void onExitHook() {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        flush();
-      }
-    });
+  private void exitHook() {
+    serializers.onExit(this);
   }
 
-  private void sort(List<Meeting> meetings) {
+  private void sortChronologically(List<? extends Meeting> meetings) {
     if (meetings != null) {
       Collections.sort(meetings, dateComparator());
     }
