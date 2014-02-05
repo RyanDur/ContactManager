@@ -1,19 +1,17 @@
 package pij.ryan.durling.serializers;
 
-import pij.ryan.durling.controllers.ContactManager;
 import pij.ryan.durling.controllers.Contacts;
 import pij.ryan.durling.controllers.Meetings;
-import pij.ryan.durling.serializers.Serializers;
 
 import java.io.*;
 
 public class SerializersImpl implements Serializers {
-  private static final String fileName = "contacts.txt";
+  private static final String FILE_NAME = "contacts.txt";
 
   @Override
   public void serialize(Meetings meetings, Contacts contacts) {
     try {
-      FileOutputStream fout = new FileOutputStream(fileName);
+      FileOutputStream fout = new FileOutputStream(FILE_NAME);
       ObjectOutputStream oos = new ObjectOutputStream(fout);
       oos.writeObject(meetings);
       oos.writeObject(contacts);
@@ -25,18 +23,19 @@ public class SerializersImpl implements Serializers {
   }
 
   @Override
-  public ContactManager deserialize() {
-    ContactManager contactManager = null;
+  public Object[] deserialize() {
+    Meetings meetings = null;
+    Contacts contacts = null;
     try {
-      FileInputStream fin = new FileInputStream(fileName);
+      FileInputStream fin = new FileInputStream(FILE_NAME);
       ObjectInputStream ois = new ObjectInputStream(fin);
-      contactManager = (ContactManager) ois.readObject();
+      meetings = (Meetings) ois.readObject();
+      contacts = (Contacts) ois.readObject();
       ois.close();
       fin.close();
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
     }
-
-    return contactManager;
+    return new Object[]{meetings, contacts};
   }
 }
