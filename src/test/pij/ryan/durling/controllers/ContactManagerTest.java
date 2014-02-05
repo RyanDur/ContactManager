@@ -23,25 +23,27 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ContactManagerTest {
 
   @Mock
-  private CalendarDates mockDates;
-  @Mock
   private Contacts mockContacts;
   @Mock
   private Meetings mockMeetings;
 
+  private Serializers mockSerializers = mock(Serializers.class);
+
+  private ContactManager cm;
   private Set<Contact> contactSet = new HashSet<>();
   private String notes = "notes";
-  private ContactManager cm;
   private Calendar date;
   private int id = 0;
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
+  @Rule
+  public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
   @Before
   public void setup() {
     initMocks(this);
-    cm = new ContactManagerImpl(mockContacts, mockMeetings, mockDates);
+    cm = new ContactManagerImpl(mockContacts, mockMeetings, mockSerializers);
     contactSet.add(mock(Contact.class));
     date = Calendar.getInstance();
   }
@@ -150,7 +152,7 @@ public class ContactManagerTest {
     thrown.expect(IllegalArgumentException.class);
 
     date.add(Calendar.DATE, -1);
-    when(mockDates.beforeToday(date)).thenReturn(true);
+    when(mockMeetings.beforeToday(date)).thenReturn(true);
     when(mockContacts.notValidContactSet(contactSet)).thenReturn(false);
     cm.addFutureMeeting(contactSet, date);
   }
@@ -225,7 +227,7 @@ public class ContactManagerTest {
 
     FutureMeeting mockFutureMeeting = mock(FutureMeeting.class);
     date.add(Calendar.DATE, 1);
-    when(mockDates.afterToday(date)).thenReturn(true);
+    when(mockMeetings.afterToday(date)).thenReturn(true);
     when(mockFutureMeeting.getDate()).thenReturn(date);
     when(mockMeetings.get(id)).thenReturn(mockFutureMeeting);
     cm.addMeetingNotes(id, notes);
@@ -269,7 +271,7 @@ public class ContactManagerTest {
 
     Meeting mockMeeting = mock(PastMeeting.class);
     date.add(Calendar.DATE, 1);
-    when(mockDates.afterToday(date)).thenReturn(true);
+    when(mockMeetings.afterToday(date)).thenReturn(true);
     when(mockMeeting.getDate()).thenReturn(date);
     when(mockMeetings.get(id)).thenReturn(mockMeeting);
     cm.getPastMeeting(id);
@@ -303,7 +305,7 @@ public class ContactManagerTest {
     Meeting mockMeeting = mock(PastMeeting.class);
     date.add(Calendar.DATE, -2);
     when(mockMeeting.getDate()).thenReturn(date);
-    when(mockDates.beforeToday(date)).thenReturn(true);
+    when(mockMeetings.beforeToday(date)).thenReturn(true);
     when(mockMeetings.get(id)).thenReturn(mockMeeting);
     cm.getFutureMeeting(id);
   }
@@ -328,18 +330,24 @@ public class ContactManagerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetAListOfFutureMeetingsForAContact() {
+  public void shouldBeAbleToGetAListOfFutureMeetingsForAContactInChronologicalOrder() {
     Contact contact = mock(Contact.class);
+    Calendar date1 = Calendar.getInstance();
+    date1.add(Calendar.DATE, 2);
+    Calendar date2 = Calendar.getInstance();
+    date2.add(Calendar.DATE, 1);
     List<Meeting> meetingsList = new ArrayList<>();
     FutureMeeting futureMeeting1 = mock(FutureMeeting.class);
+    when(futureMeeting1.getDate()).thenReturn(date1);
     FutureMeeting futureMeeting2 = mock(FutureMeeting.class);
+    when(futureMeeting2.getDate()).thenReturn(date2);
     PastMeeting pastMeeting = mock(PastMeeting.class);
     meetingsList.add(futureMeeting1);
     meetingsList.add(pastMeeting);
     meetingsList.add(futureMeeting2);
     List<Meeting> expected = new ArrayList<>();
-    expected.add(futureMeeting1);
     expected.add(futureMeeting2);
+    expected.add(futureMeeting1);
     when(mockMeetings.get(contact)).thenReturn(meetingsList);
     List<Meeting> actual = cm.getFutureMeetingList(contact);
 
@@ -412,18 +420,24 @@ public class ContactManagerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetAListOfPastMeetingsForAContact() {
+  public void shouldBeAbleToGetAListOfPastMeetingsForAContactInChronologicalOrder() {
     Contact contact = mock(Contact.class);
+    Calendar date1 = Calendar.getInstance();
+    date1.add(Calendar.DATE, -1);
+    Calendar date2 = Calendar.getInstance();
+    date2.add(Calendar.DATE, -2);
     List<Meeting> meetingsList = new ArrayList<>();
     PastMeeting pastMeeting1 = mock(PastMeeting.class);
+    when(pastMeeting1.getDate()).thenReturn(date1);
     PastMeeting pastMeeting2 = mock(PastMeeting.class);
+    when(pastMeeting2.getDate()).thenReturn(date2);
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
     meetingsList.add(pastMeeting1);
     meetingsList.add(futureMeeting);
     meetingsList.add(pastMeeting2);
     List<PastMeeting> expected = new ArrayList<>();
-    expected.add(pastMeeting1);
     expected.add(pastMeeting2);
+    expected.add(pastMeeting1);
     when(mockMeetings.get(contact)).thenReturn(meetingsList);
     List<PastMeeting> actual = cm.getPastMeetingList(contact);
 

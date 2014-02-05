@@ -11,20 +11,18 @@ import java.util.*;
 public class MeetingsImpl implements Meetings {
   MeetingFactory meetingFactory;
   private IdGenerator idGenerator;
-  private CalendarDates dates;
   private HashMap<Integer, Meeting> meetings = new HashMap<>();
   private HashMap<Integer, Set<Integer>> meetingsByDate = new HashMap<>();
   private HashMap<Integer, Set<Integer>> meetingsByContact = new HashMap<>();
 
-  public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator, CalendarDates dates) {
+  public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator) {
     this.meetingFactory = meetingFactory;
     this.idGenerator = idGenerator;
-    this.dates = dates;
   }
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) {
-    if (dates.beforeToday(date)) throw new IllegalArgumentException();
+    if (beforeToday(date)) throw new IllegalArgumentException();
     int meetingId = idGenerator.getMeetingId();
     try {
       addMeeting(meetingFactory.createFutureMeeting(meetingId, contacts, date));
@@ -50,7 +48,7 @@ public class MeetingsImpl implements Meetings {
   @Override
   public void convertToPastMeeting(Meeting meeting, String notes) throws IllegalStateException, NullPointerException, IllegalArgumentException {
     if (meetings.get(meeting.getId()) == null) throw new IllegalArgumentException();
-    if (dates.afterToday(meeting.getDate())) throw new IllegalStateException();
+    if (afterToday(meeting.getDate())) throw new IllegalStateException();
     if (notes == null) throw new NullPointerException();
     try {
       addMeeting(meetingFactory.createPastMeeting(meeting.getId(), meeting.getContacts(), meeting.getDate(), notes));
@@ -60,13 +58,36 @@ public class MeetingsImpl implements Meetings {
   }
 
   @Override
+  public boolean beforeToday(Calendar date) {
+    int today = dateKey(Calendar.getInstance());
+    int otherDay = dateKey(date);
+    return otherDay < today;
+  }
+
+  @Override
+  public boolean afterToday(Calendar date) {
+    int today = dateKey(Calendar.getInstance());
+    int otherDay = dateKey(date);
+    return otherDay > today;
+  }
+
+  private int dateKey(Calendar date) {
+    int year = date.get(Calendar.YEAR);
+    int month = date.get(Calendar.MONTH);
+    int week = date.get(Calendar.WEEK_OF_MONTH);
+    int day = date.get(Calendar.DAY_OF_WEEK);
+    String sDate = "" + year + month + week + day;
+    return Integer.parseInt(sDate);
+  }
+
+  @Override
   public Meeting get(int id) {
     return meetings.get(id);
   }
 
   @Override
   public List<Meeting> get(Calendar date) {
-    Set<Integer> meetingIds = meetingsByDate.get(dates.key(date));
+    Set<Integer> meetingIds = meetingsByDate.get(dateKey(date));
     List<Meeting> resultList = new ArrayList<>();
     if (meetingIds != null) {
       for (Integer id : meetingIds) {
@@ -117,7 +138,7 @@ public class MeetingsImpl implements Meetings {
   }
 
   private void addMeetingByDate(Meeting meeting) {
-    Integer dateKey = dates.key(meeting.getDate());
+    Integer dateKey = dateKey(meeting.getDate());
     Set<Integer> meetings = meetingsByDate.get(dateKey);
     if (meetings == null) {
       Set<Integer> meetingIds = new HashSet<>();

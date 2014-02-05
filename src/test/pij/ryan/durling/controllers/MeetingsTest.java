@@ -15,6 +15,7 @@ import pij.ryan.durling.models.PastMeeting;
 
 import java.util.*;
 
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -28,8 +29,6 @@ public class MeetingsTest {
   @Mock
   private MeetingFactory mockMeetingFactory;
   @Mock
-  private CalendarDates mockDates;
-  @Mock
   private IdGenerator mockIdGenerator;
 
   private Meetings meetings;
@@ -40,7 +39,7 @@ public class MeetingsTest {
   @Before
   public void setup() {
     initMocks(this);
-    meetings = new MeetingsImpl(mockMeetingFactory, mockIdGenerator, mockDates);
+    meetings = new MeetingsImpl(mockMeetingFactory, mockIdGenerator);
   }
 
   @Test
@@ -62,7 +61,6 @@ public class MeetingsTest {
 
     Set<Contact> contacts = new HashSet<>();
     Calendar date = mockDate(-1);
-    when(mockDates.beforeToday(date)).thenReturn(true);
     meetings.addFutureMeeting(contacts, date);
   }
 
@@ -185,7 +183,6 @@ public class MeetingsTest {
     int id = 0;
     Calendar date = mockDate(2);
     FutureMeeting futureMeeting = mock(FutureMeeting.class);
-    when(mockDates.afterToday(date)).thenReturn(true);
     addFutureMeeting(mockContacts(3), date, id, futureMeeting);
     meetings.convertToPastMeeting(futureMeeting, notes);
   }
@@ -213,6 +210,21 @@ public class MeetingsTest {
     meetings.convertToPastMeeting(futureMeeting, notes);
   }
 
+  @Test
+  public void shouldKnowIfDateIsBeforeToday() {
+    Calendar date = Calendar.getInstance();
+    date.add(Calendar.DATE, -1);
+
+    assertTrue(meetings.beforeToday(date));
+  }
+
+  @Test
+  public void shouldKnowIfDateIsAfterToday() {
+    Calendar date = Calendar.getInstance();
+    date.add(Calendar.DATE, 1);
+
+    assertTrue(meetings.afterToday(date));
+  }
 
   private void addPastMeeting(Set<Contact> contacts, Calendar date, String text, PastMeeting mockPastMeeting, int id) {
     setPastMeeting(mockPastMeeting);

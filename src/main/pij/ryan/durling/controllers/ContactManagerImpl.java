@@ -10,32 +10,32 @@ import java.util.*;
 public class ContactManagerImpl implements ContactManager {
   Contacts contactsCtrl;
   Meetings meetingsCtrl;
-  CalendarDates dates;
+  Serializers serializers;
 
-  public ContactManagerImpl(Contacts contacts, Meetings meetings, CalendarDates dates) {
+  public ContactManagerImpl(Contacts contacts, Meetings meetings, Serializers serializers) {
     contactsCtrl = contacts;
     meetingsCtrl = meetings;
-    this.dates = dates;
-    onExitHook();
+    this.serializers = serializers;
+    exitHook();
   }
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
-    if (contactsCtrl.notValidContactSet(contacts) || dates.beforeToday(date)) throw new IllegalArgumentException();
+    if (contactsCtrl.notValidContactSet(contacts) || meetingsCtrl.beforeToday(date)) throw new IllegalArgumentException();
     return meetingsCtrl.addFutureMeeting(contacts, date);
   }
 
   @Override
   public PastMeeting getPastMeeting(int id) throws IllegalArgumentException {
     Meeting meeting = getMeeting(id);
-    if (meeting != null && dates.afterToday(meeting.getDate())) throw new IllegalArgumentException();
+    if (meeting != null && meetingsCtrl.afterToday(meeting.getDate())) throw new IllegalArgumentException();
     return (PastMeeting) meeting;
   }
 
   @Override
   public FutureMeeting getFutureMeeting(int id) throws IllegalArgumentException {
     Meeting meeting = getMeeting(id);
-    if (meeting != null && dates.beforeToday(meeting.getDate())) throw new IllegalArgumentException();
+    if (meeting != null && meetingsCtrl.beforeToday(meeting.getDate())) throw new IllegalArgumentException();
     return (FutureMeeting) meeting;
   }
 
@@ -84,7 +84,7 @@ public class ContactManagerImpl implements ContactManager {
     if (text == null) throw new NullPointerException();
     Meeting meeting = meetingsCtrl.get(id);
     if (meeting == null) throw new IllegalArgumentException();
-    if (dates.afterToday(meeting.getDate())) throw new IllegalStateException();
+    if (meetingsCtrl.afterToday(meeting.getDate())) throw new IllegalStateException();
     meetingsCtrl.convertToPastMeeting(meeting, text);
   }
 

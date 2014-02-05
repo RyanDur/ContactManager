@@ -19,4 +19,8 @@ public interface Meetings {
   List<Meeting> get(Contact contact);
 
   void convertToPastMeeting(Meeting meeting, String notes);
+
+  boolean beforeToday(Calendar date);
+
+  boolean afterToday(Calendar date);
 }
