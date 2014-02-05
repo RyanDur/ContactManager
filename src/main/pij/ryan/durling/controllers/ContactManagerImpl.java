@@ -4,6 +4,7 @@ import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 import pij.ryan.durling.models.PastMeeting;
+import pij.ryan.durling.serializers.Serializers;
 
 import java.util.*;
 
@@ -16,12 +17,13 @@ public class ContactManagerImpl implements ContactManager {
     contactsCtrl = contacts;
     meetingsCtrl = meetings;
     this.serializers = serializers;
-    exitHook();
+    Runtime.getRuntime().addShutdownHook(flushHook());
   }
 
   @Override
   public int addFutureMeeting(Set<Contact> contacts, Calendar date) throws IllegalArgumentException {
-    if (contactsCtrl.notValidContactSet(contacts) || meetingsCtrl.beforeToday(date)) throw new IllegalArgumentException();
+    if (contactsCtrl.notValidContactSet(contacts) || meetingsCtrl.beforeToday(date))
+      throw new IllegalArgumentException();
     return meetingsCtrl.addFutureMeeting(contacts, date);
   }
 
@@ -115,11 +117,16 @@ public class ContactManagerImpl implements ContactManager {
 
   @Override
   public void flush() {
-    //TODO
+    serializers.serialize(meetingsCtrl, contactsCtrl);
   }
 
-  private void exitHook() {
-    serializers.onExit(this);
+  private Thread flushHook() {
+    return new Thread(new Runnable() {
+      @Override
+      public void run() {
+        flush();
+      }
+    });
   }
 
   private void sortChronologically(List<? extends Meeting> meetings) {
@@ -131,8 +138,8 @@ public class ContactManagerImpl implements ContactManager {
   private Comparator dateComparator() {
     return new Comparator<Meeting>() {
       @Override
-      public int compare(Meeting o1, Meeting o2) {
-        return o1.getDate().compareTo(o2.getDate());
+      public int compare(Meeting meeting1, Meeting meeting2) {
+        return meeting1.getDate().compareTo(meeting2.getDate());
       }
     };
   }

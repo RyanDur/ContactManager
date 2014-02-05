@@ -3,13 +3,12 @@ package pij.ryan.durling.controllers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.Assertion;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.rules.ExpectedException;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 import pij.ryan.durling.models.PastMeeting;
+import pij.ryan.durling.serializers.Serializers;
 
 import java.util.*;
 
@@ -39,8 +38,6 @@ public class ContactManagerTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();
-  @Rule
-  public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
   @Before
   public void setup() {
@@ -465,6 +462,12 @@ public class ContactManagerTest {
 
     verify(mockMeetings).get(contact);
     assertThat(expected, is(equalTo(actual)));
+  }
+
+  @Test
+  public void shouldSerializeOnFlush() {
+    cm.flush();
+    verify(mockSerializers).serialize(eq(mockMeetings), eq(mockContacts));
   }
 
   private Calendar mockDay(int hour) {

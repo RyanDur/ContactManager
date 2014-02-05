@@ -6,9 +6,10 @@ import pij.ryan.durling.generators.IdGenerator;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.Meeting;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class MeetingsImpl implements Meetings {
+public class MeetingsImpl implements Meetings, Serializable {
   MeetingFactory meetingFactory;
   private IdGenerator idGenerator;
   private HashMap<Integer, Meeting> meetings = new HashMap<>();

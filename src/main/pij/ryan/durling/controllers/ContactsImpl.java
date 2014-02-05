@@ -4,12 +4,13 @@ import pij.ryan.durling.factories.ContactFactory;
 import pij.ryan.durling.generators.IdGenerator;
 import pij.ryan.durling.models.Contact;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ContactsImpl implements Contacts {
+public class ContactsImpl implements Contacts, Serializable {
 
   private Map<String, Set<Contact>> contactsByName = new HashMap<>();
   private Map<Integer, Contact> contactsById = new HashMap<>();
