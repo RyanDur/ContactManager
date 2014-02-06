@@ -485,7 +485,7 @@ public class ContactManagerTest {
     date.set(Calendar.MINUTE, 0);
     date.set(Calendar.SECOND, 0);
     date.set(Calendar.MILLISECOND, 0);
-    date.add(Calendar.HOUR_OF_DAY, hour);
+    date.set(Calendar.HOUR_OF_DAY, hour);
     return date;
   }
 }
