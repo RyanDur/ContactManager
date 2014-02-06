@@ -1,5 +1,6 @@
 package pij.ryan.durling.controllers;
 
+import com.google.inject.Inject;
 import pij.ryan.durling.factories.ContactFactory;
 import pij.ryan.durling.generators.IdGenerator;
 import pij.ryan.durling.models.Contact;
@@ -18,6 +19,7 @@ public class ContactsImpl implements Contacts, Serializable {
   private ContactFactory contactFactory;
   private IdGenerator idGenerator;
 
+  @Inject
   public ContactsImpl(ContactFactory contactFactory, IdGenerator idGenerator) {
     this.contactFactory = contactFactory;
     this.idGenerator = idGenerator;

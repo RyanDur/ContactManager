@@ -1,9 +1,13 @@
 package pij.ryan.durling.controllers;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import pij.ryan.durling.models.Contact;
 import pij.ryan.durling.models.FutureMeeting;
 import pij.ryan.durling.models.Meeting;
 import pij.ryan.durling.models.PastMeeting;
+import pij.ryan.durling.modules.ContactManagerModule;
 import pij.ryan.durling.serializers.Serializers;
 
 import java.util.*;
@@ -14,6 +18,7 @@ public class ContactManagerImpl implements ContactManager {
   private Meetings meetingsCtrl;
   private Serializers serializers;
 
+  @Inject
   public ContactManagerImpl(Contacts contacts, Meetings meetings, Serializers serializers) {
     this.serializers = serializers;
     this.serializers.setFileName(FILE_NAME);
@@ -162,5 +167,10 @@ public class ContactManagerImpl implements ContactManager {
       }
     }
     return meetingList;
+  }
+
+  public static void main(String []args) {
+    Injector injector = Guice.createInjector(new ContactManagerModule());
+    ContactManager contactManager = injector.getInstance(ContactManagerImpl.class);
   }
 }

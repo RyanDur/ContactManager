@@ -21,7 +21,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class MeetingFactoryTest {
 
   @Spy
-  private MeetingFactory mf = MeetingFactoryImpl.getInstance();
+  private MeetingFactory mf = new MeetingFactoryImpl();
 
   @Before
   public void setup() {

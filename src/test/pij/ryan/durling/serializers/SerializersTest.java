@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Set;
 
-import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
@@ -33,8 +33,8 @@ public class SerializersTest {
 
   @Before
   public void setup() {
-    meetings = new MeetingsImpl(MeetingFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
-    contacts = new ContactsImpl(ContactFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
+    meetings = new MeetingsImpl(new MeetingFactoryImpl(), new IdGeneratorImpl());
+    contacts = new ContactsImpl(new ContactFactoryImpl(), new IdGeneratorImpl());
     name = "Ryan";
     contacts.add(name, "notes");
     contactSet = contacts.get(name);
@@ -43,7 +43,7 @@ public class SerializersTest {
     meetings.addFutureMeeting(contactSet, date);
 
     serializers = new SerializersImpl();
-    fileName = "contacts.txt";
+    fileName = "contactsTest.txt";
     serializers.setFileName(fileName);
   }
 

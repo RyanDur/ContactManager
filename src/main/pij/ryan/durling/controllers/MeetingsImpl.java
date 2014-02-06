@@ -1,5 +1,6 @@
 package pij.ryan.durling.controllers;
 
+import com.google.inject.Inject;
 import pij.ryan.durling.exceptions.InvalidMeetingException;
 import pij.ryan.durling.factories.MeetingFactory;
 import pij.ryan.durling.generators.IdGenerator;
@@ -18,6 +19,7 @@ public class MeetingsImpl implements Meetings, Serializable {
   private HashMap<Integer, Set<Integer>> meetingsByDate = new HashMap<>();
   private HashMap<Integer, Set<Integer>> meetingsByContact = new HashMap<>();
 
+  @Inject
   public MeetingsImpl(MeetingFactory meetingFactory, IdGenerator idGenerator) {
     this.meetingFactory = meetingFactory;
     this.idGenerator = idGenerator;

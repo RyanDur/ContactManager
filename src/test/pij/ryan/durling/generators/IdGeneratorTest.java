@@ -11,7 +11,7 @@ public class IdGeneratorTest {
 
   @Before
   public void setup() {
-    idGenerator = IdGeneratorImpl.getInstance();
+    idGenerator = new IdGeneratorImpl();
   }
 
   @Test
