@@ -3,9 +3,7 @@ package pij.ryan.durling.generators;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertTrue;
 
 public class IdGeneratorTest {
 
@@ -18,15 +16,27 @@ public class IdGeneratorTest {
 
   @Test
   public void shouldGetAnIncrementedNumberForAContactId() {
-    assertThat(idGenerator.getContactId(), is(equalTo(0)));
-    assertThat(idGenerator.getContactId(), is(equalTo(1)));
-    assertThat(idGenerator.getContactId(), is(equalTo(2)));
+    int original = idGenerator.getContactId();
+    int next = idGenerator.getContactId();
+    assertTrue(original < next);
+    original = idGenerator.getContactId();
+    next = idGenerator.getContactId();
+    assertTrue(original < next);
+    original = idGenerator.getContactId();
+    next = idGenerator.getContactId();
+    assertTrue(original < next);
   }
 
   @Test
   public void shouldGetAnIncrementedNumberForAMeetingId() {
-    assertThat(idGenerator.getMeetingId(), is(equalTo(0)));
-    assertThat(idGenerator.getMeetingId(), is(equalTo(1)));
-    assertThat(idGenerator.getMeetingId(), is(equalTo(2)));
+    int original = idGenerator.getMeetingId();
+    int next = idGenerator.getMeetingId();
+    assertTrue(original < next);
+    original = idGenerator.getMeetingId();
+    next = idGenerator.getMeetingId();
+    assertTrue(original < next);
+    original = idGenerator.getMeetingId();
+    next = idGenerator.getMeetingId();
+    assertTrue(original < next);
   }
 }
