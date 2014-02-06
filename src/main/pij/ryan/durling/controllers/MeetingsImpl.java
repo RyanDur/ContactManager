@@ -10,7 +10,9 @@ import java.io.Serializable;
 import java.util.*;
 
 public class MeetingsImpl implements Meetings, Serializable {
-  MeetingFactory meetingFactory;
+  private static final long serialVersionUID = 6341603471619002879L;
+
+  private MeetingFactory meetingFactory;
   private IdGenerator idGenerator;
   private HashMap<Integer, Meeting> meetings = new HashMap<>();
   private HashMap<Integer, Set<Integer>> meetingsByDate = new HashMap<>();

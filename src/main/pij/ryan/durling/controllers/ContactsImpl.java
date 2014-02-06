@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ContactsImpl implements Contacts, Serializable {
+  private static final long serialVersionUID = -8708289797724094321L;
 
   private Map<String, Set<Contact>> contactsByName = new HashMap<>();
   private Map<Integer, Contact> contactsById = new HashMap<>();

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class ContactImpl implements Contact, Serializable{
   private static final long serialVersionUID = -6076612147734101521L;
+
   private int id;
   private String name;
   private String notes;

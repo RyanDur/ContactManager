@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class IdGeneratorImpl implements IdGenerator, Serializable {
   private static final long serialVersionUID = 8246940422068829605L;
+
   private static IdGeneratorImpl idGeneratorInstance = null;
   private int meetingId;
   private int contactId;

@@ -6,6 +6,8 @@ import pij.ryan.durling.models.ContactImpl;
 import java.io.Serializable;
 
 public class ContactFactoryImpl implements ContactFactory, Serializable {
+  private static final long serialVersionUID = 1252231808573165874L;
+
   private static ContactFactory contactFactoryInstance = null;
 
   private ContactFactoryImpl() {

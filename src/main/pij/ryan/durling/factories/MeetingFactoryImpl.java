@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Set;
 
 public class MeetingFactoryImpl implements MeetingFactory, Serializable {
+  private static final long serialVersionUID = -3997460871547952793L;
+
   private static MeetingFactory meetingFactoryInstance = null;
 
   private MeetingFactoryImpl() {
