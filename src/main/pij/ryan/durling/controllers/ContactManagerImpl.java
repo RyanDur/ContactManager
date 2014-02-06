@@ -9,14 +9,16 @@ import pij.ryan.durling.serializers.Serializers;
 import java.util.*;
 
 public class ContactManagerImpl implements ContactManager {
+  private static final String FILE_NAME = "contacts.txt";
   Contacts contactsCtrl;
   Meetings meetingsCtrl;
   Serializers serializers;
 
   public ContactManagerImpl(Contacts contacts, Meetings meetings, Serializers serializers) {
+    this.serializers = serializers;
+    this.serializers.setFileName(FILE_NAME);
     contactsCtrl = contacts;
     meetingsCtrl = meetings;
-    this.serializers = serializers;
     Runtime.getRuntime().addShutdownHook(flushHook());
   }
 

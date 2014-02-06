@@ -12,3 +12,4 @@ build
 *.iws
 gradlew*
 settings.gradle
+*.txt

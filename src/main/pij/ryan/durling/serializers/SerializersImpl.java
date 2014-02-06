@@ -6,12 +6,12 @@ import pij.ryan.durling.controllers.Meetings;
 import java.io.*;
 
 public class SerializersImpl implements Serializers {
-  private static final String FILE_NAME = "contacts.txt";
+  private String fileName;
 
   @Override
   public void serialize(Meetings meetings, Contacts contacts) {
     try {
-      FileOutputStream fout = new FileOutputStream(FILE_NAME);
+      FileOutputStream fout = new FileOutputStream(fileName);
       ObjectOutputStream oos = new ObjectOutputStream(fout);
       oos.writeObject(meetings);
       oos.writeObject(contacts);
@@ -27,7 +27,7 @@ public class SerializersImpl implements Serializers {
     Meetings meetings = null;
     Contacts contacts = null;
     try {
-      FileInputStream fin = new FileInputStream(FILE_NAME);
+      FileInputStream fin = new FileInputStream(fileName);
       ObjectInputStream ois = new ObjectInputStream(fin);
       meetings = (Meetings) ois.readObject();
       contacts = (Contacts) ois.readObject();
@@ -37,5 +37,15 @@ public class SerializersImpl implements Serializers {
       e.printStackTrace();
     }
     return new Object[]{meetings, contacts};
+  }
+
+  @Override
+  public boolean dataExists() {
+    return new File(fileName).exists();
+  }
+
+  @Override
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
   }
 }

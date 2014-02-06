@@ -7,4 +7,8 @@ public interface Serializers {
   public void serialize(Meetings meetings, Contacts contacts);
 
   public Object[] deserialize();
+
+  public boolean dataExists();
+
+  public void setFileName(String fileName);
 }
