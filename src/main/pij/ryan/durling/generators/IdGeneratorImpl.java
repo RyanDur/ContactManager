@@ -21,11 +21,11 @@ public class IdGeneratorImpl implements IdGenerator, Serializable {
   }
 
   public int getMeetingId() {
-    return meetingId;
+    return meetingId++;
   }
 
   public int getContactId() {
-    return contactId;
+    return contactId++;
   }
 
   protected Object readResolve() {
