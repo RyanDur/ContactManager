@@ -27,8 +27,8 @@ public class ContactManagerTest {
   private Contacts mockContacts;
   @Mock
   private Meetings mockMeetings;
-
-  private Serializers mockSerializers = mock(Serializers.class);
+  @Mock
+  private Serializers mockSerializers;
 
   private ContactManager cm;
   private Set<Contact> contactSet = new HashSet<>();
@@ -42,6 +42,7 @@ public class ContactManagerTest {
   @Before
   public void setup() {
     initMocks(this);
+    when(mockSerializers.dataExists()).thenReturn(false);
     cm = new ContactManagerImpl(mockContacts, mockMeetings, mockSerializers);
     contactSet.add(mock(Contact.class));
     date = Calendar.getInstance();
@@ -468,6 +469,15 @@ public class ContactManagerTest {
   public void shouldSerializeOnFlush() {
     cm.flush();
     verify(mockSerializers).serialize(eq(mockMeetings), eq(mockContacts));
+  }
+
+  @Test
+  public void shouldLoadPersistedDataOnCreation() {
+    when(mockSerializers.dataExists()).thenReturn(true);
+    Object[] objects = {mockMeetings, mockContacts};
+    when(mockSerializers.deserialize()).thenReturn(objects);
+    new ContactManagerImpl(mockContacts, mockMeetings, mockSerializers);
+    verify(mockSerializers).deserialize();
   }
 
   private Calendar mockDay(int hour) {

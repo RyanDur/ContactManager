@@ -1,5 +1,7 @@
 package pij.ryan.durling.serializers;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import pij.ryan.durling.controllers.Contacts;
 import pij.ryan.durling.controllers.ContactsImpl;
@@ -9,45 +11,66 @@ import pij.ryan.durling.factories.ContactFactoryImpl;
 import pij.ryan.durling.factories.MeetingFactoryImpl;
 import pij.ryan.durling.generators.IdGeneratorImpl;
 import pij.ryan.durling.models.Contact;
-import pij.ryan.durling.models.Meeting;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.*;
 
-/**
- * Created by ryandurling on 2/5/14.
- */
 public class SerializersTest {
 
+  private Meetings meetings;
+  private Contacts contacts;
+  private Calendar date;
+  private String name;
+  private String fileName;
+  private Serializers serializers;
+  private Set<Contact> contactSet;
+
+  @Before
+  public void setup() {
+    meetings = new MeetingsImpl(MeetingFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
+    contacts = new ContactsImpl(ContactFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
+    name = "Ryan";
+    contacts.add(name, "notes");
+    contactSet = contacts.get(name);
+    date = Calendar.getInstance();
+    date.add(Calendar.DATE, 1);
+    meetings.addFutureMeeting(contactSet, date);
+
+    serializers = new SerializersImpl();
+    fileName = "contacts.txt";
+    serializers.setFileName(fileName);
+  }
+
+  @After
+  public void tearDown() {
+    new File(fileName).delete();
+  }
+
   @Test
-  public void shouldBeAbleToSerializeContactsAndMeetings() {
-    Contacts mockContacts = new ContactsImpl(ContactFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
-    Meetings mockMeetings = new MeetingsImpl(MeetingFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
-    String name = "Ryan";
-    mockContacts.add(name, "notes");
-    mockContacts.get(name);
-    mockMeetings.addFutureMeeting(mockContacts.get(name), Calendar.getInstance());
+  public void shouldSerializeAndDeserializeMeetingsAndContacts() {
+    serializers.serialize(meetings, contacts);
+    Object[] objects = serializers.deserialize();
+    Meetings meetings1 = (Meetings) objects[0];
+    Contacts contacts1 = (Contacts) objects[1];
 
-    Serializers serializers = new SerializersImpl();
-    serializers.serialize(mockMeetings, mockContacts);
+    assertNotNull(contacts1);
+    assertNotNull(meetings1);
+    Set<Contact> contactSet1 = contacts1.get(name);
+    Contact contact1 = contactSet1.toArray(new Contact[0])[0];
+    Contact contact = contactSet.toArray(new Contact[0])[0];
+    assertThat(contact.getName(), is(equalTo(contact1.getName())));
+  }
 
-    Object[] returned = serializers.deserialize();
-    Meetings meetings = (Meetings) returned[0];
-    Contacts contacts = (Contacts) returned[1];
-
-    Set<Contact> contactSet = contacts.get(name);
-    Set<Contact> mockContactSet = mockContacts.get(name);
-    Contact contact1 = contactSet.toArray(new Contact[0])[0];
-    Contact mockContact1 = mockContactSet.toArray(new Contact[0])[0];
-
-    Meeting meeting = meetings.get(0);
-    Meeting mockMeeting = mockMeetings.get(0);
-
-    assertThat(contact1.getName(), is(equalTo(mockContact1.getName())));
-    assertThat(meeting.getDate(), is(equalTo(mockMeeting.getDate())));
+  @Test
+  public void shouldKnowIfDataFileExists() {
+    assertFalse(serializers.dataExists());
+    serializers.serialize(meetings, contacts);
+    assertTrue(serializers.dataExists());
   }
 }
