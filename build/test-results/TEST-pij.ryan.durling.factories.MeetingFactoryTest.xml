@@ -1,0 +1,8 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="pij.ryan.durling.factories.MeetingFactoryTest" tests="2" failures="0" errors="0" timestamp="2014-02-06T22:25:35" hostname="leibniz.home" time="0.011">
+  <properties/>
+  <testcase name="shouldBeAbleToGetAnInstanceOfAFutureMeeting" classname="pij.ryan.durling.factories.MeetingFactoryTest" time="0.009"/>
+  <testcase name="shouldBeAbleToGetAnInstanceOfAPastMeeting" classname="pij.ryan.durling.factories.MeetingFactoryTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

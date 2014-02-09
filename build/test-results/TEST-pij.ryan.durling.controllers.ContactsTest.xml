@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="pij.ryan.durling.controllers.ContactsTest" tests="11" failures="0" errors="0" timestamp="2014-02-06T22:25:35" hostname="leibniz.home" time="0.042">
+  <properties/>
+  <testcase name="shouldNotAllowAnEmptyCollection" classname="pij.ryan.durling.controllers.ContactsTest" time="0.011"/>
+  <testcase name="shouldThrowANullPointerExceptionIfNameIsNullWhenAddingAContact" classname="pij.ryan.durling.controllers.ContactsTest" time="0.002"/>
+  <testcase name="shouldThrowANullPointerExceptionIfNotesAreNullWhenAddingAContact" classname="pij.ryan.durling.controllers.ContactsTest" time="0.003"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfIdPassedDoesNotExist" classname="pij.ryan.durling.controllers.ContactsTest" time="0.003"/>
+  <testcase name="shouldKnowIfAContactExistsInTheCollection" classname="pij.ryan.durling.controllers.ContactsTest" time="0.005"/>
+  <testcase name="shouldNotBeAbleToRetrieveContactsOfSamNameAndId" classname="pij.ryan.durling.controllers.ContactsTest" time="0.003"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfIdPassedNameIsNull" classname="pij.ryan.durling.controllers.ContactsTest" time="0.003"/>
+  <testcase name="shouldBeAbleToRetrieveContactsOfSamNameButDifferentId" classname="pij.ryan.durling.controllers.ContactsTest" time="0.003"/>
+  <testcase name="shouldBeAbleToCheckIfIndeterminateNumberOfIdsExistInContacts" classname="pij.ryan.durling.controllers.ContactsTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAContactById" classname="pij.ryan.durling.controllers.ContactsTest" time="0.003"/>
+  <testcase name="shouldBeAbleToGetAContactByName" classname="pij.ryan.durling.controllers.ContactsTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

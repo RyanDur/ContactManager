@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="pij.ryan.durling.models.ContactTest" tests="3" failures="0" errors="0" timestamp="2014-02-06T22:25:35" hostname="leibniz.home" time="0.002">
+  <properties/>
+  <testcase name="shouldNotHaveNotesIfNoneHaveBeenAdded" classname="pij.ryan.durling.models.ContactTest" time="0.001"/>
+  <testcase name="shouldHaveAnIdAndName" classname="pij.ryan.durling.models.ContactTest" time="0.0"/>
+  <testcase name="shouldHaveNotesIfTheyHaveBeenAdded" classname="pij.ryan.durling.models.ContactTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
