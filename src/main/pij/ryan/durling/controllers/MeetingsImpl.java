@@ -74,15 +74,6 @@ public class MeetingsImpl implements Meetings, Serializable {
     return otherDay > today;
   }
 
-  private int dateKey(Calendar date) {
-    int year = date.get(Calendar.YEAR);
-    int month = date.get(Calendar.MONTH);
-    int week = date.get(Calendar.WEEK_OF_MONTH);
-    int day = date.get(Calendar.DAY_OF_WEEK);
-    String sDate = "" + year + month + week + day;
-    return Integer.parseInt(sDate);
-  }
-
   @Override
   public Meeting get(int id) {
     return meetings.get(id);
@@ -150,5 +141,14 @@ public class MeetingsImpl implements Meetings, Serializable {
     } else {
       meetings.add(meeting.getId());
     }
+  }
+
+  private int dateKey(Calendar date) {
+    int year = date.get(Calendar.YEAR);
+    int month = date.get(Calendar.MONTH);
+    int week = date.get(Calendar.WEEK_OF_MONTH);
+    int day = date.get(Calendar.DAY_OF_WEEK);
+    String sDate = "" + year + month + week + day;
+    return Integer.parseInt(sDate);
   }
 }
