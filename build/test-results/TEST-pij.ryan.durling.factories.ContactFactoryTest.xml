@@ -1,5 +1,5 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.factories.ContactFactoryTest" tests="1" failures="0" errors="0" timestamp="2014-02-06T22:25:35" hostname="leibniz.home" time="0.007">
+<testsuite name="pij.ryan.durling.factories.ContactFactoryTest" tests="1" failures="0" errors="0" timestamp="2014-02-09T23:49:40" hostname="leibniz.home" time="0.007">
   <properties/>
   <testcase name="shouldGetAnInstanceOfAContact" classname="pij.ryan.durling.factories.ContactFactoryTest" time="0.007"/>
   <system-out><![CDATA[]]></system-out>

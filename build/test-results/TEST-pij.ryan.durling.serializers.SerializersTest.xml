@@ -1,0 +1,8 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<testsuite name="pij.ryan.durling.serializers.SerializersTest" tests="2" failures="0" errors="0" timestamp="2014-02-09T23:49:40" hostname="leibniz.home" time="0.02">
+  <properties/>
+  <testcase name="shouldKnowIfDataFileExists" classname="pij.ryan.durling.serializers.SerializersTest" time="0.013"/>
+  <testcase name="shouldSerializeAndDeserializeMeetingsAndContacts" classname="pij.ryan.durling.serializers.SerializersTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
