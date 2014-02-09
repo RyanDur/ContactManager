@@ -6,6 +6,7 @@ hanoi.org
 *gradle
 gen
 out
+build
 *.ipr
 *.iml
 *.iws
