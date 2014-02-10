@@ -5,7 +5,7 @@ hanoi.org
 *.iml
 gen
 out
-build
+build/
 *.ipr
 *.iml
 *.iws
