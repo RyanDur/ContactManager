@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.exceptions.InvalidMeetingExceptionTest" tests="1" failures="0" errors="0" timestamp="2014-02-09T23:49:40" hostname="leibniz.home" time="0.004">
+<testsuite name="pij.ryan.durling.exceptions.InvalidMeetingExceptionTest" tests="1" failures="0" errors="0" timestamp="2014-02-10T17:42:57" hostname="Leibniz.local" time="0.001">
   <properties/>
-  <testcase name="shouldGiveACustomMessageWhenThrown" classname="pij.ryan.durling.exceptions.InvalidMeetingExceptionTest" time="0.004"/>
+  <testcase name="shouldGiveACustomMessageWhenThrown" classname="pij.ryan.durling.exceptions.InvalidMeetingExceptionTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,20 +1,20 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.controllers.MeetingsTest" tests="14" failures="0" errors="0" timestamp="2014-02-09T23:49:40" hostname="leibniz.home" time="0.041">
+<testsuite name="pij.ryan.durling.controllers.MeetingsTest" tests="14" failures="0" errors="0" timestamp="2014-02-10T17:42:57" hostname="Leibniz.local" time="0.043">
   <properties/>
   <testcase name="shouldGetMeetingsByContact" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.01"/>
-  <testcase name="shouldThrowANullPointerExceptionIfContactsIsNull" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.001"/>
-  <testcase name="shouldThrowANullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.001"/>
-  <testcase name="shouldThrowANullPointerExceptionIfDateIsNull" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.001"/>
+  <testcase name="shouldThrowANullPointerExceptionIfContactsIsNull" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
+  <testcase name="shouldThrowANullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
+  <testcase name="shouldThrowANullPointerExceptionIfDateIsNull" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
   <testcase name="shouldBeAbleToAddAMeetingForTheFuture" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
-  <testcase name="shouldThrowAnIllegalArgumentExceptionIfTheMeetingDoesNotExist" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.001"/>
-  <testcase name="shouldGetACollectionOfMeetingsByDate" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.003"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfTheMeetingDoesNotExist" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
+  <testcase name="shouldGetACollectionOfMeetingsByDate" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.004"/>
   <testcase name="shouldKnowIfDateIsBeforeToday" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
-  <testcase name="shouldBeAbleToConvertAFutureMeetingToAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.004"/>
-  <testcase name="shouldThrowAnIllegalArgumentExceptionIfDateIsInThePast" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
+  <testcase name="shouldBeAbleToConvertAFutureMeetingToAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.003"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfDateIsInThePast" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.003"/>
   <testcase name="shouldThrowIllegalStateExceptionIfTheMeetingIsSetForADateInTheFuture" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.003"/>
   <testcase name="shouldKnowIfDateIsAfterToday" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
-  <testcase name="shouldThrowANullPointerExceptionIfTheNotesAreNullWhenConvertingToAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.003"/>
-  <testcase name="shouldBeAbleToAddAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
+  <testcase name="shouldThrowANullPointerExceptionIfTheNotesAreNullWhenConvertingToAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.002"/>
+  <testcase name="shouldBeAbleToAddAPastMeeting" classname="pij.ryan.durling.controllers.MeetingsTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
