@@ -3,7 +3,6 @@
 hanoi.org
 *.idea
 *.iml
-*gradle
 gen
 out
 build
@@ -13,3 +12,4 @@ build
 gradlew*
 settings.gradle
 *.txt
+.gradle/
