@@ -9,7 +9,6 @@ build/
 *.ipr
 *.iml
 *.iws
-gradlew*
 settings.gradle
 *.txt
 .gradle/
