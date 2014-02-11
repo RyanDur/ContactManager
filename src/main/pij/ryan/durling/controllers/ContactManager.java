@@ -84,7 +84,7 @@ public interface ContactManager {
    * the list will be chronologically sorted and will not contain any
    * duplicates.
    *
-   * @param contact one of the users contacts
+   * @param contact one of the user’s contacts
    * @return the list of future meeting(s) scheduled with this contact (maybe empty).
    * @throws IllegalArgumentException if the contact does not exist
    */
