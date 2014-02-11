@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/RyanDur/ContactManager.png?branch=master)](https://travis-ci.org/RyanDur/ContactManager)
