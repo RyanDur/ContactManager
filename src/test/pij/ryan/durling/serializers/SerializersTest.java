@@ -23,54 +23,54 @@ import static org.junit.Assert.*;
 
 public class SerializersTest {
 
-  private Meetings meetings;
-  private Contacts contacts;
-  private Calendar date;
-  private String name;
-  private String fileName;
-  private Serializers serializers;
-  private Set<Contact> contactSet;
+    private Meetings meetings;
+    private Contacts contacts;
+    private Calendar date;
+    private String name;
+    private String fileName;
+    private Serializers serializers;
+    private Set<Contact> contactSet;
 
-  @Before
-  public void setup() {
-    meetings = new MeetingsImpl(MeetingFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
-    contacts = new ContactsImpl(ContactFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
-    name = "Ryan";
-    contacts.add(name, "notes");
-    contactSet = contacts.get(name);
-    date = Calendar.getInstance();
-    date.add(Calendar.DATE, 1);
-    meetings.addFutureMeeting(contactSet, date);
+    @Before
+    public void setup() {
+        meetings = new MeetingsImpl(MeetingFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
+        contacts = new ContactsImpl(ContactFactoryImpl.getInstance(), IdGeneratorImpl.getInstance());
+        name = "Ryan";
+        contacts.add(name, "notes");
+        contactSet = contacts.get(name);
+        date = Calendar.getInstance();
+        date.add(Calendar.DATE, 1);
+        meetings.addFutureMeeting(contactSet, date);
 
-    serializers = new SerializersImpl();
-    fileName = "contacts.txt";
-    serializers.setFileName(fileName);
-  }
+        serializers = new SerializersImpl();
+        fileName = "contacts.txt";
+        serializers.setFileName(fileName);
+    }
 
-  @After
-  public void tearDown() {
-    new File(fileName).delete();
-  }
+    @After
+    public void tearDown() {
+        new File(fileName).delete();
+    }
 
-  @Test
-  public void shouldSerializeAndDeserializeMeetingsAndContacts() {
-    serializers.serialize(meetings, contacts);
-    Object[] objects = serializers.deserialize();
-    Meetings meetings1 = (Meetings) objects[0];
-    Contacts contacts1 = (Contacts) objects[1];
+    @Test
+    public void shouldSerializeAndDeserializeMeetingsAndContacts() {
+        serializers.serialize(meetings, contacts);
+        Object[] objects = serializers.deserialize();
+        Meetings meetings1 = (Meetings) objects[0];
+        Contacts contacts1 = (Contacts) objects[1];
 
-    assertNotNull(contacts1);
-    assertNotNull(meetings1);
-    Set<Contact> contactSet1 = contacts1.get(name);
-    Contact contact1 = contactSet1.toArray(new Contact[0])[0];
-    Contact contact = contactSet.toArray(new Contact[0])[0];
-    assertThat(contact.getName(), is(equalTo(contact1.getName())));
-  }
+        assertNotNull(contacts1);
+        assertNotNull(meetings1);
+        Set<Contact> contactSet1 = contacts1.get(name);
+        Contact contact1 = contactSet1.toArray(new Contact[0])[0];
+        Contact contact = contactSet.toArray(new Contact[0])[0];
+        assertThat(contact.getName(), is(equalTo(contact1.getName())));
+    }
 
-  @Test
-  public void shouldKnowIfDataFileExists() {
-    assertFalse(serializers.dataExists());
-    serializers.serialize(meetings, contacts);
-    assertTrue(serializers.dataExists());
-  }
+    @Test
+    public void shouldKnowIfDataFileExists() {
+        assertFalse(serializers.dataExists());
+        serializers.serialize(meetings, contacts);
+        assertTrue(serializers.dataExists());
+    }
 }

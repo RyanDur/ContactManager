@@ -10,13 +10,13 @@ import static org.mockito.Mockito.*;
 
 public class ContactFactoryTest {
 
-  @Test
-  public void shouldGetAnInstanceOfAContact() {
-    ContactFactory cf = spy(ContactFactoryImpl.getInstance());
-    Contact expected = mock(Contact.class);
-    doReturn(expected).when(cf).createContact(anyInt(), anyString());
-    Contact actual = cf.createContact(0, "Ryan");
+    @Test
+    public void shouldGetAnInstanceOfAContact() {
+        ContactFactory cf = spy(ContactFactoryImpl.getInstance());
+        Contact expected = mock(Contact.class);
+        doReturn(expected).when(cf).createContact(anyInt(), anyString());
+        Contact actual = cf.createContact(0, "Ryan");
 
-    assertThat(actual, is(equalTo(expected)));
-  }
+        assertThat(actual, is(equalTo(expected)));
+    }
 }

@@ -6,14 +6,14 @@ import org.junit.rules.ExpectedException;
 
 public class InvalidMeetingExceptionTest {
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-  @Test
-  public void shouldGiveACustomMessageWhenThrown() throws InvalidMeetingException {
-    thrown.expect(InvalidMeetingException.class);
-    thrown.expectMessage("Needs at least one contact");
+    @Test
+    public void shouldGiveACustomMessageWhenThrown() throws InvalidMeetingException {
+        thrown.expect(InvalidMeetingException.class);
+        thrown.expectMessage("Needs at least one contact");
 
-    throw new InvalidMeetingException();
-  }
+        throw new InvalidMeetingException();
+    }
 }

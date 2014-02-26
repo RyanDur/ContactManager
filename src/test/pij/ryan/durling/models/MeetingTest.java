@@ -18,49 +18,49 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class MeetingTest {
-  private Calendar date;
-  private Set<Contact> contacts;
-  private int id;
+    private Calendar date;
+    private Set<Contact> contacts;
+    private int id;
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-  @Before
-  public void setup() {
-    contacts = getMockContacts(3);
-    date = new GregorianCalendar();
-    id = 1;
-  }
-
-  @Test
-  public void shouldThrowExceptionIfContactsAreNull() throws InvalidMeetingException {
-    thrown.expect(InvalidMeetingException.class);
-
-    new MeetingImpl(id, null, date);
-  }
-
-  @Test
-  public void shouldThrowExceptionIfContactsAreEmpty() throws InvalidMeetingException {
-    thrown.expect(InvalidMeetingException.class);
-
-    new MeetingImpl(id, getMockContacts(0), date);
-  }
-
-  @Test
-  public void shouldHaveAnIdDateAndContacts() throws InvalidMeetingException {
-    Meeting meeting = new MeetingImpl(id, contacts, date);
-
-    assertThat(id, is(equalTo(meeting.getId())));
-    assertThat(date, is(equalTo(meeting.getDate())));
-    assertThat(contacts, is(equalTo(meeting.getContacts())));
-  }
-
-  private Set<Contact> getMockContacts(int numOfMocks) {
-    Set<Contact> set = new HashSet<>();
-    for (int i = 0; i < numOfMocks; i++) {
-      set.add(mock(Contact.class));
+    @Before
+    public void setup() {
+        contacts = getMockContacts(3);
+        date = new GregorianCalendar();
+        id = 1;
     }
-    assertEquals(numOfMocks, set.size());
-    return set;
-  }
+
+    @Test
+    public void shouldThrowExceptionIfContactsAreNull() throws InvalidMeetingException {
+        thrown.expect(InvalidMeetingException.class);
+
+        new MeetingImpl(id, null, date);
+    }
+
+    @Test
+    public void shouldThrowExceptionIfContactsAreEmpty() throws InvalidMeetingException {
+        thrown.expect(InvalidMeetingException.class);
+
+        new MeetingImpl(id, getMockContacts(0), date);
+    }
+
+    @Test
+    public void shouldHaveAnIdDateAndContacts() throws InvalidMeetingException {
+        Meeting meeting = new MeetingImpl(id, contacts, date);
+
+        assertThat(id, is(equalTo(meeting.getId())));
+        assertThat(date, is(equalTo(meeting.getDate())));
+        assertThat(contacts, is(equalTo(meeting.getContacts())));
+    }
+
+    private Set<Contact> getMockContacts(int numOfMocks) {
+        Set<Contact> set = new HashSet<>();
+        for (int i = 0; i < numOfMocks; i++) {
+            set.add(mock(Contact.class));
+        }
+        assertEquals(numOfMocks, set.size());
+        return set;
+    }
 }
