@@ -121,12 +121,12 @@ public class MeetingsImpl implements Meetings, Serializable {
         addTo(meetingsByDate, meeting, dateKey);
     }
 
-    private void addTo(HashMap<Integer, Set<Integer>> meetingSet, Meeting meeting, int id) {
-        Set<Integer> meetings = meetingSet.get(id);
+    private void addTo(HashMap<Integer, Set<Integer>> meetingMap, Meeting meeting, int id) {
+        Set<Integer> meetings = meetingMap.get(id);
         if (meetings == null) {
             Set<Integer> meetingIds = new HashSet<>();
             meetingIds.add(meeting.getId());
-            meetingSet.put(id, meetingIds);
+            meetingMap.put(id, meetingIds);
         } else {
             meetings.add(meeting.getId());
         }
