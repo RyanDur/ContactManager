@@ -112,12 +112,8 @@ public class MeetingsImpl implements Meetings, Serializable {
     private void addMeetingByContacts(Meeting meeting) {
         Set<Contact> contacts = meeting.getContacts();
         for (Contact contact : contacts) {
-            addMeetingByContact(contact, meeting);
+            addTo(meetingsByContact, meeting, contact.getId());
         }
-    }
-
-    private void addMeetingByContact(Contact contact, Meeting meeting) {
-        addTo(meetingsByContact, meeting, contact.getId());
     }
 
     private void addMeetingByDate(Meeting meeting) {
