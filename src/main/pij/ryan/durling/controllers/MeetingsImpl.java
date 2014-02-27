@@ -81,19 +81,15 @@ public class MeetingsImpl implements Meetings, Serializable {
 
     @Override
     public List<Meeting> get(Calendar date) {
-        Set<Integer> meetingIds = meetingsByDate.get(dateKey(date));
-        List<Meeting> resultList = new ArrayList<>();
-        if (meetingIds != null) {
-            for (Integer id : meetingIds) {
-                resultList.add(meetings.get(id));
-            }
-        }
-        return resultList;
+        return getMeetingList(meetingsByDate.get(dateKey(date)));
     }
 
     @Override
     public List<Meeting> get(Contact contact) {
-        Set<Integer> meetingIds = meetingsByContact.get(contact.getId());
+        return getMeetingList(meetingsByContact.get(contact.getId()));
+    }
+
+    private List<Meeting> getMeetingList(Set<Integer> meetingIds) {
         List<Meeting> resultList = new ArrayList<>();
         if (meetingIds != null) {
             for (Integer id : meetingIds) {
@@ -121,23 +117,20 @@ public class MeetingsImpl implements Meetings, Serializable {
     }
 
     private void addMeetingByContact(Contact contact, Meeting meeting) {
-        Set<Integer> meetings = meetingsByContact.get(contact.getId());
-        if (meetings == null) {
-            Set<Integer> meetingIds = new HashSet<>();
-            meetingIds.add(meeting.getId());
-            meetingsByContact.put(contact.getId(), meetingIds);
-        } else {
-            meetings.add(meeting.getId());
-        }
+        addTo(meetingsByContact, meeting, contact.getId());
     }
 
     private void addMeetingByDate(Meeting meeting) {
         Integer dateKey = dateKey(meeting.getDate());
-        Set<Integer> meetings = meetingsByDate.get(dateKey);
+        addTo(meetingsByDate, meeting, dateKey);
+    }
+
+    private void addTo(HashMap<Integer, Set<Integer>> meetingSet, Meeting meeting, int id) {
+        Set<Integer> meetings = meetingSet.get(id);
         if (meetings == null) {
             Set<Integer> meetingIds = new HashSet<>();
             meetingIds.add(meeting.getId());
-            meetingsByDate.put(dateKey, meetingIds);
+            meetingSet.put(id, meetingIds);
         } else {
             meetings.add(meeting.getId());
         }
