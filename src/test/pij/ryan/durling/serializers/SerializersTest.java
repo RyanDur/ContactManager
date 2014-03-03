@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Set;
 
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
@@ -25,7 +24,6 @@ public class SerializersTest {
 
     private Meetings meetings;
     private Contacts contacts;
-    private Calendar date;
     private String name;
     private String fileName;
     private Serializers serializers;
@@ -38,7 +36,7 @@ public class SerializersTest {
         name = "Ryan";
         contacts.add(name, "notes");
         contactSet = contacts.get(name);
-        date = Calendar.getInstance();
+        Calendar date = Calendar.getInstance();
         date.add(Calendar.DATE, 1);
         meetings.addFutureMeeting(contactSet, date);
 
@@ -49,7 +47,7 @@ public class SerializersTest {
 
     @After
     public void tearDown() {
-        new File(fileName).delete();
+        new File(fileName).deleteOnExit();
     }
 
     @Test
@@ -62,8 +60,8 @@ public class SerializersTest {
         assertNotNull(contacts1);
         assertNotNull(meetings1);
         Set<Contact> contactSet1 = contacts1.get(name);
-        Contact contact1 = contactSet1.toArray(new Contact[0])[0];
-        Contact contact = contactSet.toArray(new Contact[0])[0];
+        Contact contact1 = contactSet1.toArray(new Contact[contactSet1.size()])[0];
+        Contact contact = contactSet.toArray(new Contact[contactSet.size()])[0];
         assertThat(contact.getName(), is(equalTo(contact1.getName())));
     }
 

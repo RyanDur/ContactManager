@@ -1,45 +1,45 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.controllers.ContactManagerTest" tests="40" failures="0" errors="0" timestamp="2014-02-27T00:03:30" hostname="ryans-mbp.home" time="0.225">
+<testsuite name="pij.ryan.durling.controllers.ContactManagerTest" tests="40" failures="0" errors="0" timestamp="2014-03-03T15:25:12" hostname="Ryans-MacBook-Pro.local" time="0.219">
   <properties/>
-  <testcase name="shouldThrowAnIllegalArgumentExceptionIfAContactDoesNotExistWhenAddingAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.127"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfAContactDoesNotExistWhenAddingAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.113"/>
   <testcase name="shouldGetNullWhenThereIsNoPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.007"/>
   <testcase name="shouldThrowNullPointerExceptionIfTheNotesAreNullWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldThrowAnIllegalArgumentExceptionIfTheContactDoesNotExistWhenGettingAListOfPastMeetings" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfTheContactDoesNotExistWhenGettingAListOfPastMeetings" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldThrowNullPointerExceptionIfAddNewContactsNotesAreNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldBeAbleToGetAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.005"/>
-  <testcase name="shouldThrowNullPointerExceptionIfGetContactsNameIsNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldThrowNullPointerExceptionIfGetContactsNameIsNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
   <testcase name="shouldBeAbleToGetAListOfFutureMeetingsForAContactInChronologicalOrder" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.006"/>
-  <testcase name="shouldThrowNullPointerExceptionIfAddNewContactsNameIsNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
+  <testcase name="shouldThrowNullPointerExceptionIfAddNewContactsNameIsNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldThrowIllegalArgumentExceptionIfAnyOfTheContactsDoesNotExistWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInThePastWhenGettingAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldBeAbleToGetAListOfPastMeetingsForAContactInChronologicalOrder" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAListOfPastMeetingsForAContactInChronologicalOrder" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
   <testcase name="shouldThrowAnIllegalArgumentExceptionIfATheDateIsInThePastWhenAddingAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldSerializeOnFlush" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
-  <testcase name="shouldThrowIllegalArgumentExceptionIfTheListOfContactsIsEmptyWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldThrowIllegalArgumentExceptionIfAnyOfTheIDsDoNotCorrespondToARealContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldSerializeOnFlush" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldThrowIllegalArgumentExceptionIfTheListOfContactsIsEmptyWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
+  <testcase name="shouldThrowIllegalArgumentExceptionIfAnyOfTheIDsDoNotCorrespondToARealContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
   <testcase name="shouldBeAbleToGetAListOfFutureMeetingsForADate" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldBeAbleToGetAMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldGetNullThereIsNoMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
+  <testcase name="shouldGetNullThereIsNoMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
   <testcase name="shouldLoadPersistedDataOnCreation" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInTheFutureWhenGettingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
-  <testcase name="shouldCheckIfIdsExistInTheContacts" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
-  <testcase name="shouldBeAbleToGetAAnEmptyListOfFutureMeetingsForAContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
-  <testcase name="shouldBeAbleToGetAListOfFutureMeetingsForADateInChronologicalOrder" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="ShouldThrowAnIllegalArgumentExceptionIfThereIsAMeetingWithThatIDHappeningInTheFutureWhenGettingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldCheckIfIdsExistInTheContacts" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAAnEmptyListOfFutureMeetingsForAContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAListOfFutureMeetingsForADateInChronologicalOrder" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
   <testcase name="shouldBeAbleToAddNotesToAMeetingThatHasTakenPlace" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldBeAbleToGetAnEmptyListOfPastMeetingsForAContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldBeAbleToAddAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldThrowAnIllegalArgumentExceptionIfTheMeetingDoesNotExistWhenAddingNotesToAMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
-  <testcase name="shouldBeAbleToAddAContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldThrowIllegalArgumentExceptionIfTheContactDoesNotExist" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldThrowAnIllegalArgumentExceptionIfTheMeetingDoesNotExistWhenAddingNotesToAMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToAddAContact" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
+  <testcase name="shouldThrowIllegalArgumentExceptionIfTheContactDoesNotExist" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
   <testcase name="shouldThrowAnIllegalStateExceptionIfTheMeetingIsSetForADateInTheFutureWhenAddingNotesToAMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
-  <testcase name="shouldBeAbleToGetAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.003"/>
   <testcase name="shouldBeAbleToGetAContactById" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldGetAnIDOfTheMeetingWhenAddingAFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldThrowNullPointerExceptionIfContactsAreNullWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
-  <testcase name="shouldBeAbleToGetAContactByName" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldBeAbleToGetAContactByName" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
   <testcase name="shouldBeGetNullThereIsNoFutureMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <testcase name="shouldThrowNullPointerExceptionIfTheDateIsNullWhenAddingAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
-  <testcase name="shouldThrowANullPointerExceptionIfTheNotesAreNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
+  <testcase name="shouldThrowANullPointerExceptionIfTheNotesAreNull" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.001"/>
   <testcase name="shouldBeAbleToAddAPastMeeting" classname="pij.ryan.durling.controllers.ContactManagerTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

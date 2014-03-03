@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.models.PastMeetingTest" tests="2" failures="0" errors="0" timestamp="2014-02-27T00:03:31" hostname="ryans-mbp.home" time="0.001">
+<testsuite name="pij.ryan.durling.models.PastMeetingTest" tests="2" failures="0" errors="0" timestamp="2014-03-03T15:25:12" hostname="Ryans-MacBook-Pro.local" time="0.0">
   <properties/>
-  <testcase name="shouldHaveNotesOfTheMeeting" classname="pij.ryan.durling.models.PastMeetingTest" time="0.001"/>
+  <testcase name="shouldHaveNotesOfTheMeeting" classname="pij.ryan.durling.models.PastMeetingTest" time="0.0"/>
   <testcase name="shouldHaveAnEmptyStringIfNoNotes" classname="pij.ryan.durling.models.PastMeetingTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

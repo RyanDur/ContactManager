@@ -47,3 +47,15 @@ test {
         }
     }
 }
+
+allprojects {
+    tasks.withType(Compile) {
+        options.compilerArgs << "-Xlint:unchecked"
+    }
+}
+
+allprojects {
+    tasks.withType(Compile) {
+        options.compilerArgs << "-Xlint:deprecation"
+    }
+}

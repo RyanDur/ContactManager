@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.factories.MeetingFactoryTest" tests="2" failures="0" errors="0" timestamp="2014-02-27T00:03:31" hostname="ryans-mbp.home" time="0.005">
+<testsuite name="pij.ryan.durling.factories.MeetingFactoryTest" tests="2" failures="0" errors="0" timestamp="2014-03-03T15:25:12" hostname="Ryans-MacBook-Pro.local" time="0.005">
   <properties/>
-  <testcase name="shouldBeAbleToGetAnInstanceOfAFutureMeeting" classname="pij.ryan.durling.factories.MeetingFactoryTest" time="0.005"/>
+  <testcase name="shouldBeAbleToGetAnInstanceOfAFutureMeeting" classname="pij.ryan.durling.factories.MeetingFactoryTest" time="0.004"/>
   <testcase name="shouldBeAbleToGetAnInstanceOfAPastMeeting" classname="pij.ryan.durling.factories.MeetingFactoryTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

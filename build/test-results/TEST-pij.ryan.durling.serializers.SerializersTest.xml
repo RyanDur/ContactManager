@@ -1,8 +1,8 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.serializers.SerializersTest" tests="2" failures="0" errors="0" timestamp="2014-02-27T00:03:31" hostname="ryans-mbp.home" time="0.016">
+<testsuite name="pij.ryan.durling.serializers.SerializersTest" tests="2" failures="0" errors="0" timestamp="2014-03-03T15:25:12" hostname="Ryans-MacBook-Pro.local" time="0.013">
   <properties/>
-  <testcase name="shouldKnowIfDataFileExists" classname="pij.ryan.durling.serializers.SerializersTest" time="0.011"/>
-  <testcase name="shouldSerializeAndDeserializeMeetingsAndContacts" classname="pij.ryan.durling.serializers.SerializersTest" time="0.005"/>
+  <testcase name="shouldKnowIfDataFileExists" classname="pij.ryan.durling.serializers.SerializersTest" time="0.009"/>
+  <testcase name="shouldSerializeAndDeserializeMeetingsAndContacts" classname="pij.ryan.durling.serializers.SerializersTest" time="0.004"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

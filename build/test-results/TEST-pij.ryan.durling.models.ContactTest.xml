@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<testsuite name="pij.ryan.durling.models.ContactTest" tests="3" failures="0" errors="0" timestamp="2014-02-27T00:03:31" hostname="ryans-mbp.home" time="0.001">
+<testsuite name="pij.ryan.durling.models.ContactTest" tests="3" failures="0" errors="0" timestamp="2014-03-03T15:25:12" hostname="Ryans-MacBook-Pro.local" time="0.001">
   <properties/>
-  <testcase name="shouldNotHaveNotesIfNoneHaveBeenAdded" classname="pij.ryan.durling.models.ContactTest" time="0.001"/>
+  <testcase name="shouldNotHaveNotesIfNoneHaveBeenAdded" classname="pij.ryan.durling.models.ContactTest" time="0.0"/>
   <testcase name="shouldHaveAnIdAndName" classname="pij.ryan.durling.models.ContactTest" time="0.0"/>
   <testcase name="shouldHaveNotesIfTheyHaveBeenAdded" classname="pij.ryan.durling.models.ContactTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
